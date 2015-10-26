@@ -1,0 +1,8 @@
+#Ant properties
+#Thu Aug 13 07:05:59 UTC 2015
+builddate=20150813 0705
+description=productfeed
+name=productfeed
+vendor=hybris
+version=5.5.1.4
+version.api=5.5.1
