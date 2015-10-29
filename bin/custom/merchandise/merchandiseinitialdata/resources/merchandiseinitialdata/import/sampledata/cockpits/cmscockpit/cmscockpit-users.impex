@@ -10,4 +10,4 @@ INSERT_UPDATE Employee;UID[unique=true];$setPassword;description;name;groups(uid
 
 UPDATE CatalogVersion;catalog(id)[unique=true];version[unique=true];writePrincipals(uid)[default=cmsmanagergroup];
 ;hybrisContentCatalog;Online;cmsmanagergroup,cmsmanager;
-;hybrisContentCatalog;Staged;cmsmanagergroup,cmsmanager;
+;hybrisContentCatalog;Staged;cmsmanagergroup,cmsmanager; 

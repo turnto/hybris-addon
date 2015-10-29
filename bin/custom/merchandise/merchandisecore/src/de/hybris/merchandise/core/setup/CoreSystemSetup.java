@@ -20,100 +20,86 @@ import java.util.List;
  * @see "https://wiki.hybris.com/display/release4/Hooks+for+Initialization+and+Update+Process"
  */
 @SystemSetup(extension = MerchandiseCoreConstants.EXTENSIONNAME)
-public class CoreSystemSetup extends AbstractSystemSetup
-{
-	public static final String IMPORT_ACCESS_RIGHTS = "accessRights";
+public class CoreSystemSetup extends AbstractSystemSetup {
+    public static final String IMPORT_ACCESS_RIGHTS = "accessRights";
 
-	/**
-	 * This method will be called by system creator during initialization and system update. Be sure that this method can
-	 * be called repeatedly.
-	 *
-	 * @param context
-	 *           the context provides the selected parameters and values
-	 */
-	@SystemSetup(type = Type.ESSENTIAL, process = Process.ALL)
-	public void createEssentialData(final SystemSetupContext context)
-	{
-		importImpexFile(context, "/merchandisecore/import/common/essential-data.impex");
-		importImpexFile(context, "/merchandisecore/import/common/countries.impex");
-		importImpexFile(context, "/merchandisecore/import/common/delivery-modes.impex");
+    /**
+     * This method will be called by system creator during initialization and system update. Be sure that this method can
+     * be called repeatedly.
+     *
+     * @param context the context provides the selected parameters and values
+     */
+    @SystemSetup(type = Type.ESSENTIAL, process = Process.ALL)
+    public void createEssentialData(final SystemSetupContext context) {
+        importImpexFile(context, "/merchandisecore/import/common/essential-data.impex");
+        importImpexFile(context, "/merchandisecore/import/common/countries.impex");
+        importImpexFile(context, "/merchandisecore/import/common/delivery-modes.impex");
 
-		importImpexFile(context, "/merchandisecore/import/common/themes.impex");
-		importImpexFile(context, "/merchandisecore/import/common/user-groups.impex");
-	}
+        importImpexFile(context, "/merchandisecore/import/common/themes.impex");
+        importImpexFile(context, "/merchandisecore/import/common/user-groups.impex");
+    }
 
-	/**
-	 * Generates the Dropdown and Multi-select boxes for the project data import
-	 */
-	@Override
-	@SystemSetupParameterMethod
-	public List<SystemSetupParameter> getInitializationOptions()
-	{
-		final List<SystemSetupParameter> params = new ArrayList<SystemSetupParameter>();
+    /**
+     * Generates the Dropdown and Multi-select boxes for the project data import
+     */
+    @Override
+    @SystemSetupParameterMethod
+    public List<SystemSetupParameter> getInitializationOptions() {
+        final List<SystemSetupParameter> params = new ArrayList<SystemSetupParameter>();
 
-		params.add(createBooleanSystemSetupParameter(IMPORT_ACCESS_RIGHTS, "Import Users & Groups", true));
+        params.add(createBooleanSystemSetupParameter(IMPORT_ACCESS_RIGHTS, "Import Users & Groups", true));
 
-		return params;
-	}
+        return params;
+    }
 
-	/**
-	 * This method will be called during the system initialization.
-	 *
-	 * @param context
-	 *           the context provides the selected parameters and values
-	 */
-	@SystemSetup(type = Type.PROJECT, process = Process.ALL)
-	public void createProjectData(final SystemSetupContext context)
-	{
-		final boolean importAccessRights = getBooleanSystemSetupParameter(context, IMPORT_ACCESS_RIGHTS);
+    /**
+     * This method will be called during the system initialization.
+     *
+     * @param context the context provides the selected parameters and values
+     */
+    @SystemSetup(type = Type.PROJECT, process = Process.ALL)
+    public void createProjectData(final SystemSetupContext context) {
+        final boolean importAccessRights = getBooleanSystemSetupParameter(context, IMPORT_ACCESS_RIGHTS);
 
-		final List<String> extensionNames = getExtensionNames();
+        final List<String> extensionNames = getExtensionNames();
 
-		if (importAccessRights && extensionNames.contains("cmscockpit"))
-		{
-			importImpexFile(context, "/merchandisecore/import/cockpits/cmscockpit/cmscockpit-users.impex");
-			importImpexFile(context, "/merchandisecore/import/cockpits/cmscockpit/cmscockpit-access-rights.impex");
-		}
+        if (importAccessRights && extensionNames.contains("cmscockpit")) {
+            importImpexFile(context, "/merchandisecore/import/cockpits/cmscockpit/cmscockpit-users.impex");
+            importImpexFile(context, "/merchandisecore/import/cockpits/cmscockpit/cmscockpit-access-rights.impex");
+        }
 
-		if (importAccessRights && extensionNames.contains("btgcockpit"))
-		{
-			importImpexFile(context, "/merchandisecore/import/cockpits/cmscockpit/btgcockpit-users.impex");
-			importImpexFile(context, "/merchandisecore/import/cockpits/cmscockpit/btgcockpit-access-rights.impex");
-		}
+        if (importAccessRights && extensionNames.contains("btgcockpit")) {
+            importImpexFile(context, "/merchandisecore/import/cockpits/cmscockpit/btgcockpit-users.impex");
+            importImpexFile(context, "/merchandisecore/import/cockpits/cmscockpit/btgcockpit-access-rights.impex");
+        }
 
-		if (importAccessRights && extensionNames.contains("productcockpit"))
-		{
-			importImpexFile(context, "/merchandisecore/import/cockpits/productcockpit/productcockpit-users.impex");
-			importImpexFile(context, "/merchandisecore/import/cockpits/productcockpit/productcockpit-access-rights.impex");
-			importImpexFile(context, "/merchandisecore/import/cockpits/productcockpit/productcockpit-constraints.impex");
-		}
+        if (importAccessRights && extensionNames.contains("productcockpit")) {
+            importImpexFile(context, "/merchandisecore/import/cockpits/productcockpit/productcockpit-users.impex");
+            importImpexFile(context, "/merchandisecore/import/cockpits/productcockpit/productcockpit-access-rights.impex");
+            importImpexFile(context, "/merchandisecore/import/cockpits/productcockpit/productcockpit-constraints.impex");
+        }
 
-		if (importAccessRights && extensionNames.contains("cscockpit"))
-		{
-			importImpexFile(context, "/merchandisecore/import/cockpits/cscockpit/cscockpit-users.impex");
-			importImpexFile(context, "/merchandisecore/import/cockpits/cscockpit/cscockpit-access-rights.impex");
-		}
+        if (importAccessRights && extensionNames.contains("cscockpit")) {
+            importImpexFile(context, "/merchandisecore/import/cockpits/cscockpit/cscockpit-users.impex");
+            importImpexFile(context, "/merchandisecore/import/cockpits/cscockpit/cscockpit-access-rights.impex");
+        }
 
-		if (importAccessRights && extensionNames.contains("reportcockpit"))
-		{
-			importImpexFile(context, "/merchandisecore/import/cockpits/reportcockpit/reportcockpit-users.impex");
-			importImpexFile(context, "/merchandisecore/import/cockpits/reportcockpit/reportcockpit-access-rights.impex");
-		}
+        if (importAccessRights && extensionNames.contains("reportcockpit")) {
+            importImpexFile(context, "/merchandisecore/import/cockpits/reportcockpit/reportcockpit-users.impex");
+            importImpexFile(context, "/merchandisecore/import/cockpits/reportcockpit/reportcockpit-access-rights.impex");
+        }
 
-		if (extensionNames.contains("mcc"))
-		{
-			importImpexFile(context, "/merchandisecore/import/common/mcc-sites-links.impex");
-		}
-	}
+        if (extensionNames.contains("mcc")) {
+            importImpexFile(context, "/merchandisecore/import/common/mcc-sites-links.impex");
+        }
+    }
 
 
-	protected List<String> getExtensionNames()
-	{
-		return Registry.getCurrentTenant().getTenantSpecificExtensionNames();
-	}
+    protected List<String> getExtensionNames() {
+        return Registry.getCurrentTenant().getTenantSpecificExtensionNames();
+    }
 
-	protected <T> T getBeanForName(final String name)
-	{
-		return (T) Registry.getApplicationContext().getBean(name);
-	}
+    protected <T> T getBeanForName(final String name) {
+        return (T) Registry.getApplicationContext().getBean(name);
+    }
 }

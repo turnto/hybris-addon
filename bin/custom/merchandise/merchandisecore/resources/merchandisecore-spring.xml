@@ -416,6 +416,9 @@
 		<property name="rootCategoryCode" value="categories"/>
 	</bean>
 
+	<bean id="dynamicHybrisCustomerAttributeBean"
+		  class="de.hybris.merchandise.core.model.DynamicHybrisCustomerAttributeBean"/>
+
 	<bean id="hybrisCategorySource" parent="abstractCategorySource">
 		<property name="rootCategory" value="1"/>
 	</bean>
@@ -436,8 +439,5 @@
 	<bean id="hybrisBrandCategoryNameValueProvider" parent="abstractCategoryNameValueProvider">
 		<property name="categorySource" ref="hybrisBrandCategorySource"/>
 	</bean>
-
-	<bean id="dynamicHybrisCustomerAttributeBean"
-		  class="de.hybris.merchandise.core.model.DynamicHybrisCustomerAttributeBean"/>
 
 </beans>

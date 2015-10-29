@@ -1,8 +1,5 @@
-/**
- *
- */
 package de.hybris.merchandise.core.model;
- 
+
 import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.servicelayer.model.attribute.DynamicAttributeHandler;
  

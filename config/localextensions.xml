@@ -86,7 +86,7 @@
         <extension name="merchandiseinitialdata"/> 
         <extension name="merchandisecore"/> 
         <extension name="merchandisefulfilmentprocess"/> 
-        <extension name="qanda" />
+        <extension name="faq" />
         <extension name="productfeed" />
     </extensions>
 </hybrisconfig>
