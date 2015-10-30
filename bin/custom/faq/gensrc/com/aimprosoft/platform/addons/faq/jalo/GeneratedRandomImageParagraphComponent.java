@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Oct 27, 2015 1:36:39 PM                     ---
+ * --- Generated at Oct 30, 2015 1:28:28 PM                     ---
  * ----------------------------------------------------------------
  */
 package com.aimprosoft.platform.addons.faq.jalo;

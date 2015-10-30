@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Oct 27, 2015 4:57:13 PM                     ---
+ * --- Generated at Oct 30, 2015 1:28:28 PM                     ---
  * ----------------------------------------------------------------
  */
 package com.aimprosoft.platform.productfeed.constants;

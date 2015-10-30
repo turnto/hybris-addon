@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Oct 27, 2015 11:17:40 AM                    ---
+ * --- Generated at Oct 30, 2015 1:28:28 PM                     ---
  * ----------------------------------------------------------------
  *  
  * [y] hybris Platform
@@ -17,10 +17,11 @@
  */
 package de.hybris.merchandise.core.jalo;
 
+import de.hybris.merchandise.core.constants.MerchandiseCoreConstants;
+import de.hybris.platform.jalo.Item.AttributeMode;
 import de.hybris.platform.jalo.SessionContext;
 import de.hybris.platform.jalo.enumeration.EnumerationValue;
 import de.hybris.platform.jalo.product.Product;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

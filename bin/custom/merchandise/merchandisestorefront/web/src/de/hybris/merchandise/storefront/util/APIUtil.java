@@ -10,6 +10,7 @@ import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.search.SearchResult;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -38,8 +39,7 @@ public class APIUtil {
     final private static String TURNTO_SERVICE_URL = "https://www.turnto.com/feedUpload/postfile";
 
 
-    public void sendPost() throws IOException {
-
+    public HttpResponse sendPost() throws IOException {
         writeProductsToFile();
 
         HttpEntity entity = MultipartEntityBuilder
@@ -53,7 +53,7 @@ public class APIUtil {
         HttpPost post = new HttpPost(TURNTO_SERVICE_URL);
         post.setEntity(entity);
 
-        HttpClientBuilder.create().build().execute(post);
+        return HttpClientBuilder.create().build().execute(post);
     }
 
     private void writeProductsToFile() throws FileNotFoundException, UnsupportedEncodingException {

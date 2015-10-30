@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -56,8 +57,8 @@ public class HomePageController extends AbstractPageController {
     }
 
     @RequestMapping(value = "/api", method = RequestMethod.GET)
-    public void getProducts() throws IOException {
-        apiUtil.sendPost();
+    public void sendProducts(HttpServletResponse response) throws IOException {
+        response.getWriter().print(apiUtil.sendPost());
     }
 
     protected void updatePageTitle(final Model model, final AbstractPageModel cmsPage) {
