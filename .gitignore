@@ -1,0 +1,13 @@
+.project
+.idea
+.settings
+.classpath
+*.class
+*.iml
+bin/ext-*
+bin/platform
+data/*
+log/*
+sampleconfigurations/*
+roles/*
+temp/*
