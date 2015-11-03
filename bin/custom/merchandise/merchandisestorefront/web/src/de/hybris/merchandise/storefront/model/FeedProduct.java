@@ -14,11 +14,11 @@ public class FeedProduct {
     public FeedProduct() {
     }
 
-    public FeedProduct(ProductModel model) {
+    public FeedProduct(ProductModel model, String homeURL) {
         this.setSku(model.getCode());
         this.setCategory(model.getEan());
         this.setCurrency("EUR");
-        this.setImageURL(model.getPicture().getCode());
+        this.setImageURL(homeURL + model.getPicture().getURL());
         this.setTitle(model.getName());
     }
 

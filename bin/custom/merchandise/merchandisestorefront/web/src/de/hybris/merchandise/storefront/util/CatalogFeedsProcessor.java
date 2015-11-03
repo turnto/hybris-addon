@@ -36,12 +36,14 @@ public class CatalogFeedsProcessor {
 
     private Logger _logger = LoggerFactory.getLogger(getClass());
 
-    private final static String CATALOG_ID = "hybrisProductCatalog";
-    private final static String CATALOG_VERSION = "Online";
-    private final static String SITE_KEY = "2qtC5sJ5gVYcfvesite";
-    private final static String AUTH_KEY = "5fU9iBPSPCoEQzqauth";
-    private final static String FILE_NAME = "turnto_products_feed";
-    private final static String FILE_TYPE = ".tsv";
+    private static final String HYBRIS_HOME_URL = "http://turnto.zaelab.com:9001";
+    private static final String HYBRIS_STORE_PATH = "/store";
+    private static final String CATALOG_ID = "hybrisProductCatalog";
+    private static final String CATALOG_VERSION = "Online";
+    private static final String SITE_KEY = "2qtC5sJ5gVYcfvesite";
+    private static final String AUTH_KEY = "5fU9iBPSPCoEQzqauth";
+    private static final String FILE_NAME = "turnto_products_feed";
+    private static final String FILE_TYPE = ".tsv";
 
     private final static String TURNTO_SERVICE_URL = "https://www.turnto.com/feedUpload/postfile";
 
@@ -108,7 +110,7 @@ public class CatalogFeedsProcessor {
             String itemURL = getItemURL(model);
             String price = getProductPrice(model);
 
-            FeedProduct feedProduct = new FeedProduct(model);
+            FeedProduct feedProduct = new FeedProduct(model, HYBRIS_HOME_URL);
             feedProduct.setItemURL(itemURL);
             feedProduct.setPrice(price);
 
@@ -166,6 +168,6 @@ public class CatalogFeedsProcessor {
         else
             category = "Clothes/";
 
-        return "/Hybris-Catalogue/" + category + subcategory + "/" + model.getName().trim().replace(' ', '-') + "/p/" + model.getCode() + "?site=hybris";
+        return HYBRIS_HOME_URL + HYBRIS_STORE_PATH + "/Hybris-Catalogue/" + category + subcategory + "/" + model.getName().trim().replace(' ', '-') + "/p/" + model.getCode() + "?site=hybris";
     }
 }
