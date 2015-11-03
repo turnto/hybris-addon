@@ -1,6 +1,8 @@
 package de.hybris.merchandise.storefront.model;
 
-public class Product {
+import de.hybris.platform.core.model.product.ProductModel;
+
+public class FeedProduct {
     private String sku;
     private String imageURL;
     private String title;
@@ -8,6 +10,17 @@ public class Product {
     private String currency;
     private String itemURL;
     private String category;
+
+    public FeedProduct() {
+    }
+
+    public FeedProduct(ProductModel model) {
+        this.setSku(model.getCode());
+        this.setCategory(model.getEan());
+        this.setCurrency("EUR");
+        this.setImageURL(model.getPicture().getCode());
+        this.setTitle(model.getName());
+    }
 
     public String getSku() {
         return sku;

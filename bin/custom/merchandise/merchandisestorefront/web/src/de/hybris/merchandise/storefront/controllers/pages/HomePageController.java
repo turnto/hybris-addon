@@ -13,7 +13,7 @@
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
-import de.hybris.merchandise.storefront.util.APIUtil;
+import de.hybris.merchandise.storefront.util.CatalogFeedsProcessor;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractPageController;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.util.GlobalMessages;
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
@@ -39,7 +39,7 @@ import java.io.IOException;
 public class HomePageController extends AbstractPageController {
 
     @Autowired
-    private APIUtil apiUtil;
+    private CatalogFeedsProcessor feedsProcessor;
 
     @RequestMapping(method = RequestMethod.GET)
     public String home(@RequestParam(value = "logout", defaultValue = "false") final boolean logout, final Model model,
@@ -56,9 +56,9 @@ public class HomePageController extends AbstractPageController {
         return getViewForPage(model);
     }
 
-    @RequestMapping(value = "/api", method = RequestMethod.GET)
+    @RequestMapping(value = "/sendCatalogFeed", method = RequestMethod.GET)
     public void sendProducts(HttpServletResponse response) throws IOException {
-        response.getWriter().print(apiUtil.sendPost());
+        response.getWriter().print(feedsProcessor.sendCatalogFeed());
     }
 
     protected void updatePageTitle(final Model model, final AbstractPageModel cmsPage) {
