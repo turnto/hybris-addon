@@ -12,7 +12,9 @@
 <c:url value="${product.url}/reviewhtml/all" var="getAllReviewsUrl"/>
 <c:url value="${product.url}/review" var="productReviewActionUrl"/>
 
-<div class="tab-review">
+<div id="TurnToReviewsContent"></div>
+
+<%--<div class="tab-review">
 	<div class="review-pagination-bar">
 		<button class="btn btn-default js-review-write-toggle "><spring:theme code="review.write.title"/></button>
 
@@ -62,4 +64,4 @@
 			<button class="btn btn-default less-reviews-btn"><spring:theme code="review.show.less" /></button>
 		</div>
 	</div>
-</div>
+</div>--%>
