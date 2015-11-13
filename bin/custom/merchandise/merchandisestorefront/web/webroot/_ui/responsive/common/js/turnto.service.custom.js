@@ -65,6 +65,7 @@ var turnToConfig = {
 ();
 
 function getSKU(){
-    var val = window.location.href;
-    return val.substr(val.indexOf("/p/") + 3);
+    val = window.location.href;
+    durty_id = val.substr(val.indexOf("/p/") + 3);
+    return  durty_id.split("?")[0];
 }
