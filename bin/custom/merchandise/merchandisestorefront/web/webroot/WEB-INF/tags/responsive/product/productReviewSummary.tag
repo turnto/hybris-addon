@@ -9,6 +9,7 @@
 <%@ attribute name="product" required="true"
 	type="de.hybris.platform.commercefacades.product.data.ProductData"%>
 
+<link rel="stylesheet" href="http://static.www.turnto.com/css/teasers/inputteasers.css" />
 
 <div class="rating js-ratingCalc ${starsClass}" data-rating='{"rating":${product.averageRating},"total":5}'>
 	<div class="rating-stars">
@@ -31,5 +32,6 @@
 			<spring:theme code="review.reviews" />
 		</c:otherwise>
 	</c:choose>
-	
+ <br>
+	<span class="TurnToItemInputTeaser"></span>
 </div>
