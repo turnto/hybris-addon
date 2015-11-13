@@ -12,7 +12,8 @@
 <c:url value="${product.url}/reviewhtml/all" var="getAllReviewsUrl"/>
 <c:url value="${product.url}/review" var="productReviewActionUrl"/>
 
-<div id="TurnToReviewsContent"></div>
+${reviewContent}
+${qaContent}
 
 <%--<div class="tab-review">
 	<div class="review-pagination-bar">

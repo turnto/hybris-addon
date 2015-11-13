@@ -1,12 +1,14 @@
 var turnToConfig = {
-    siteKey: "2qtC5sJ5gVYcfvesite",
-    setupType: "dynamicEmbed",
-    embedCommentCapture: true,
-    postPurchaseFlow: true,
-    itemInputTeaserFunc: customItemInputTeaserFunc,
-    reviewsSetupType: "dynamicEmbed"
-},
-TurnToItemSku = getSKU();
+        siteKey: "2qtC5sJ5gVYcfvesite",
+        setupType: "staticEmbed",
+        embedCommentCapture: true,
+        postPurchaseFlow: true,
+        itemInputTeaserFunc: customItemInputTeaserFunc,
+        reviewsTeaserFunc: customReviewsTeaser,
+        setTeaserCookieOnView: true,
+        reviewsSetupType: "staticEmbed"
+    },
+    TurnToItemSku = getSKU();
 
 
 (function () {
@@ -41,7 +43,7 @@ function customItemInputTeaserFunc(clazz, data) {
 
     var htmlCode = '<div class="TTinputTeaserCust1"> <div class="TTteaserHeaderCust1">Need advice? More information?</div><div style="position:relative">' +
         '<div id="TTinputTeaserBoxCust1">' +
-       /* '<a class="TTteaBubble1Cust1" href="javascript:void(0)" style="text-decoration:none"></a>' +*/
+            /* '<a class="TTteaBubble1Cust1" href="javascript:void(0)" style="text-decoration:none"></a>' +*/
         '<input type="text" id="TTinputTeaserQCust1" placeholder="Type in your question. We\'ll search for answers.">  <!--<a class="TTteaNext1Cust1" href="javascript:void(0)" style="display:none;text-decoration:none"></a>--></div>'
         + '<div class="TT2clearBoth"></div>'
         + ((data.counts.q > 0) ? '<div class="TTteaSearchlineCust2">or <a class="TTteaSearchLinkCust2" href="javascript:void(0)" style="text-decoration:underline">Browse ' + (data.counts.q + ' question' + (data.counts.q == 1 ? "" : "s") + ' and ' + data.counts.a + ' answer' + (data.counts.a == 1 ? "" : "s")) + '</a></div>' : "" )
@@ -93,5 +95,43 @@ function clickQaTab() {
 function clickQaTabFromTeaser() {
     clickQaTab();
     var qaTabPos = TurnTojQuery('#accessibletabsnavigation0-4');
+    window.scrollTo(0, qaTabPos.offset().top);
+}
+
+function customReviewsTeaser(clazz, data) {
+    var clazzNam = clazz || "TurnToReviewsTeaser";
+
+    var iteasers = TurnTojQuery("." + clazzNam);
+
+    // round the average rating to the nearest tenth
+    var rating = Math.round((TurnToItemData.counts.ar + 0.25) * 100.0) / 100.0;
+    rating = rating.toString();
+    var decimal = parseInt(rating.substring(2, 3))
+    rating = rating.substring(0, 1) + "-" + (decimal >= 5 ? '5' : '0')
+
+    var html = '<div>' +
+        '<div class="TT2left TTratingBox TTrating-' + rating + '">' +
+        '    </div>' +
+        '<div class="TTratingLinks">' +
+        '    <a class="TTreadReviews" href="javascript:void(0)">Read ' + TurnToItemData.counts.r + ' Review' + (TurnToItemData.counts.r == 1 ? '' : 's') + '</a> or <a class="TTwriteReview" href="javascript:void(0)">Write a Review</a>' +
+        '</div>' +
+        '<div class="TTclear"></div>' +
+        '</div>';
+    iteasers.html(html);
+
+    var teaserClickFn = function () {
+        clickReviewsTabFromTeaser();
+    };
+    iteasers.find('.TTreadReviews').click(teaserClickFn);
+    iteasers.find('.TTwriteReview').click(teaserClickFn);
+}
+
+function clickReviewsTab() {
+    $('#accessibletabsnavigation0-2').find('a').click();
+}
+
+function clickReviewsTabFromTeaser() {
+    clickReviewsTab();
+    var qaTabPos = TurnTojQuery('#accessibletabsnavigation0-2');
     window.scrollTo(0, qaTabPos.offset().top);
 }
