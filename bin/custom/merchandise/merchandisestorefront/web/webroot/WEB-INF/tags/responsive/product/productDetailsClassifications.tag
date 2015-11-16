@@ -4,7 +4,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="product-classifications">
-	<c:if test="${not empty product.classifications}">
+	${qaContent}
+	<%--<c:if test="${not empty product.classifications}">
 		<c:forEach items="${product.classifications}" var="classification">
 			<div class="headline">${classification.name}</div>
 				<table class="table">
@@ -31,7 +32,6 @@
 						</c:forEach>
 					</tbody>
 				</table>
-
 		</c:forEach>
-	</c:if>
+	</c:if>--%>
 </div>

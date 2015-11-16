@@ -13,7 +13,6 @@
 <c:url value="${product.url}/review" var="productReviewActionUrl"/>
 
 ${reviewContent}
-${qaContent}
 
 <%--<div class="tab-review">
 	<div class="review-pagination-bar">
