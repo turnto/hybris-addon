@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.hybris.com/schema/cockpitng/widgets.xsd">
+
+    <widget-connection inputId="input" outputId="nodeSelected" sourceWidgetId="turntobackoffice-explorer-tree" targetWidgetId="turntobackoffice-tree-node-adapter"/>
+    <widget-connection inputId="genericInput" outputId="true" sourceWidgetId="turntobackoffice-tree-node-adapter" targetWidgetId="turntobackoffice-typecode-extractor"/>
+    <widget-connection inputId="genericInput" outputId="true" sourceWidgetId="turntobackoffice-tree-node-adapter" targetWidgetId="turntobackoffice-search-enabler"/>
+    <widget-connection inputId="genericInput" outputId="false" sourceWidgetId="turntobackoffice-tree-node-adapter" targetWidgetId="turntobackoffice-search-disabler"/>
+    <widget-connection inputId="type" outputId="genericOutput" sourceWidgetId="turntobackoffice-typecode-extractor" targetWidgetId="turntobackoffice-search-logic"/>
+    <widget-connection inputId="enabled" outputId="genericOutput" sourceWidgetId="turntobackoffice-search-enabler" targetWidgetId="turntobackoffice-text-search"/>
+    <widget-connection inputId="enabled" outputId="genericOutput" sourceWidgetId="turntobackoffice-search-disabler" targetWidgetId="turntobackoffice-text-search"/>
+    <widget-connection inputId="searchtext" outputId="query" sourceWidgetId="turntobackoffice-text-search" targetWidgetId="turntobackoffice-search-logic"/>
+    <widget-connection inputId="pageable" outputId="pageable" sourceWidgetId="turntobackoffice-search-logic" targetWidgetId="turntobackoffice-simple-list"/>
+
+</widgets>

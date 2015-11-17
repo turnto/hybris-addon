@@ -1,0 +1,14 @@
+<widget xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://www.zkoss.org/2005/zul">
+    <style src="${wr}/default.css"/>
+
+    <div>
+        <hlayout>
+            <button id="sendFeedBtn" label="Send products!"/>
+        </hlayout>
+        <hlayout>
+            <label>Turn on/off TurnTo</label>
+            <checkbox id="turnToSwitcher"/>
+        </hlayout>
+    </div>
+</widget>
