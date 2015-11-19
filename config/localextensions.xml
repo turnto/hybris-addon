@@ -70,6 +70,7 @@
         <extension name="printhmc" />
  
         <!-- ext-template -->
+        <!-- <extension name="ybackoffice"/> -->
         <extension name="ycommercewebservices" />
         <extension name="ycommercewebserviceshmc" />
                                       
@@ -86,7 +87,10 @@
         <extension name="merchandiseinitialdata"/> 
         <extension name="merchandisecore"/> 
         <extension name="merchandisefulfilmentprocess"/> 
+
+        <!-- custom TurnTo widgets -->
         <extension name="faq" />
-        <extension name="productfeed" />
+        <extension name="turntobackoffice"/>
+
     </extensions>
 </hybrisconfig>
