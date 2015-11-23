@@ -68,20 +68,29 @@ public class TurntoContentUtil {
         }
     }
 
+    public String renderAverageRatingForItem(String id) throws IOException {
+        return String.valueOf(getAverageRatingForItem(id));
+    }
+
     private void createRatingAttribute(List<ProductData> productData, Map<String, String> rating) throws IOException {
         for (ProductData pd : productData) {
-            int averageRating = 0;
             String id = pd.getCode();
-            URL url = new URL(PRODUCT_JSON_URL + id + PRODUCT_JSON_URL_CHUNCK);
-            StringBuilder response = getResponse(url);
-
-            if (StringUtils.isNotBlank(response.toString())) averageRating = getAverageRating(response);
+            int averageRating = getAverageRatingForItem(id);
 
             rating.put(id, String.valueOf(averageRating));
         }
     }
 
-    private int getAverageRating(StringBuilder response) {
+    private int getAverageRatingForItem(String id) throws IOException {
+        int averageRating = 0;
+        URL url = new URL(PRODUCT_JSON_URL + id + PRODUCT_JSON_URL_CHUNCK);
+        StringBuilder response = getResponse(url);
+
+        if (StringUtils.isNotBlank(response.toString())) averageRating = getOverallRating(response);
+        return averageRating;
+    }
+
+    private int getOverallRating(StringBuilder response) {
         final JSONObject obj = new JSONObject(response.toString());
         final JSONArray reviews = obj.getJSONArray("reviews");
         int count = 0;
