@@ -86,7 +86,7 @@
             url: 'https://turnto.zaelab.com:9001/store' + $(item).data('url'),
             sku: $(item).data('id'),
             price: $(item).data('price'),
-            itemImageUrl: 'http://turnto.zaelab.com:9001' + $(item).data('img')
+            itemImageUrl: 'https://turnto.zaelab.com:9001' + $(item).data('img')
         });
     });
 
