@@ -13,12 +13,14 @@
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
+import de.hybris.merchandise.storefront.util.TurntoContentUtil;
 import de.hybris.platform.acceleratorcms.model.components.SearchBoxComponentModel;
 import de.hybris.platform.acceleratorservices.controllers.page.PageType;
 import de.hybris.platform.acceleratorservices.customer.CustomerLocationService;
 import de.hybris.platform.acceleratorstorefrontcommons.breadcrumb.impl.SearchBreadcrumbBuilder;
 import de.hybris.platform.acceleratorstorefrontcommons.constants.WebConstants;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractSearchPageController;
+import de.hybris.platform.acceleratorstorefrontcommons.util.MetaSanitizerUtil;
 import de.hybris.platform.acceleratorstorefrontcommons.util.XSSFilterUtil;
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.cms2.servicelayer.services.CMSComponentService;
@@ -32,260 +34,231 @@ import de.hybris.platform.commerceservices.search.facetdata.FacetRefinement;
 import de.hybris.platform.commerceservices.search.facetdata.ProductSearchPageData;
 import de.hybris.platform.commerceservices.search.pagedata.PageableData;
 import de.hybris.platform.commerceservices.search.pagedata.SearchPageData;
-import de.hybris.platform.acceleratorstorefrontcommons.util.MetaSanitizerUtil;
-
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.List;
 
 
 @Controller
 @Scope("tenant")
 @RequestMapping("/search")
-public class SearchPageController extends AbstractSearchPageController
-{
-	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(SearchPageController.class);
+public class SearchPageController extends AbstractSearchPageController {
+    @SuppressWarnings("unused")
+    private static final Logger LOG = Logger.getLogger(SearchPageController.class);
 
-	private static final String COMPONENT_UID_PATH_VARIABLE_PATTERN = "{componentUid:.*}";
+    private static final String COMPONENT_UID_PATH_VARIABLE_PATTERN = "{componentUid:.*}";
 
-	private static final String SEARCH_CMS_PAGE_ID = "search";
-	private static final String NO_RESULTS_CMS_PAGE_ID = "searchEmpty";
+    private static final String SEARCH_CMS_PAGE_ID = "search";
+    private static final String NO_RESULTS_CMS_PAGE_ID = "searchEmpty";
 
-	@Resource(name = "productSearchFacade")
-	private ProductSearchFacade<ProductData> productSearchFacade;
+    @Resource(name = "productSearchFacade")
+    private ProductSearchFacade<ProductData> productSearchFacade;
 
-	@Resource(name = "searchBreadcrumbBuilder")
-	private SearchBreadcrumbBuilder searchBreadcrumbBuilder;
+    @Resource(name = "searchBreadcrumbBuilder")
+    private SearchBreadcrumbBuilder searchBreadcrumbBuilder;
 
-	@Resource(name = "customerLocationService")
-	private CustomerLocationService customerLocationService;
+    @Resource(name = "customerLocationService")
+    private CustomerLocationService customerLocationService;
 
-	@Resource(name = "cmsComponentService")
-	private CMSComponentService cmsComponentService;
+    @Resource(name = "cmsComponentService")
+    private CMSComponentService cmsComponentService;
 
-	@RequestMapping(method = RequestMethod.GET, params = "!q")
-	public String textSearch(@RequestParam(value = "text", defaultValue = "") final String searchText,
-			final HttpServletRequest request, final Model model) throws CMSItemNotFoundException
-	{
-		if (StringUtils.isNotBlank(searchText))
-		{
-			final PageableData pageableData = createPageableData(0, getSearchPageSize(), null, ShowMode.Page);
+    @Autowired
+    TurntoContentUtil turntoContentUtil;
 
-			final SearchStateData searchState = new SearchStateData();
-			final SearchQueryData searchQueryData = new SearchQueryData();
-			searchQueryData.setValue(XSSFilterUtil.filter(searchText));
-			searchState.setQuery(searchQueryData);
+    @RequestMapping(method = RequestMethod.GET, params = "!q")
+    public String textSearch(@RequestParam(value = "text", defaultValue = "") final String searchText,
+                             final HttpServletRequest request, final Model model) throws CMSItemNotFoundException {
+        if (StringUtils.isNotBlank(searchText)) {
+            final PageableData pageableData = createPageableData(0, getSearchPageSize(), null, ShowMode.Page);
 
-			final ProductSearchPageData<SearchStateData, ProductData> searchPageData = productSearchFacade.textSearch(searchState,
-					pageableData);
-			if (searchPageData == null)
-			{
-				storeCmsPageInModel(model, getContentPageForLabelOrId(NO_RESULTS_CMS_PAGE_ID));
-			}
-			else if (searchPageData.getKeywordRedirectUrl() != null)
-			{
-				// if the search engine returns a redirect, just
-				return "redirect:" + searchPageData.getKeywordRedirectUrl();
-			}
-			else if (searchPageData.getPagination().getTotalNumberOfResults() == 0)
-			{
-				model.addAttribute("searchPageData", searchPageData);
-				storeCmsPageInModel(model, getContentPageForLabelOrId(NO_RESULTS_CMS_PAGE_ID));
-				updatePageTitle(searchText, model);
-			}
-			else
-			{
-				storeContinueUrl(request);
-				populateModel(model, searchPageData, ShowMode.Page);
-				storeCmsPageInModel(model, getContentPageForLabelOrId(SEARCH_CMS_PAGE_ID));
-				updatePageTitle(searchText, model);
-			}
-			model.addAttribute("userLocation", customerLocationService.getUserLocation());
-			getRequestContextData(request).setSearch(searchPageData);
-			if (searchPageData != null)
-			{
-				model.addAttribute(
-						WebConstants.BREADCRUMBS_KEY,
-						searchBreadcrumbBuilder.getBreadcrumbs(null, searchText,
-								CollectionUtils.isEmpty(searchPageData.getBreadcrumbs())));
-			}
-		}
-		else
-		{
-			storeCmsPageInModel(model, getContentPageForLabelOrId(NO_RESULTS_CMS_PAGE_ID));
-		}
-		model.addAttribute("pageType", PageType.PRODUCTSEARCH.name());
-		model.addAttribute("metaRobots", "noindex,follow");
+            final SearchStateData searchState = new SearchStateData();
+            final SearchQueryData searchQueryData = new SearchQueryData();
+            searchQueryData.setValue(XSSFilterUtil.filter(searchText));
+            searchState.setQuery(searchQueryData);
 
-		final String metaDescription = MetaSanitizerUtil.sanitizeDescription(getMessageSource().getMessage(
-				"search.meta.description.results", null, "search.meta.description.results", getI18nService().getCurrentLocale())
-				+ " "
-				+ searchText
-				+ " "
-				+ getMessageSource().getMessage("search.meta.description.on", null, "search.meta.description.on",
-						getI18nService().getCurrentLocale()) + " " + getSiteName());
-		final String metaKeywords = MetaSanitizerUtil.sanitizeKeywords(searchText);
-		setUpMetaData(model, metaKeywords, metaDescription);
+            final ProductSearchPageData<SearchStateData, ProductData> searchPageData = productSearchFacade.textSearch(searchState,
+                    pageableData);
+            if (searchPageData == null) {
+                storeCmsPageInModel(model, getContentPageForLabelOrId(NO_RESULTS_CMS_PAGE_ID));
+            } else if (searchPageData.getKeywordRedirectUrl() != null) {
+                // if the search engine returns a redirect, just
+                return "redirect:" + searchPageData.getKeywordRedirectUrl();
+            } else if (searchPageData.getPagination().getTotalNumberOfResults() == 0) {
+                model.addAttribute("searchPageData", searchPageData);
+                storeCmsPageInModel(model, getContentPageForLabelOrId(NO_RESULTS_CMS_PAGE_ID));
+                updatePageTitle(searchText, model);
+            } else {
+                storeContinueUrl(request);
+                turntoContentUtil.renderReviewContent(model, searchPageData.getResults());
+                populateModel(model, searchPageData, ShowMode.Page);
+                storeCmsPageInModel(model, getContentPageForLabelOrId(SEARCH_CMS_PAGE_ID));
+                updatePageTitle(searchText, model);
+            }
+            model.addAttribute("userLocation", customerLocationService.getUserLocation());
+            getRequestContextData(request).setSearch(searchPageData);
+            if (searchPageData != null) {
+                model.addAttribute(
+                        WebConstants.BREADCRUMBS_KEY,
+                        searchBreadcrumbBuilder.getBreadcrumbs(null, searchText,
+                                CollectionUtils.isEmpty(searchPageData.getBreadcrumbs())));
+            }
+        } else {
+            storeCmsPageInModel(model, getContentPageForLabelOrId(NO_RESULTS_CMS_PAGE_ID));
+        }
+        model.addAttribute("pageType", PageType.PRODUCTSEARCH.name());
+        model.addAttribute("metaRobots", "noindex,follow");
 
-		return getViewForPage(model);
-	}
+        final String metaDescription = MetaSanitizerUtil.sanitizeDescription(getMessageSource().getMessage(
+                "search.meta.description.results", null, "search.meta.description.results", getI18nService().getCurrentLocale())
+                + " "
+                + searchText
+                + " "
+                + getMessageSource().getMessage("search.meta.description.on", null, "search.meta.description.on",
+                getI18nService().getCurrentLocale()) + " " + getSiteName());
+        final String metaKeywords = MetaSanitizerUtil.sanitizeKeywords(searchText);
+        setUpMetaData(model, metaKeywords, metaDescription);
 
-	@RequestMapping(method = RequestMethod.GET, params = "q")
-	public String refineSearch(@RequestParam("q") final String searchQuery,
-			@RequestParam(value = "page", defaultValue = "0") final int page,
-			@RequestParam(value = "show", defaultValue = "Page") final ShowMode showMode,
-			@RequestParam(value = "sort", required = false) final String sortCode,
-			@RequestParam(value = "text", required = false) final String searchText, final HttpServletRequest request,
-			final Model model) throws CMSItemNotFoundException
-	{
-		final ProductSearchPageData<SearchStateData, ProductData> searchPageData = performSearch(searchQuery, page, showMode,
-				sortCode, getSearchPageSize());
+        return getViewForPage(model);
+    }
 
-		populateModel(model, searchPageData, showMode);
-		model.addAttribute("userLocation", customerLocationService.getUserLocation());
+    @RequestMapping(method = RequestMethod.GET, params = "q")
+    public String refineSearch(@RequestParam("q") final String searchQuery,
+                               @RequestParam(value = "page", defaultValue = "0") final int page,
+                               @RequestParam(value = "show", defaultValue = "Page") final ShowMode showMode,
+                               @RequestParam(value = "sort", required = false) final String sortCode,
+                               @RequestParam(value = "text", required = false) final String searchText, final HttpServletRequest request,
+                               final Model model) throws CMSItemNotFoundException {
+        final ProductSearchPageData<SearchStateData, ProductData> searchPageData = performSearch(searchQuery, page, showMode,
+                sortCode, getSearchPageSize());
 
-		if (searchPageData.getPagination().getTotalNumberOfResults() == 0)
-		{
-			updatePageTitle(searchPageData.getFreeTextSearch(), model);
-			storeCmsPageInModel(model, getContentPageForLabelOrId(NO_RESULTS_CMS_PAGE_ID));
-		}
-		else
-		{
-			storeContinueUrl(request);
-			updatePageTitle(searchPageData.getFreeTextSearch(), model);
-			storeCmsPageInModel(model, getContentPageForLabelOrId(SEARCH_CMS_PAGE_ID));
-		}
-		model.addAttribute(WebConstants.BREADCRUMBS_KEY, searchBreadcrumbBuilder.getBreadcrumbs(null, searchPageData));
-		model.addAttribute("pageType", PageType.PRODUCTSEARCH.name());
+        populateModel(model, searchPageData, showMode);
+        model.addAttribute("userLocation", customerLocationService.getUserLocation());
 
-		final String metaDescription = MetaSanitizerUtil.sanitizeDescription(getMessageSource().getMessage(
-				"search.meta.description.results", null, "search.meta.description.results", getI18nService().getCurrentLocale())
-				+ " "
-				+ searchText
-				+ " "
-				+ getMessageSource().getMessage("search.meta.description.on", null, "search.meta.description.on",
-						getI18nService().getCurrentLocale()) + " " + getSiteName());
+        if (searchPageData.getPagination().getTotalNumberOfResults() == 0) {
+            updatePageTitle(searchPageData.getFreeTextSearch(), model);
+            storeCmsPageInModel(model, getContentPageForLabelOrId(NO_RESULTS_CMS_PAGE_ID));
+        } else {
+            storeContinueUrl(request);
+            updatePageTitle(searchPageData.getFreeTextSearch(), model);
+            storeCmsPageInModel(model, getContentPageForLabelOrId(SEARCH_CMS_PAGE_ID));
+        }
+        model.addAttribute(WebConstants.BREADCRUMBS_KEY, searchBreadcrumbBuilder.getBreadcrumbs(null, searchPageData));
+        model.addAttribute("pageType", PageType.PRODUCTSEARCH.name());
 
-		final String metaKeywords = MetaSanitizerUtil.sanitizeKeywords(searchText);
-		setUpMetaData(model, metaKeywords, metaDescription);
+        final String metaDescription = MetaSanitizerUtil.sanitizeDescription(getMessageSource().getMessage(
+                "search.meta.description.results", null, "search.meta.description.results", getI18nService().getCurrentLocale())
+                + " "
+                + searchText
+                + " "
+                + getMessageSource().getMessage("search.meta.description.on", null, "search.meta.description.on",
+                getI18nService().getCurrentLocale()) + " " + getSiteName());
 
-		return getViewForPage(model);
-	}
+        final String metaKeywords = MetaSanitizerUtil.sanitizeKeywords(searchText);
+        setUpMetaData(model, metaKeywords, metaDescription);
 
-	protected ProductSearchPageData<SearchStateData, ProductData> performSearch(final String searchQuery, final int page,
-			final ShowMode showMode, final String sortCode, final int pageSize)
-	{
-		final PageableData pageableData = createPageableData(page, pageSize, sortCode, showMode);
+        return getViewForPage(model);
+    }
 
-		final SearchStateData searchState = new SearchStateData();
-		final SearchQueryData searchQueryData = new SearchQueryData();
-		searchQueryData.setValue(searchQuery);
-		searchState.setQuery(searchQueryData);
+    protected ProductSearchPageData<SearchStateData, ProductData> performSearch(final String searchQuery, final int page,
+                                                                                final ShowMode showMode, final String sortCode, final int pageSize) {
+        final PageableData pageableData = createPageableData(page, pageSize, sortCode, showMode);
 
-		return productSearchFacade.textSearch(searchState, pageableData);
-	}
+        final SearchStateData searchState = new SearchStateData();
+        final SearchQueryData searchQueryData = new SearchQueryData();
+        searchQueryData.setValue(searchQuery);
+        searchState.setQuery(searchQueryData);
 
-	@ResponseBody
-	@RequestMapping(value = "/results", method = RequestMethod.GET)
-	public SearchResultsData<ProductData> jsonSearchResults(@RequestParam("q") final String searchQuery,
-			@RequestParam(value = "page", defaultValue = "0") final int page,
-			@RequestParam(value = "show", defaultValue = "Page") final ShowMode showMode,
-			@RequestParam(value = "sort", required = false) final String sortCode) throws CMSItemNotFoundException
-	{
-		final ProductSearchPageData<SearchStateData, ProductData> searchPageData = performSearch(searchQuery, page, showMode,
-				sortCode, getSearchPageSize());
-		final SearchResultsData<ProductData> searchResultsData = new SearchResultsData<>();
-		searchResultsData.setResults(searchPageData.getResults());
-		searchResultsData.setPagination(searchPageData.getPagination());
-		return searchResultsData;
-	}
+        return productSearchFacade.textSearch(searchState, pageableData);
+    }
 
-	@ResponseBody
-	@RequestMapping(value = "/facets", method = RequestMethod.GET)
-	public FacetRefinement<SearchStateData> getFacets(@RequestParam("q") final String searchQuery,
-			@RequestParam(value = "page", defaultValue = "0") final int page,
-			@RequestParam(value = "show", defaultValue = "Page") final ShowMode showMode,
-			@RequestParam(value = "sort", required = false) final String sortCode) throws CMSItemNotFoundException
-	{
-		final SearchStateData searchState = new SearchStateData();
-		final SearchQueryData searchQueryData = new SearchQueryData();
-		searchQueryData.setValue(searchQuery);
-		searchState.setQuery(searchQueryData);
+    @ResponseBody
+    @RequestMapping(value = "/results", method = RequestMethod.GET)
+    public SearchResultsData<ProductData> jsonSearchResults(@RequestParam("q") final String searchQuery,
+                                                            @RequestParam(value = "page", defaultValue = "0") final int page,
+                                                            @RequestParam(value = "show", defaultValue = "Page") final ShowMode showMode,
+                                                            @RequestParam(value = "sort", required = false) final String sortCode) throws CMSItemNotFoundException {
+        final ProductSearchPageData<SearchStateData, ProductData> searchPageData = performSearch(searchQuery, page, showMode,
+                sortCode, getSearchPageSize());
+        final SearchResultsData<ProductData> searchResultsData = new SearchResultsData<>();
+        searchResultsData.setResults(searchPageData.getResults());
+        searchResultsData.setPagination(searchPageData.getPagination());
+        return searchResultsData;
+    }
 
-		final ProductSearchPageData<SearchStateData, ProductData> searchPageData = productSearchFacade.textSearch(searchState,
-				createPageableData(page, getSearchPageSize(), sortCode, showMode));
-		final List<FacetData<SearchStateData>> facets = refineFacets(searchPageData.getFacets(),
-				convertBreadcrumbsToFacets(searchPageData.getBreadcrumbs()));
-		final FacetRefinement<SearchStateData> refinement = new FacetRefinement<>();
-		refinement.setFacets(facets);
-		refinement.setCount(searchPageData.getPagination().getTotalNumberOfResults());
-		refinement.setBreadcrumbs(searchPageData.getBreadcrumbs());
-		return refinement;
-	}
+    @ResponseBody
+    @RequestMapping(value = "/facets", method = RequestMethod.GET)
+    public FacetRefinement<SearchStateData> getFacets(@RequestParam("q") final String searchQuery,
+                                                      @RequestParam(value = "page", defaultValue = "0") final int page,
+                                                      @RequestParam(value = "show", defaultValue = "Page") final ShowMode showMode,
+                                                      @RequestParam(value = "sort", required = false) final String sortCode) throws CMSItemNotFoundException {
+        final SearchStateData searchState = new SearchStateData();
+        final SearchQueryData searchQueryData = new SearchQueryData();
+        searchQueryData.setValue(searchQuery);
+        searchState.setQuery(searchQueryData);
 
-	@ResponseBody
-	@RequestMapping(value = "/autocomplete/" + COMPONENT_UID_PATH_VARIABLE_PATTERN, method = RequestMethod.GET)
-	public AutocompleteResultData getAutocompleteSuggestions(@PathVariable final String componentUid,
-			@RequestParam("term") final String term) throws CMSItemNotFoundException
-	{
-		final AutocompleteResultData resultData = new AutocompleteResultData();
+        final ProductSearchPageData<SearchStateData, ProductData> searchPageData = productSearchFacade.textSearch(searchState,
+                createPageableData(page, getSearchPageSize(), sortCode, showMode));
+        final List<FacetData<SearchStateData>> facets = refineFacets(searchPageData.getFacets(),
+                convertBreadcrumbsToFacets(searchPageData.getBreadcrumbs()));
+        final FacetRefinement<SearchStateData> refinement = new FacetRefinement<>();
+        refinement.setFacets(facets);
+        refinement.setCount(searchPageData.getPagination().getTotalNumberOfResults());
+        refinement.setBreadcrumbs(searchPageData.getBreadcrumbs());
+        return refinement;
+    }
 
-		final SearchBoxComponentModel component = (SearchBoxComponentModel) cmsComponentService.getSimpleCMSComponent(componentUid);
+    @ResponseBody
+    @RequestMapping(value = "/autocomplete/" + COMPONENT_UID_PATH_VARIABLE_PATTERN, method = RequestMethod.GET)
+    public AutocompleteResultData getAutocompleteSuggestions(@PathVariable final String componentUid,
+                                                             @RequestParam("term") final String term) throws CMSItemNotFoundException {
+        final AutocompleteResultData resultData = new AutocompleteResultData();
 
-		if (component.isDisplaySuggestions())
-		{
-			resultData.setSuggestions(subList(productSearchFacade.getAutocompleteSuggestions(term), component.getMaxSuggestions()));
-		}
+        final SearchBoxComponentModel component = (SearchBoxComponentModel) cmsComponentService.getSimpleCMSComponent(componentUid);
 
-		if (component.isDisplayProducts())
-		{
-			resultData.setProducts(subList(productSearchFacade.textSearch(term).getResults(), component.getMaxProducts()));
-		}
+        if (component.isDisplaySuggestions()) {
+            resultData.setSuggestions(subList(productSearchFacade.getAutocompleteSuggestions(term), component.getMaxSuggestions()));
+        }
 
-		return resultData;
-	}
+        if (component.isDisplayProducts()) {
+            resultData.setProducts(subList(productSearchFacade.textSearch(term).getResults(), component.getMaxProducts()));
+        }
 
-	protected <E> List<E> subList(final List<E> list, final int maxElements)
-	{
-		if (CollectionUtils.isEmpty(list))
-		{
-			return Collections.emptyList();
-		}
+        return resultData;
+    }
 
-		if (list.size() > maxElements)
-		{
-			return list.subList(0, maxElements);
-		}
+    protected <E> List<E> subList(final List<E> list, final int maxElements) {
+        if (CollectionUtils.isEmpty(list)) {
+            return Collections.emptyList();
+        }
 
-		return list;
-	}
+        if (list.size() > maxElements) {
+            return list.subList(0, maxElements);
+        }
 
-	protected void updatePageTitle(final String searchText, final Model model)
-	{
-		storeContentPageTitleInModel(
-				model,
-				getPageTitleResolver().resolveContentPageTitle(
-						getMessageSource().getMessage("search.meta.title", null, "search.meta.title",
-								getI18nService().getCurrentLocale())
-								+ " " + searchText));
-	}
+        return list;
+    }
 
-    protected void populateModel(final Model model, final SearchPageData<?> searchPageData, final ShowMode showMode){
+    protected void updatePageTitle(final String searchText, final Model model) {
+        storeContentPageTitleInModel(
+                model,
+                getPageTitleResolver().resolveContentPageTitle(
+                        getMessageSource().getMessage("search.meta.title", null, "search.meta.title",
+                                getI18nService().getCurrentLocale())
+                                + " " + searchText));
+    }
+
+    protected void populateModel(final Model model, final SearchPageData<?> searchPageData, final ShowMode showMode) {
         super.populateModel(model, searchPageData, showMode);
     }
 }
