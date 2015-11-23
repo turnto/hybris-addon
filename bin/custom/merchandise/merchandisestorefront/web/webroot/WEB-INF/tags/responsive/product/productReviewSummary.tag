@@ -46,28 +46,42 @@
                 reviewsSetupType: "staticEmbed",
                 itemInputTeaserFunc: customItemInputTeaserFunc,
                 reviewsTeaserFunc: customReviewsTeaser,
+                chatter: {
+                    columns:4,
+                    rowsInCollapsedView:2,
+                    rowsInExpandedView:5,
+                    title: "Why I Chose This:",
+                    expandText: "Read all",
+                    collapsedText: "Hide all",
+                    minimumCommentCount: 1,
+                    minimumCommentCharacterCount: 1,
+                    sortOrder: "most recent",
+                    minimumCommentWordCount: 0,
+                    onFinish: function(){console.log('chatter loaded!')}
+                },
                 embedCommentCapture: true,
                 postPurchaseFlow: true,
                 setTeaserCookieOnView: true
             },
-            TurnToItemSku = getSKU();
+            TurnToItemSku = "${product.code}";
 
     (function () {
         var t = document.createElement('script');
         t.type = 'text/javascript';
         t.async = true;
-        t.src = document.location.protocol + "//static.www.turnto.com/sitedata/2qtC5sJ5gVYcfvesite/v4_2/" + TurnToItemSku + "/d/itemjs";
+        t.src = document.location.protocol + "//static.www.turnto.com/sitedata/" + turnToConfig.siteKey + "/v4_2/" + TurnToItemSku + "/d/itemjs";
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(t, s);
-    })
-    ();
+    })();
 
-    function getSKU() {
-        var val = window.location.href,
-                id = val.substr(val.indexOf("/p/") + 3);
-
-        return id.split("?")[0];
-    }
+    (function () {
+        var t = document.createElement('script');
+        t.type = 'text/javascript';
+        t.async = true;
+        t.src = document.location.protocol + "//static.www.turnto.com/traServer4_2/chatterjs/" + turnToConfig.siteKey + "/turnto-chatter.js";
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(t, s);
+    })();
 
     function customItemInputTeaserFunc(clazz, data) {
         var clazzNam = clazz || "TurnToItemInputTeaser";

@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="product-classifications">
+	<div id="TurnToChatterContent"></div>
 	${qaContent}
 	<%--<c:if test="${not empty product.classifications}">
 		<c:forEach items="${product.classifications}" var="classification">
