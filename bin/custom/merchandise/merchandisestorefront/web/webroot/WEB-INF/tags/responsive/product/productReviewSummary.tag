@@ -63,6 +63,7 @@
                 postPurchaseFlow: true,
                 setTeaserCookieOnView: true
             },
+            TurnToChatterSku = "${product.code}",
             TurnToItemSku = "${product.code}";
 
     (function () {

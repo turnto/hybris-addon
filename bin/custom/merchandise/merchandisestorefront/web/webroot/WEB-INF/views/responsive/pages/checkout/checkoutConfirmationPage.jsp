@@ -83,10 +83,10 @@
     $.each($('.product'), function (i, item) {
         TurnToFeed.addFeedLineItem({
             title: $(item).data('name'),
-            url: 'https://turnto.zaelab.com:9001/store' + $(item).data('url'),
+            url: $(item).data('url'),
             sku: $(item).data('id'),
             price: $(item).data('price'),
-            itemImageUrl: 'https://turnto.zaelab.com:9001' + $(item).data('img')
+            itemImageUrl: $(item).data('img')
         });
     });
 
