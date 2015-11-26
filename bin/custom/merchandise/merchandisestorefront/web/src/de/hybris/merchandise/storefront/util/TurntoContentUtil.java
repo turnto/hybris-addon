@@ -3,7 +3,7 @@ package de.hybris.merchandise.storefront.util;
 import de.hybris.platform.commercefacades.product.data.ProductData;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
@@ -27,7 +27,6 @@ public class TurntoContentUtil {
     private static final String PRODUCT_JSON_URL_CHUNCK = "/d/exportjson/5fU9iBPSPCoEQzqauth";
 
     public void renderContent(Model model, String id) {
-
         try {
             for (String appendix : APPENDIXES) {
                 URL url = new URL(SOURCE_URL + id + appendix);
@@ -38,6 +37,17 @@ public class TurntoContentUtil {
         } catch (IOException e) {
             LOG.error("Error while getting content from TurnTo service, cause: ", e);
         }
+    }
+
+    public void renderReviewContent(Model model, List<ProductData> productData) {
+        Map<String, String> rating = new HashMap<>();
+
+        createRatingAttribute(productData, rating);
+        model.addAttribute("rating", rating);
+    }
+
+    public String getAverageRatingForProduct(String id) {
+        return getAverageRatingById(id);
     }
 
     private StringBuilder getResponse(URL url) throws IOException {
@@ -57,52 +67,40 @@ public class TurntoContentUtil {
         return response;
     }
 
-    public void renderReviewContent(Model model, List<ProductData> productData) {
-        try {
-            Map<String, String> rating = new HashMap<>();
-
-            createRatingAttribute(productData, rating);
-            model.addAttribute("rating", rating);
-        } catch (IOException e) {
-            LOG.error("Error while getting reviews from TurnTo service, cause: ", e);
-        }
-    }
-
-    public String renderAverageRatingForItem(String id) throws IOException {
-        return String.valueOf(getAverageRatingForItem(id));
-    }
-
-    private void createRatingAttribute(List<ProductData> productData, Map<String, String> rating) throws IOException {
+    private void createRatingAttribute(List<ProductData> productData, Map<String, String> rating) {
         for (ProductData pd : productData) {
             String id = pd.getCode();
-            int averageRating = getAverageRatingForItem(id);
+            String averageRating = getAverageRatingById(id);
 
-            rating.put(id, String.valueOf(averageRating));
+            rating.put(id, averageRating);
         }
     }
 
-    private int getAverageRatingForItem(String id) throws IOException {
-        int averageRating = 0;
-        URL url = new URL(PRODUCT_JSON_URL + id + PRODUCT_JSON_URL_CHUNCK);
-        StringBuilder response = getResponse(url);
+    private String getAverageRatingById(String id) {
+        String averageRating = "";
+        try {
+            URL url = new URL(PRODUCT_JSON_URL + id + PRODUCT_JSON_URL_CHUNCK);
+            StringBuilder response = getResponse(url);
 
-        if (StringUtils.isNotBlank(response.toString())) averageRating = getOverallRating(response);
+            if (StringUtils.isNotBlank(response.toString())) averageRating = parseAverageRating(response);
+        } catch (IOException e) {
+            LOG.error("Error while getting average rating from TurnTo service, cause: ", e);
+        }
         return averageRating;
     }
 
-    private int getOverallRating(StringBuilder response) {
-        final JSONObject obj = new JSONObject(response.toString());
-        final JSONArray reviews = obj.getJSONArray("reviews");
-        int count = 0;
-        int sum = 0;
-        for (int i = 0; i < reviews.length(); ++i) {
-            final JSONObject rating = reviews.getJSONObject(i);
-            count++;
-            sum += rating.getInt("rating");
-        }
+    private String parseAverageRating(StringBuilder response) {
+        try {
+            final JSONObject obj = new JSONObject(response.toString());
+            final JSONObject reviews = (JSONObject) obj.getJSONArray("reviews").get(0);
+            final JSONObject item = (JSONObject) reviews.get("item");
 
-        if (count == 0) return 0;
-        else return sum / count;
+            return String.valueOf(item.get("averageRating"));
+
+        } catch (JSONException e) {
+            LOG.info("There are no reviews for the item yet");
+            return "0";
+        }
     }
 
     private void setModelAttribute(Model model, String appendix, StringBuilder response) {

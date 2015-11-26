@@ -52,7 +52,7 @@ ACC.autocomplete = {
                     }
 
                     var data = $.parseJSON($.ajax({
-                        url: window.location.href + 'rest/' + item.code,
+                        url: 'https://' + location.host + '/store/hybris/en/rest/' + item.code,
                         dataType: "json",
                         async: false
                     }).responseText);

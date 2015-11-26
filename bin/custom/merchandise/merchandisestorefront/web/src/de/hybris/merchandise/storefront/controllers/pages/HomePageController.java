@@ -74,7 +74,7 @@ public class HomePageController extends AbstractPageController {
 
     @RequestMapping(value = "/rest/{id}",method = RequestMethod.GET)
     public void getReviewContent(@PathVariable("id") String id, HttpServletResponse response) throws IOException {
-        response.getWriter().print(turntoContentUtil.renderAverageRatingForItem(id));
+        response.getWriter().print(turntoContentUtil.getAverageRatingForProduct(id));
     }
 
 }

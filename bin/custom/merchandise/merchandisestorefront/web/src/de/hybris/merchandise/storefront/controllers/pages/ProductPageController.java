@@ -119,10 +119,13 @@ public class ProductPageController extends AbstractPageController {
         final String metaDescription = MetaSanitizerUtil.sanitizeDescription(productModel.getDescription());
         setUpMetaData(model, metaKeywords, metaDescription);
 
+        setAverageRating(productCode, productModel);
+
         turntoContentUtil.renderContent(model, productCode);
 
         return getViewForPage(model);
     }
+
 
     @RequestMapping(value = PRODUCT_CODE_PATH_VARIABLE_PATTERN + "/zoomImages", method = RequestMethod.GET)
     public String showZoomImages(@PathVariable("productCode") final String productCode,
@@ -257,6 +260,18 @@ public class ProductPageController extends AbstractPageController {
     public String handleUnknownIdentifierException(final UnknownIdentifierException exception, final HttpServletRequest request) {
         request.setAttribute("message", exception.getMessage());
         return FORWARD_PREFIX + "/404";
+    }
+
+    private void setAverageRating(@PathVariable("productCode") String productCode, ProductModel productModel) {
+        final ProductData productData = productFacade.getProductForOptions(productModel,
+                Arrays.asList(ProductOption.BASIC, ProductOption.REVIEW));
+        final double averageTTRating = Double.parseDouble(turntoContentUtil.getAverageRatingForProduct(productCode));
+        final Object rating = productData.getAverageRating();
+        final double averageRatingFromDB = rating != null ? (double) rating : averageTTRating;
+
+        if (averageTTRating != averageRatingFromDB)
+            productData.setAverageRating(averageTTRating);
+        //todo add update rating for stage
     }
 
     protected void updatePageTitle(final ProductModel productModel, final Model model) {
