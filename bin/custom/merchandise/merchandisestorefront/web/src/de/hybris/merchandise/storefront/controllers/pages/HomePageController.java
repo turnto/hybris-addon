@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -62,8 +63,9 @@ public class HomePageController extends AbstractPageController {
     }
 
     @RequestMapping(value = "/sendCatalogFeed", method = RequestMethod.GET)
-    public void sendProducts(HttpServletResponse response) throws IOException {
-        response.getWriter().print(feedsProcessor.sendCatalogFeed());
+    public void sendProducts(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String homeUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        response.getWriter().print(feedsProcessor.sendCatalogFeed(homeUrl));
     }
 
     protected void updatePageTitle(final Model model, final AbstractPageModel cmsPage) {
