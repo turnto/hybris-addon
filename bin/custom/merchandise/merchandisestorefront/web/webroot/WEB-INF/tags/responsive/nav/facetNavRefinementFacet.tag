@@ -5,7 +5,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags" %>
 
-
 <c:if test="${not empty facetData.values}">
 <ycommerce:testId code="facetNav_title_${facetData.name}">
 	<div class="facet js-facet">
@@ -86,8 +85,7 @@
 					</li>
 				</c:forEach>
 			</ul>
-
-			<c:if test="${not empty facetData.topValues}">
+			<c:if test="${not empty facetData.topValues}">/
 				<span class="more js-more-facet-values">
 					<a href="#" class="js-more-facet-values-link" ><spring:theme code="search.nav.facetShowMore_${facetData.code}" /></a>
 				</span>

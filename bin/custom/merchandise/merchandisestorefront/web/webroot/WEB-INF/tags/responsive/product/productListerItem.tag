@@ -7,7 +7,7 @@
 <%@ taglib prefix="action" tagdir="/WEB-INF/tags/responsive/action" %>
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags" %>
 
-
+<div> <img src="${commonResourcePath}/images/${rating[product.code]}.png"></div>
 <spring:theme code="text.addToCart" var="addToCartText"/>
 <c:url value="${product.url}" var="productUrl"/>
 

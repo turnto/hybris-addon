@@ -89,6 +89,9 @@ public class SearchPageController extends AbstractSearchPageController {
 
             final ProductSearchPageData<SearchStateData, ProductData> searchPageData = productSearchFacade.textSearch(searchState,
                     pageableData);
+
+            turntoContentUtil.renderReviewContent(model, searchPageData.getResults());
+
             if (searchPageData == null) {
                 storeCmsPageInModel(model, getContentPageForLabelOrId(NO_RESULTS_CMS_PAGE_ID));
             } else if (searchPageData.getKeywordRedirectUrl() != null) {
@@ -100,7 +103,6 @@ public class SearchPageController extends AbstractSearchPageController {
                 updatePageTitle(searchText, model);
             } else {
                 storeContinueUrl(request);
-                turntoContentUtil.renderReviewContent(model, searchPageData.getResults());
                 populateModel(model, searchPageData, ShowMode.Page);
                 storeCmsPageInModel(model, getContentPageForLabelOrId(SEARCH_CMS_PAGE_ID));
                 updatePageTitle(searchText, model);
@@ -141,6 +143,8 @@ public class SearchPageController extends AbstractSearchPageController {
                                final Model model) throws CMSItemNotFoundException {
         final ProductSearchPageData<SearchStateData, ProductData> searchPageData = performSearch(searchQuery, page, showMode,
                 sortCode, getSearchPageSize());
+
+        turntoContentUtil.renderReviewContent(model, searchPageData.getResults());
 
         populateModel(model, searchPageData, showMode);
         model.addAttribute("userLocation", customerLocationService.getUserLocation());
