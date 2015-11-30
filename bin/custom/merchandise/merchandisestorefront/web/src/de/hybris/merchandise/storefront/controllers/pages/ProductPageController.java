@@ -34,8 +34,15 @@ import de.hybris.platform.commercefacades.product.ProductOption;
 import de.hybris.platform.commercefacades.product.data.*;
 import de.hybris.platform.commerceservices.url.UrlResolver;
 import de.hybris.platform.core.model.product.ProductModel;
+import de.hybris.platform.core.model.user.UserModel;
+import de.hybris.platform.customerreview.CustomerReviewService;
+import de.hybris.platform.customerreview.enums.CustomerReviewApprovalType;
+import de.hybris.platform.customerreview.model.CustomerReviewModel;
 import de.hybris.platform.product.ProductService;
 import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
+import de.hybris.platform.servicelayer.i18n.CommonI18NService;
+import de.hybris.platform.servicelayer.model.ModelService;
+import de.hybris.platform.servicelayer.user.UserService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -74,6 +81,18 @@ public class ProductPageController extends AbstractPageController {
 
     @Autowired
     private TurntoContentUtil turntoContentUtil;
+
+    @Autowired
+    private ModelService modelService;
+
+    @Autowired
+    private CustomerReviewService customerReviewService;
+
+    @Autowired
+    private CommonI18NService commonI18NService;
+
+    @Autowired
+    private UserService userService;
 
     @Resource(name = "productModelUrlResolver")
     private UrlResolver<ProductModel> productModelUrlResolver;
@@ -267,12 +286,39 @@ public class ProductPageController extends AbstractPageController {
                 Arrays.asList(ProductOption.BASIC, ProductOption.REVIEW));
         final double averageTTRating = Double.parseDouble(turntoContentUtil.getAverageRatingForProduct(productCode));
         final Object rating = productData.getAverageRating();
-        final double averageRatingFromDB = rating != null ? (double) rating : averageTTRating;
+        final double averageRatingFromDB = rating != null ? (double) rating : 0;
 
         if (averageTTRating != averageRatingFromDB)
-            productData.setAverageRating(averageTTRating);
-        //todo add update rating for stage
+            updateReview(productCode, averageTTRating);
     }
+
+    private void updateReview(String productCode, double averageTTRating) {
+        CustomerReviewModel reviewModel = new CustomerReviewModel();
+        reviewModel.setRating(averageTTRating);
+        reviewModel.setApprovalStatus(CustomerReviewApprovalType.APPROVED);
+
+        final ProductModel productModel = productService.getProductForCode(productCode);
+        final UserModel userModel = userService.getCurrentUser();
+
+        final CustomerReviewModel customerReviewModel = customerReviewService.createCustomerReview(
+                averageTTRating,
+                "test",
+                "test",
+                userModel,
+                productModel);
+
+        customerReviewModel.setLanguage(commonI18NService.getCurrentLanguage());
+        customerReviewModel.setAlias("test");
+        customerReviewModel.setApprovalStatus(CustomerReviewApprovalType.APPROVED);
+
+        List<CustomerReviewModel> reviews = customerReviewService.getAllReviews(productModel);
+
+        if (!reviews.isEmpty())
+            modelService.removeAll(reviews);
+
+        modelService.save(customerReviewModel);
+    }
+
 
     protected void updatePageTitle(final ProductModel productModel, final Model model) {
         storeContentPageTitleInModel(model, getPageTitleResolver().resolveProductPageTitle(productModel));

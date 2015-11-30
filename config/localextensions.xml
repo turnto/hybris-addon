@@ -91,6 +91,7 @@
         <!-- custom TurnTo widgets -->
         <extension name="faq" />
         <extension name="turntobackoffice"/>
+        <extension name="merchandisecommerceservices"/>
 
     </extensions>
 </hybrisconfig>

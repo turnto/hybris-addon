@@ -19,7 +19,6 @@
                     numberPagesShown="${numberPagesShown}"/>
     <ul class="product-listing product-list">
         <c:forEach items="${searchPageData.results}" var="product">
-            <div> <img src="${commonResourcePath}/images/${rating[product.code]}.png"></div>
             <product:productListerItem product="${product}"/>
         </c:forEach>
     </ul>
