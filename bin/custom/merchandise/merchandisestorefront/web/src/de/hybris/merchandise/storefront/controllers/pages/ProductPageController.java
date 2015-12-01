@@ -289,7 +289,7 @@ public class ProductPageController extends AbstractPageController {
         final double averageRatingFromDB = rating != null ? (double) rating : 0;
 
         if (averageTTRating != averageRatingFromDB)
-            updateReview(productCode, averageTTRating);
+            updateReview(productCode, Math.round(averageTTRating));
     }
 
     private void updateReview(String productCode, double averageTTRating) {

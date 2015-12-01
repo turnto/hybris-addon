@@ -57,7 +57,7 @@ ACC.autocomplete = {
                         async: false
                     }).responseText);
 
-                    renderHtml += "<div class='rating'><img src='" + ACC.config.commonResourcePath + "/images/" + data + ".png'" + "/></div>";
+                    renderHtml += "<div class='rating'><img src='" + ACC.config.commonResourcePath + "/images/" + Math.round(data) + ".png'" + "/></div>";
                     renderHtml += "<div class='name'>" + item.value + "</div>";
                     renderHtml += "<div class='price'>" + item.price + "</div>";
                     renderHtml += "</a>";

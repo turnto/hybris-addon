@@ -43,7 +43,7 @@
     </div>
     <br>
 
-    <div id="TTcommentCapture"></div>
+    <div id="TT3commentCapture"></div>
     <div>
         <%--@elvariable id="allItems" type="java.util.List<de.hybris.platform.commercefacades.order.data.OrderEntryData>"--%>
         <c:forEach items="${allItems}" var="item">
@@ -79,7 +79,7 @@
         embedCommentCapture: true
     };
 
-    TurnToFeed.addFeedPurchaseOrder({orderId: "${orderData.code}", email: "${user.displayUid}", firstName: "${user.firstName}", lastName: "${user.lastName}"});
+    TurnToFeed.addFeedPurchaseOrder({orderId: "${orderData.code}", email: "${email}", firstName: "${user.firstName}", lastName: "${user.lastName}"});
     $.each($('.product'), function (i, item) {
         TurnToFeed.addFeedLineItem({
             title: $(item).data('name'),
