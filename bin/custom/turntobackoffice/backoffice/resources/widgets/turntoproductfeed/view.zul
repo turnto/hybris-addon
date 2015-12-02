@@ -1,14 +1,56 @@
 <widget xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="http://www.zkoss.org/2005/zul">
-    <style src="${wr}/default.css"/>
+    <style src="${wr}/turntoproductfeed.css"/>
+    <zscript>
+        <![CDATA[
+        String[] modeArray= {"Static", "Dynamic"};
+        ListModelList modesForQA = new ListModelList(modeArray);
+        ListModelList modesForRating = new ListModelList(modeArray);
+    ]]></zscript>
 
-    <div>
-        <hlayout>
-            <button id="sendFeedBtn" label="Send products!"/>
-        </hlayout>
-        <hlayout>
-            <label>Turn on/off TurnTo</label>
-            <checkbox id="turnToSwitcher"/>
-        </hlayout>
+    <div sclass="main-container">
+        <vlayout sclass="content-vlayout">
+            <button id="sendFeedBtn" label="Send products!" sclass="button-custom"/>
+        </vlayout>
+
+        <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label>Q&amp;A</label>
+                <checkbox id="turnQA"/>
+            </hlayout>
+
+            <selectbox model="${modesForQA}" id="selectQAMode">
+                <template name="model">
+                    ${each}
+                </template>
+            </selectbox>
+
+        </vlayout>
+        <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label>Rating &amp; Reviews</label>
+                <checkbox id="turnRating"/>
+            </hlayout>
+
+            <selectbox model="${modesForRating}" id="selectRatingMode" >
+                <template name="model">
+                    ${each}
+                </template>
+            </selectbox>
+        </vlayout>
+        <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label>Order Reporting</label>
+                <checkbox id="turnOrderReporting"/>
+            </hlayout>
+        </vlayout>
+        <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label>Checkout Chatter</label>
+                <checkbox id="turnChatter"/>
+            </hlayout>
+        </vlayout>
+
     </div>
+
 </widget>
