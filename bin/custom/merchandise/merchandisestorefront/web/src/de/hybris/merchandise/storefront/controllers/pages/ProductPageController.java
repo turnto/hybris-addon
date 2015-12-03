@@ -13,6 +13,7 @@
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
+import com.hybris.turntobackoffice.model.StateTurnFlagModel;
 import de.hybris.merchandise.storefront.controllers.ControllerConstants;
 import de.hybris.merchandise.storefront.util.TurntoContentUtil;
 import de.hybris.platform.acceleratorservices.controllers.page.PageType;
@@ -42,6 +43,8 @@ import de.hybris.platform.product.ProductService;
 import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
 import de.hybris.platform.servicelayer.i18n.CommonI18NService;
 import de.hybris.platform.servicelayer.model.ModelService;
+import de.hybris.platform.servicelayer.search.FlexibleSearchService;
+import de.hybris.platform.servicelayer.search.SearchResult;
 import de.hybris.platform.servicelayer.user.UserService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -115,6 +118,9 @@ public class ProductPageController extends AbstractPageController {
     @Resource(name = "reviewValidator")
     private ReviewValidator reviewValidator;
 
+    @Autowired
+    private FlexibleSearchService flexibleSearchService;
+
     @RequestMapping(value = PRODUCT_CODE_PATH_VARIABLE_PATTERN, method = RequestMethod.GET)
     public String productDetail(@PathVariable("productCode") final String productCode, final Model model,
                                 final HttpServletRequest request, final HttpServletResponse response) throws CMSItemNotFoundException,
@@ -139,6 +145,7 @@ public class ProductPageController extends AbstractPageController {
         setUpMetaData(model, metaKeywords, metaDescription);
 
         setAverageRating(productCode, productModel);
+        setTurnFlags(model);
 
         turntoContentUtil.renderContent(model, productCode);
 
@@ -402,5 +409,23 @@ public class ProductPageController extends AbstractPageController {
         return cmsPageService.getPageForProduct(product);
     }
 
+    private void setTurnFlags(Model model) {
+        Map<String, StateTurnFlagModel> flagModelMap = new HashMap<>();
+
+        final String queryString = "SELECT {" + StateTurnFlagModel.PK + "} " +
+                "FROM {" + StateTurnFlagModel._TYPECODE + "} ";
+
+        final SearchResult<StateTurnFlagModel> searchResult = flexibleSearchService.search(queryString);
+
+        if (searchResult.getCount() > 0) {
+
+            for (StateTurnFlagModel turnFlagModel : searchResult.getResult()) {
+                flagModelMap.put(turnFlagModel.getCheckboxName(), turnFlagModel);
+            }
+
+            model.addAttribute("flags", flagModelMap);
+        }
+
+    }
 
 }

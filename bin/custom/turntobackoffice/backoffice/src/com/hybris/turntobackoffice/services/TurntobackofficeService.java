@@ -1,16 +1,21 @@
 package com.hybris.turntobackoffice.services;
 
 
+import com.hybris.turntobackoffice.enums.SetupType;
+import com.hybris.turntobackoffice.jalo.StateTurnFlag;
 import com.hybris.turntobackoffice.model.FeedProduct;
+import com.hybris.turntobackoffice.model.StateTurnFlagModel;
 import de.hybris.platform.catalog.CatalogVersionService;
 import de.hybris.platform.category.model.CategoryModel;
 import de.hybris.platform.core.model.product.ProductModel;
 import de.hybris.platform.europe1.model.PriceRowModel;
+import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.search.SearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -27,8 +32,9 @@ public class TurntobackofficeService {
     @WireVariable
     private CatalogVersionService catalogVersionService;
 
-    @WireVariable
     private FlexibleSearchService flexibleSearchService;
+
+    private ModelService modelService;
 
     private Logger _logger = LoggerFactory.getLogger(getClass());
 
@@ -84,6 +90,20 @@ public class TurntobackofficeService {
         return response.toString();
     }
 
+    public void saveStateTurnFlag(String checkboxName, boolean flag, String setupType) {
+        StateTurnFlagModel model = new StateTurnFlagModel();
+        model.setCheckboxName(checkboxName);
+        model.setFlag(flag);
+        model.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
+        getModelService().refresh(model);
+
+    }
+
+    public void saveStateTurnFlag(StateTurnFlagModel turnFlagModel) {
+        getModelService().save(turnFlagModel);
+
+    }
+
 //    private HttpResponse executeRequest(File file) {
 //        HttpEntity entity = MultipartEntityBuilder
 //                .create()
@@ -105,6 +125,56 @@ public class TurntobackofficeService {
 //
 //        return response;
 //    }
+
+
+    public StateTurnFlagModel loadByCheckboxId(String checkboxId) {
+        StateTurnFlagModel model = new StateTurnFlagModel();
+
+        final String queryString = "SELECT {" + StateTurnFlag.PK + "} " +
+                "FROM {" + StateTurnFlagModel._TYPECODE + "} " +
+                "WHERE {" + StateTurnFlagModel.CHECKBOXNAME + "} = ?checkboxId";
+
+        final FlexibleSearchQuery query = new FlexibleSearchQuery(queryString);
+        query.addQueryParameter("checkboxId", checkboxId);
+
+        final SearchResult<StateTurnFlagModel> searchResult = flexibleSearchService.search(query);
+
+        if (searchResult.getCount() > 0) {
+            model = searchResult.getResult().iterator().next();
+        } else {
+            modelService.initDefaults(model);
+            model.setCheckboxName(checkboxId);
+        }
+
+        return model;
+
+    }
+
+    public CatalogVersionService getCatalogVersionService() {
+        return catalogVersionService;
+    }
+
+    public void setCatalogVersionService(CatalogVersionService catalogVersionService) {
+        this.catalogVersionService = catalogVersionService;
+    }
+
+    public FlexibleSearchService getFlexibleSearchService() {
+        return flexibleSearchService;
+    }
+
+    @Required
+    public void setFlexibleSearchService(FlexibleSearchService flexibleSearchService) {
+        this.flexibleSearchService = flexibleSearchService;
+    }
+
+    public ModelService getModelService() {
+        return modelService;
+    }
+
+    @Required
+    public void setModelService(ModelService modelService) {
+        this.modelService = modelService;
+    }
 
     private File writeProductsToFile(List<FeedProduct> products) {
         File tsv = null;
@@ -201,4 +271,6 @@ public class TurntobackofficeService {
 
         return HYBRIS_HOME_URL + HYBRIS_STORE_PATH + "/Hybris-Catalogue/" + category + subcategory + "/" + model.getName().trim().replace(' ', '-') + "/p/" + model.getCode() + "?site=hybris";
     }
+
+
 }
