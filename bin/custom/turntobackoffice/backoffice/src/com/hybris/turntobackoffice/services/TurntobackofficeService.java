@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TurntobackofficeService {
-    public String getHelloWorld() {
-        return "Success!";
-    }
 
     @WireVariable
     private CatalogVersionService catalogVersionService;
@@ -48,6 +45,12 @@ public class TurntobackofficeService {
     private static final String FILE_TYPE = ".tsv";
 
     private final static String TURNTO_SERVICE_URL = "https://www.turnto.com/feedUpload/postfile";
+
+    public String createMessage(Boolean flag) {
+        String trigger = "off";
+        if (flag) trigger = "on";
+        return "Module is turned " + trigger;
+    }
 
     public String sendCatalogFeed() throws Exception {
 
@@ -78,17 +81,17 @@ public class TurntobackofficeService {
         //print result
         System.out.println(response.toString());
 
-//        HttpGet get = new HttpGet(URL);
-//        try {
-//            HttpClientBuilder.create().build().execute(get);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+      /*  HttpPost get = new HttpPost("URL");
+        try {
+            HttpClientBuilder.create().build().execute(get);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
 
-//        List<FeedProduct> products = createProductFeed();
-//        File file = writeProductsToFile(products);
+        List<FeedProduct> products = createProductFeed();
+        File file = writeProductsToFile(products);
         return response.toString();
-    }
+    }/**/
 
     public void saveStateTurnFlag(String checkboxName, boolean flag, String setupType) {
         StateTurnFlagModel model = new StateTurnFlagModel();
@@ -271,6 +274,4 @@ public class TurntobackofficeService {
 
         return HYBRIS_HOME_URL + HYBRIS_STORE_PATH + "/Hybris-Catalogue/" + category + subcategory + "/" + model.getName().trim().replace(' ', '-') + "/p/" + model.getCode() + "?site=hybris";
     }
-
-
 }

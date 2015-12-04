@@ -26,28 +26,23 @@ import org.zkoss.zul.Selectbox;
 
 
 public class TurntobackofficeController extends DefaultWidgetController {
-    private static final long serialVersionUID = 1L;
 
-    private Checkbox checkbox;
-
-    private Checkbox turnQA;
-    private Checkbox turnRating;
-
-
-    private Selectbox selectQAMode;
-    private Selectbox selectRatingMode;
-
-    private StateTurnFlagModel turnQAmodel;
+    private Checkbox checkboxQA;
+    private Checkbox checkboxRating;
+    private Selectbox selectboxQA;
+    private Selectbox selectboxRating;
+    private StateTurnFlagModel turntoQAModel;
+    private StateTurnFlagModel turntoRatingModel;
 
     @WireVariable
     private TurntobackofficeService turntobackofficeService;
 
-
     @Override
     public void initialize(Component comp) {
         super.initialize(comp);
-        initTurnQA();
-        selectRatingMode.setDisabled(true);
+        init(checkboxQA, selectboxQA);
+        init(checkboxRating, selectboxRating);
+        selectboxRating.setDisabled(true);
     }
 
     @ViewEvent(componentID = "sendFeedBtn", eventName = Events.ON_CLICK)
@@ -55,68 +50,72 @@ public class TurntobackofficeController extends DefaultWidgetController {
         Messagebox.show(turntobackofficeService.sendCatalogFeed());
     }
 
-    @ViewEvent(componentID = "turnQA", eventName = Events.ON_CHECK)
+    @ViewEvent(componentID = "checkboxQA", eventName = Events.ON_CHECK)
     public void turnQA() throws InterruptedException {
-        boolean turnFlag = turnQA.isChecked();
-        String setupType = getSetupType(selectQAMode);
-
-        selectQAMode.setDisabled(!turnFlag);
-
-        turnQAmodel.setFlag(turnFlag);
-
-        if (turnFlag) {
-            turnQAmodel.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
-        }
-
-        turntobackofficeService.saveStateTurnFlag(turnQAmodel);
-        Messagebox.show(turntobackofficeService.getHelloWorld());
+        updateTurntoModuleStatus(checkboxQA, selectboxQA, turntoQAModel);
     }
 
-    @ViewEvent(componentID = "turnRating", eventName = Events.ON_CHECK)
+    @ViewEvent(componentID = "checkboxRating", eventName = Events.ON_CHECK)
     public void turnRating() throws InterruptedException {
-        selectRatingMode.setDisabled(!turnRating.isChecked());
-        Messagebox.show(turntobackofficeService.getHelloWorld());
+        updateTurntoModuleStatus(checkboxRating, selectboxRating, turntoRatingModel);
     }
 
-    @ViewEvent(componentID = "turnOrderReporting", eventName = Events.ON_CHECK)
+    @ViewEvent(componentID = "turntoOrderReporting", eventName = Events.ON_CHECK)
     public void turnOrderReporting() throws InterruptedException {
-        Messagebox.show(turntobackofficeService.getHelloWorld());
+        Messagebox.show(turntobackofficeService.createMessage(true));
     }
 
-    @ViewEvent(componentID = "turnCheckoutChatter", eventName = Events.ON_CHECK)
+    @ViewEvent(componentID = "turntoCheckoutChatter", eventName = Events.ON_CHECK)
     public void turnCheckoutChatter() throws InterruptedException {
-        Messagebox.show(turntobackofficeService.getHelloWorld());
+        Messagebox.show(turntobackofficeService.createMessage(true));
     }
 
-    @ViewEvent(componentID = "selectQAMode", eventName = Events.ON_SELECT)
+    @ViewEvent(componentID = "selectboxQA", eventName = Events.ON_SELECT)
     public void selectQAMode() throws InterruptedException {
-        boolean turnFlag = turnQA.isChecked();
+        boolean turnFlag = checkboxQA.isChecked();
 
-        String setupType = getSetupType(selectQAMode);
+        String setupType = getSetupType(selectboxQA);
 
         if (turnFlag) {
-            turnQAmodel.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
-            turntobackofficeService.saveStateTurnFlag(turnQAmodel);
+            turntoQAModel.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
+            turntobackofficeService.saveStateTurnFlag(turntoQAModel);
         }
-
-        Messagebox.show(turntobackofficeService.getHelloWorld());
     }
 
-    @ViewEvent(componentID = "selectRatingMode", eventName = Events.ON_SELECT)
+    @ViewEvent(componentID = "selectboxRating", eventName = Events.ON_SELECT)
     public void selectRatingMode() throws InterruptedException {
-        Messagebox.show(turntobackofficeService.getHelloWorld());
+        Messagebox.show(turntobackofficeService.createMessage(true));
     }
 
-    private void initTurnQA() {
-        turnQAmodel = turntobackofficeService.loadByCheckboxId(turnQA.getId());
-        turnQA.setChecked(turnQAmodel.getFlag());
-        selectQAMode.setDisabled(!turnQA.isChecked());
-        ((ListModelList)selectQAMode.getModel()).addSelection(turnQAmodel.getSetupType().getCode().toLowerCase());
-
+    private void init(Checkbox checkbox, Selectbox selectbox) {
+        final String id = checkbox.getId();
+        StateTurnFlagModel model = turntobackofficeService.loadByCheckboxId(id);
+        setTurntoModel(id, model);
+        checkbox.setChecked(model.getFlag());
+        selectbox.setDisabled(!checkbox.isChecked());
+        ((ListModelList) selectbox.getModel()).add(model.getSetupType().getCode().toLowerCase());
     }
 
-    private String getSetupType(Selectbox selectbox){
+    private void setTurntoModel(String id, StateTurnFlagModel model) {
+        if (id.equals("checkboxQA")) turntoQAModel = model;
+        else turntoRatingModel = model;
+    }
+
+    private void updateTurntoModuleStatus(Checkbox checkbox, Selectbox selectbox, StateTurnFlagModel model) throws InterruptedException {
+        final boolean isChecked = checkbox.isChecked();
+        final String setupType = getSetupType(selectboxRating);
+
+        selectbox.setDisabled(!isChecked);
+        model.setFlag(isChecked);
+
+        if (isChecked) model.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
+
+        turntobackofficeService.saveStateTurnFlag(model);
+        Messagebox.show(turntobackofficeService.createMessage(isChecked));
+    }
+
+    private String getSetupType(Selectbox selectbox) {
         int index = selectbox.getSelectedIndex();
-        return  (String) selectbox.getModel().getElementAt(index);
+        return (String) selectbox.getModel().getElementAt(index);
     }
 }

@@ -11,7 +11,6 @@
 		<div class="name">${product.name} <span class="sku">ID ${product.code}</span></div>
 	</ycommerce:testId>
 	<product:productReviewSummary product="${product}" showLinks="true"/>
-	${flags.get("turnQA").getFlag()}
 </div>
 <div class="row">
 	<div class="col-md-6 col-lg-4">

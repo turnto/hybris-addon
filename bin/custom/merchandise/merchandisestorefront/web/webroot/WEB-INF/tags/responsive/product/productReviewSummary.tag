@@ -5,6 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ attribute name="showLinks" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="starsClass" required="false" type="java.lang.String" %>
+<%@ attribute name="flags" required="false" type="java.util.Map" %>
 
 <%@ attribute name="product" required="true"
               type="de.hybris.platform.commercefacades.product.data.ProductData" %>
@@ -33,8 +34,12 @@
     </c:choose>--%>
     <table width="74%">
         <tr>
-            <th><span class="TurnToReviewsTeaser"></span></th>
-            <th><span class="TurnToItemInputTeaser"></span></th>
+            <c:if test="${flags.get('turnRating').getFlag() eq 'true'}">
+                <th><span class="TurnToReviewsTeaser"></span></th>
+            </c:if>
+            <c:if test="${flags.get('turnQA').getFlag() eq 'true'}">
+                <th><span class="TurnToItemInputTeaser"></span></th>
+            </c:if>
         </tr>
     </table>
 </div>
@@ -47,9 +52,9 @@
                 itemInputTeaserFunc: customItemInputTeaserFunc,
                 reviewsTeaserFunc: customReviewsTeaser,
                 chatter: {
-                    columns:4,
-                    rowsInCollapsedView:2,
-                    rowsInExpandedView:5,
+                    columns: 4,
+                    rowsInCollapsedView: 2,
+                    rowsInExpandedView: 5,
                     title: "Why I Chose This:",
                     expandText: "Read all",
                     collapsedText: "Hide all",
@@ -57,7 +62,9 @@
                     minimumCommentCharacterCount: 1,
                     sortOrder: "most recent",
                     minimumCommentWordCount: 0,
-                    onFinish: function(){console.log('chatter loaded!')}
+                    onFinish: function () {
+                        console.log('chatter loaded!')
+                    }
                 },
                 embedCommentCapture: true,
                 postPurchaseFlow: true,
