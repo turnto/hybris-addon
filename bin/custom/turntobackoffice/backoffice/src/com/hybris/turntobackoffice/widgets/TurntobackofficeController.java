@@ -29,10 +29,16 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
     private Checkbox checkboxQA;
     private Checkbox checkboxRating;
+    private Checkbox turntoOrderReporting;
+    private Checkbox turntoCheckoutChatter;
+
     private Selectbox selectboxQA;
     private Selectbox selectboxRating;
+
     private StateTurnFlagModel turntoQAModel;
     private StateTurnFlagModel turntoRatingModel;
+    private StateTurnFlagModel turntoOrderReportingModel;
+    private StateTurnFlagModel turntoCheckoutChatterModel;
 
     @WireVariable
     private TurntobackofficeService turntobackofficeService;
@@ -42,7 +48,8 @@ public class TurntobackofficeController extends DefaultWidgetController {
         super.initialize(comp);
         init(checkboxQA, selectboxQA);
         init(checkboxRating, selectboxRating);
-        selectboxRating.setDisabled(true);
+        init(turntoOrderReporting, null);
+        init(turntoCheckoutChatter, null);
     }
 
     @ViewEvent(componentID = "sendFeedBtn", eventName = Events.ON_CLICK)
@@ -62,29 +69,23 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
     @ViewEvent(componentID = "turntoOrderReporting", eventName = Events.ON_CHECK)
     public void turnOrderReporting() throws InterruptedException {
-        Messagebox.show(turntobackofficeService.createMessage(true));
+        updateTurntoModuleStatus(turntoOrderReporting, null, turntoOrderReportingModel);
     }
 
     @ViewEvent(componentID = "turntoCheckoutChatter", eventName = Events.ON_CHECK)
     public void turnCheckoutChatter() throws InterruptedException {
-        Messagebox.show(turntobackofficeService.createMessage(true));
+        updateTurntoModuleStatus(turntoCheckoutChatter, null, turntoCheckoutChatterModel);
     }
 
     @ViewEvent(componentID = "selectboxQA", eventName = Events.ON_SELECT)
     public void selectQAMode() throws InterruptedException {
-        boolean turnFlag = checkboxQA.isChecked();
-
-        String setupType = getSetupType(selectboxQA);
-
-        if (turnFlag) {
-            turntoQAModel.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
-            turntobackofficeService.saveStateTurnFlag(turntoQAModel);
-        }
+        updateSetupType(checkboxQA, selectboxQA, turntoQAModel);
     }
 
     @ViewEvent(componentID = "selectboxRating", eventName = Events.ON_SELECT)
     public void selectRatingMode() throws InterruptedException {
-        Messagebox.show(turntobackofficeService.createMessage(true));
+        updateSetupType(checkboxRating, selectboxRating, turntoRatingModel);
+
     }
 
     private void init(Checkbox checkbox, Selectbox selectbox) {
@@ -92,26 +93,46 @@ public class TurntobackofficeController extends DefaultWidgetController {
         StateTurnFlagModel model = turntobackofficeService.loadByCheckboxId(id);
         setTurntoModel(id, model);
         checkbox.setChecked(model.getFlag());
-        selectbox.setDisabled(!checkbox.isChecked());
-        ((ListModelList) selectbox.getModel()).add(model.getSetupType().getCode().toLowerCase());
+
+        if (selectbox != null) {
+            selectbox.setDisabled(!checkbox.isChecked());
+            ((ListModelList) selectbox.getModel()).addSelection(model.getSetupType().getCode().toLowerCase());
+        }
+
     }
 
     private void setTurntoModel(String id, StateTurnFlagModel model) {
         if (id.equals("checkboxQA")) turntoQAModel = model;
-        else turntoRatingModel = model;
+        else if (id.equals("checkboxRating")) turntoRatingModel = model;
+        else if (id.equals("turntoOrderReporting")) turntoOrderReportingModel = model;
+        else turntoCheckoutChatterModel = model;
+
     }
 
     private void updateTurntoModuleStatus(Checkbox checkbox, Selectbox selectbox, StateTurnFlagModel model) throws InterruptedException {
         final boolean isChecked = checkbox.isChecked();
-        final String setupType = getSetupType(selectboxRating);
-
-        selectbox.setDisabled(!isChecked);
         model.setFlag(isChecked);
 
-        if (isChecked) model.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
+        if (selectbox != null) {
+            final String setupType = getSetupType(selectboxRating);
+            selectbox.setDisabled(!isChecked);
+            if (isChecked) model.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
+        }
 
         turntobackofficeService.saveStateTurnFlag(model);
         Messagebox.show(turntobackofficeService.createMessage(isChecked));
+    }
+
+    private void updateSetupType(Checkbox checkbox, Selectbox selectbox, StateTurnFlagModel model) throws InterruptedException {
+        boolean turnFlag = checkbox.isChecked();
+
+        String setupType = getSetupType(selectbox);
+
+        if (turnFlag) {
+            model.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
+            turntobackofficeService.saveStateTurnFlag(model);
+        }
+
     }
 
     private String getSetupType(Selectbox selectbox) {

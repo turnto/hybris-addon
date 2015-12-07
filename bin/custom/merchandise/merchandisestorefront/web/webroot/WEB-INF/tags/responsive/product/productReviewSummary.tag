@@ -34,10 +34,10 @@
     </c:choose>--%>
     <table width="74%">
         <tr>
-            <c:if test="${flags.get('turnRating').getFlag() eq 'true'}">
+            <c:if test="${flags.get('checkboxRating').getFlag() eq 'true'}">
                 <th><span class="TurnToReviewsTeaser"></span></th>
             </c:if>
-            <c:if test="${flags.get('turnQA').getFlag() eq 'true'}">
+            <c:if test="${flags.get('checkboxQA').getFlag() eq 'true'}">
                 <th><span class="TurnToItemInputTeaser"></span></th>
             </c:if>
         </tr>
@@ -47,8 +47,8 @@
 <script type="text/javascript">
     var turnToConfig = {
                 siteKey: "2qtC5sJ5gVYcfvesite",
-                setupType: "staticEmbed",
-                reviewsSetupType: "staticEmbed",
+                setupType: "${flags.get('checkboxQA').getSetupType().getCode()}Embed",
+                reviewsSetupType: "${flags.get('checkboxRating').getSetupType().getCode()}Embed",
                 itemInputTeaserFunc: customItemInputTeaserFunc,
                 reviewsTeaserFunc: customReviewsTeaser,
                 chatter: {
