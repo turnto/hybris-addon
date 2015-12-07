@@ -16,26 +16,23 @@ import de.hybris.platform.servicelayer.search.SearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
-import org.zkoss.zk.ui.select.annotation.WireVariable;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
+import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TurntobackofficeService {
 
-    @WireVariable
     private CatalogVersionService catalogVersionService;
-
     private FlexibleSearchService flexibleSearchService;
-
     private ModelService modelService;
 
     private Logger _logger = LoggerFactory.getLogger(getClass());
 
-    private static final String HYBRIS_HOME_URL = "http://turnto.zaelab.com:9001";
+    private static final String HYBRIS_HOME_URL = "https://turnto.zaelab.com:9002";
     private static final String HYBRIS_STORE_PATH = "/store";
     private static final String CATALOG_ID = "hybrisProductCatalog";
     private static final String CATALOG_VERSION = "Online";
@@ -54,44 +51,12 @@ public class TurntobackofficeService {
 
     public String sendCatalogFeed() throws Exception {
 
-        String url = "https://turnto.zaelab.com:9002/store/sendCatalogFeed";
-
-        URL obj = new URL(url);
-        HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("User-Agent", "Mozilla/5.0");
-        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        String params = "site=hybris";
-
-        con.setDoOutput(true);
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(params);
-        wr.flush();
-        wr.close();
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String inputLine;
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        //print result
-        System.out.println(response.toString());
-
-      /*  HttpPost get = new HttpPost("URL");
-        try {
-            HttpClientBuilder.create().build().execute(get);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
         List<FeedProduct> products = createProductFeed();
-        File file = writeProductsToFile(products);
-        return response.toString();
-    }/**/
+        File productsFile = writeProductsToFile(products);
+        return "test";
+        //return executeRequest(productsFile);
+
+    }
 
     public void saveStateTurnFlag(String checkboxName, boolean flag, String setupType) {
         StateTurnFlagModel model = new StateTurnFlagModel();
@@ -107,6 +72,67 @@ public class TurntobackofficeService {
 
     }
 
+    private String executeRequest(File file) throws IOException {
+
+        String charset = "UTF-8";
+        String boundary = Long.toHexString(System.currentTimeMillis());
+        String CRLF = "\r\n";
+
+        URLConnection connection = new URL(TURNTO_SERVICE_URL).openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+        connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+
+        try (
+                OutputStream output = connection.getOutputStream();
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, charset), true)
+        ) {
+            // Send normal param.
+            writer.append("--").append(boundary).append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"siteKey\"").append(CRLF);
+            writer.append("Content-Type: text/plain; charset=").append(charset).append(CRLF);
+            writer.append(CRLF).append(SITE_KEY).append(CRLF).flush();
+
+            writer.append("--").append(boundary).append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"authKey\"").append(CRLF);
+            writer.append("Content-Type: text/plain; charset=").append(charset).append(CRLF);
+            writer.append(CRLF).append(AUTH_KEY).append(CRLF).flush();
+
+            writer.append("--").append(boundary).append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"feedStyle\"").append(CRLF);
+            writer.append("Content-Type: text/plain; charset=").append(charset).append(CRLF);
+            writer.append(CRLF).append("tab-style.1").append(CRLF).flush();
+
+            // Send text file.
+            writer.append("--" + boundary).append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"").append(file.getName()).append("\"").append(CRLF);
+            writer.append("Content-Type: text/plain; charset=").append(charset).append(CRLF);
+            writer.append(CRLF).flush();
+            Files.copy(file.toPath(), output);
+            output.flush();
+            writer.append(CRLF).flush();
+
+            // End of multipart/form-data.
+            writer.append("--").append(boundary).append("--").append(CRLF).flush();
+        } catch (Exception e) {
+            _logger.error("Error with execution , cause: " + e.getMessage(), e);
+        }
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String inputLine;
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        //print result
+        System.out.println(response.toString());
+
+        return response.toString();
+    }
 //    private HttpResponse executeRequest(File file) {
 //        HttpEntity entity = MultipartEntityBuilder
 //                .create()
@@ -157,6 +183,7 @@ public class TurntobackofficeService {
         return catalogVersionService;
     }
 
+    @Required
     public void setCatalogVersionService(CatalogVersionService catalogVersionService) {
         this.catalogVersionService = catalogVersionService;
     }
@@ -272,6 +299,6 @@ public class TurntobackofficeService {
         else
             category = "Clothes/";
 
-        return HYBRIS_HOME_URL + HYBRIS_STORE_PATH + "/Hybris-Catalogue/" + category + subcategory + "/" + model.getName().trim().replace(' ', '-') + "/p/" + model.getCode() + "?site=hybris";
+        return HYBRIS_HOME_URL + HYBRIS_STORE_PATH + "/Hybris-Catalogue/" + category + subcategory + "/" + (model.getName() == null ? model.getName() : model.getName().trim().replace(' ', '-')) + "/p/" + model.getCode() + "?site=hybris";
     }
 }
