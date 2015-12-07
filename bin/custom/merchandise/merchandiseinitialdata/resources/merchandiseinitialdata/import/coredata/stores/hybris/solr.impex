@@ -97,7 +97,7 @@ INSERT_UPDATE SolrValueRangeSet;name[unique=true];qualifier;type;solrValueRanges
 ;$priceRangeGBP;GBP;double;rangeRefGBP1,rangeRefGBP2,rangeRefGBP3,rangeRefGBP4,rangeRefGBP5,rangeRefGBP6,rangeRefGBP7,rangeRefGBP8,rangeRefGBP9,rangeRefGBP10,rangeRefGBP11,rangeRefGBP12,rangeRefGBP13;;
 ;$priceRangeEUR;EUR;double;rangeRefEUR1,rangeRefEUR2,rangeRefEUR3,rangeRefEUR4,rangeRefEUR5,rangeRefEUR6,rangeRefEUR7,rangeRefEUR8,rangeRefEUR9,rangeRefEUR10,rangeRefEUR11,rangeRefEUR12,rangeRefEUR13;;
 ;$priceRangeUSD;USD;double;rangeRefUSD1,rangeRefUSD2,rangeRefUSD3,rangeRefUSD4,rangeRefUSD5,rangeRefUSD6,rangeRefUSD7,rangeRefUSD8,rangeRefUSD9,rangeRefUSD10,rangeRefUSD11,rangeRefUSD12,rangeRefUSD13;;
-;hybrisAvgRating;;double;avgRatingRef1,avgRatingRef2,avgRatingRef3,avgRatingRef4,avgRatingRef5;;
+;hybrisAvgRating;;double;avgRatingRef5,avgRatingRef4,avgRatingRef3,avgRatingRef2,avgRatingRef1;;
 
 # Non-facet properties
 INSERT_UPDATE SolrIndexedProperty;solrIndexedType(identifier)[unique=true];name[unique=true];type(code);sortableType(code);currency[default=false];localized[default=false];multiValue[default=false];useForSpellchecking[default=false];useForAutocomplete[default=false];fieldValueProvider;valueProviderParameter
@@ -155,7 +155,7 @@ INSERT_UPDATE SolrSortField;sort(indexedType(identifier),code)[unique=true];fiel
 ;$solrIndexedType:name-desc;name;false
 ;$solrIndexedType:price-asc;priceValue;true
 ;$solrIndexedType:price-desc;priceValue;false
-;$solrIndexedType:topRated;reviewAvgRatingRange;true
+;$solrIndexedType:topRated;reviewAvgRatingRange;false
 
 # Other facet properties
 INSERT_UPDATE SolrIndexedProperty;solrIndexedType(identifier)[unique=true];name[unique=true];type(code);sortableType(code);currency[default=false];localized[default=false];multiValue[default=false];facet[default=true];facetType(code);facetSort(code);priority;visible;useForSpellchecking[default=false];useForAutocomplete[default=false];fieldValueProvider;facetDisplayNameProvider;customFacetSortProvider;topValuesProvider;rangeSets(name)
