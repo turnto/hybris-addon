@@ -12,7 +12,14 @@
 <c:url value="${product.url}/reviewhtml/all" var="getAllReviewsUrl"/>
 <c:url value="${product.url}/review" var="productReviewActionUrl"/>
 
-${reviewContent}
+<c:choose>
+    <c:when test="${flags.get('checkboxRating').getSetupType().getCode() eq 'staticEmbed'}">
+        ${reviewContent}
+    </c:when>
+    <c:otherwise>
+        <div id="TurnToReviewsContent"></div>
+    </c:otherwise>
+</c:choose>
 
 <%--<div class="tab-review">
 	<div class="review-pagination-bar">

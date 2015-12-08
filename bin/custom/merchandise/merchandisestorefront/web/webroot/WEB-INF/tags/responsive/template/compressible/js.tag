@@ -19,7 +19,6 @@
 <script type="text/javascript" src="${commonResourcePath}/js/jquery.pstrength.custom-1.2.0.js"></script>
 <script type="text/javascript" src="${commonResourcePath}/js/jquery.syncheight.custom.js"></script>
 <script type="text/javascript" src="${commonResourcePath}/js/jquery.tabs.custom.js"></script>
-<script type="text/javascript" src="${commonResourcePath}/js/turnto.service.custom.js"></script>
 <script type="text/javascript" src="${commonResourcePath}/js/jquery-ui-1.11.2.custom.min.js"></script>
 <script type="text/javascript" src="${commonResourcePath}/js/jquery.zoom.custom.js"></script>
 <script type="text/javascript" src="${commonResourcePath}/js/owl.carousel.custom.js"></script>

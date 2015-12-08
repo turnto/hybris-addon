@@ -12,7 +12,6 @@
 
 <link rel="stylesheet" href="https://static.www.turnto.com/css/teasers/inputteasers.css"/>
 <div class="rating js-ratingCalc ${starsClass}" data-rating='{"rating":${product.averageRating},"total":5}'>
-
     <%--   <div class="rating-stars">
            <span class="js-ratingIcon glyphicon glyphicon-star"></span>
        </div>--%>
@@ -47,8 +46,8 @@
 <script type="text/javascript">
     var turnToConfig = {
                 siteKey: "2qtC5sJ5gVYcfvesite",
-                setupType: "${flags.get('checkboxQA').getSetupType().getCode()}Embed",
-                reviewsSetupType: "${flags.get('checkboxRating').getSetupType().getCode()}Embed",
+                setupType: "${flags.get('checkboxQA').getSetupType().getCode()}",
+                reviewsSetupType: "${flags.get('checkboxRating').getSetupType().getCode()}",
                 itemInputTeaserFunc: customItemInputTeaserFunc,
                 reviewsTeaserFunc: customReviewsTeaser,
                 chatter: {
@@ -61,10 +60,7 @@
                     minimumCommentCount: 1,
                     minimumCommentCharacterCount: 1,
                     sortOrder: "most recent",
-                    minimumCommentWordCount: 0,
-                    onFinish: function () {
-                        console.log('chatter loaded!')
-                    }
+                    minimumCommentWordCount: 0
                 },
                 embedCommentCapture: true,
                 postPurchaseFlow: true,
@@ -72,6 +68,15 @@
             },
             TurnToChatterSku = "${product.code}",
             TurnToItemSku = "${product.code}";
+
+    (function () {
+        var tt = document.createElement('script');
+        tt.type = 'text/javascript';
+        tt.async = true;
+        tt.src = document.location.protocol + "//static.www.turnto.com/traServer4_2/trajs/" + turnToConfig.siteKey + "/tra.js";
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(tt, s);
+    })();
 
     (function () {
         var t = document.createElement('script');
@@ -82,15 +87,16 @@
         s.parentNode.insertBefore(t, s);
     })();
 
-    (function () {
-        var t = document.createElement('script');
-        t.type = 'text/javascript';
-        t.async = true;
-        t.src = document.location.protocol + "//static.www.turnto.com/traServer4_2/chatterjs/" + turnToConfig.siteKey + "/turnto-chatter.js";
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(t, s);
-    })();
-
+    if (${flags.get('turntoCheckoutChatter').getFlag()}) {
+        (function () {
+            var t = document.createElement('script');
+            t.type = 'text/javascript';
+            t.async = true;
+            t.src = document.location.protocol + "//static.www.turnto.com/traServer4_2/chatterjs/" + turnToConfig.siteKey + "/turnto-chatter.js";
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(t, s);
+        })();
+    }
     function customItemInputTeaserFunc(clazz, data) {
         var clazzNam = clazz || "TurnToItemInputTeaser";
         var iteasers = TurnTojQuery("." + clazzNam);

@@ -43,9 +43,11 @@
     </div>
     <br>
 
+    <div id="TurnToRecentComments"></div>
     <div id="TT3commentCapture"></div>
+    <div id="TTcommentCapture"></div>
     <div>
-        <%--@elvariable id="allItems" type="java.util.List<de.hybris.platform.commercefacades.order.data.OrderEntryData>"--%>
+            <%--@elvariable id="allItems" type="java.util.List<de.hybris.platform.commercefacades.order.data.OrderEntryData>"--%>
         <c:forEach items="${allItems}" var="item">
             <c:set value="${item.product.images}" var="img"/>
             <c:forEach items="${img}" var="i">
@@ -68,9 +70,6 @@
     </cms:pageSlot>
 </template:page>
 
-<script type="text/javascript" src="//static.www.turnto.com/tra4_2/turntoFeed.js"></script>
-<script type="text/javascript" src="//static.www.turnto.com/traServer4_2/trajs/2qtC5sJ5gVYcfvesite/tra.js"></script>
-
 <script type="text/javascript">
     var turnToConfig = {
         siteKey: "2qtC5sJ5gVYcfvesite",
@@ -79,7 +78,25 @@
         embedCommentCapture: true
     };
 
-    TurnToFeed.addFeedPurchaseOrder({orderId: "${orderData.code}", email: "${email}", firstName: "${user.firstName}", lastName: "${user.lastName}"});
+    (function () {
+        var tt = document.createElement('script');
+        tt.type = 'text/javascript';
+        tt.async = true;
+        tt.src = document.location.protocol + "//static.www.turnto.com/traServer4_2/trajs/" + turnToConfig.siteKey + "/tra.js";
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(tt, s);
+    })();
+</script>
+
+<script type="text/javascript" src="//static.www.turnto.com/tra4_2/turntoFeed.js"></script>
+
+<script type="text/javascript">
+    TurnToFeed.addFeedPurchaseOrder({
+        orderId: "${orderData.code}",
+        email: "${email}",
+        firstName: "${user.firstName}",
+        lastName: "${user.lastName}"
+    });
     $.each($('.product'), function (i, item) {
         TurnToFeed.addFeedLineItem({
             title: $(item).data('name'),
@@ -89,7 +106,5 @@
             itemImageUrl: $(item).data('img')
         });
     });
-
-    TurnToFeed.sendFeed();
+    if (${flags.get('turntoOrderReporting').getFlag()}) TurnToFeed.sendFeed();
 </script>
-
