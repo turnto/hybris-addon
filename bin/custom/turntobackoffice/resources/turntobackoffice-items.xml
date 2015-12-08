@@ -4,8 +4,9 @@
 
     <enumtypes>
         <enumtype code="SetupType" autocreate="true" dynamic="false">
-            <value code="static"/>
-            <value code="dynamic"/>
+            <value code="staticEmbed"/>
+            <value code="dynamicEmbed"/>
+            <value code="overlay"/>
         </enumtype>
     </enumtypes>
 
@@ -26,7 +27,7 @@
                 <attribute qualifier="setupType" type="SetupType">
                     <persistence type="property"/>
                     <modifiers optional="false"/>
-                    <defaultvalue>em().getEnumerationValue("SetupType","static")</defaultvalue>
+                    <defaultvalue>em().getEnumerationValue("SetupType","staticEmbed")</defaultvalue>
                 </attribute>
             </attributes>
 

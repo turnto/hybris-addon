@@ -3,7 +3,7 @@
     <style src="${wr}/turntoproductfeed.css"/>
     <zscript>
         <![CDATA[
-        String[] modeArray= {"static", "dynamic"};
+        String[] modeArray= {"static", "dynamic", "overlay"};
         ListModelList modesForQA = new ListModelList(modeArray);
         modesForQA.addToSelection("static");
         ListModelList modesForRating = new ListModelList(modeArray);
@@ -20,26 +20,27 @@
             <hlayout>
                 <label>Q&amp;A</label>
                 <checkbox id="checkboxQA"/>
-            </hlayout>
 
-            <selectbox model="${modesForQA}" id="selectboxQA">
-                <template name="model">
-                    ${each}
-                </template>
-            </selectbox>
+                <selectbox model="${modesForQA}" id="selectboxQA">
+                    <template name="model">
+                        ${each}
+                    </template>
+                </selectbox>
+            </hlayout>
 
         </vlayout>
         <vlayout sclass="content-vlayout">
             <hlayout>
                 <label>Rating &amp; Reviews</label>
                 <checkbox id="checkboxRating"/>
+
+                <selectbox model="${modesForRating}" id="selectboxRating">
+                    <template name="model">
+                        ${each}
+                    </template>
+                </selectbox>
             </hlayout>
 
-            <selectbox model="${modesForRating}" id="selectboxRating">
-                <template name="model">
-                    ${each}
-                </template>
-            </selectbox>
         </vlayout>
         <vlayout sclass="content-vlayout">
             <hlayout>

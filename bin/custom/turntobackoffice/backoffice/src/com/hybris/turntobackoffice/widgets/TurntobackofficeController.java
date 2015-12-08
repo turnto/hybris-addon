@@ -96,7 +96,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
         if (selectbox != null) {
             selectbox.setDisabled(!checkbox.isChecked());
-            ((ListModelList) selectbox.getModel()).addSelection(model.getSetupType().getCode().toLowerCase());
+            ((ListModelList) selectbox.getModel()).addSelection(model.getSetupType().getCode().toLowerCase().replace("embed",""));
         }
 
     }
@@ -137,6 +137,10 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
     private String getSetupType(Selectbox selectbox) {
         int index = selectbox.getSelectedIndex();
-        return (String) selectbox.getModel().getElementAt(index);
+        String type = (String) selectbox.getModel().getElementAt(index);
+
+        if (!"overlay".equals(type)) return type + "Embed";
+
+        return type;
     }
 }
