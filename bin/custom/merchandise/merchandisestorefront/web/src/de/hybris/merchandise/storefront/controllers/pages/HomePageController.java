@@ -13,7 +13,6 @@
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
-import de.hybris.merchandise.storefront.util.CatalogFeedsProcessor;
 import de.hybris.merchandise.storefront.util.TurntoContentUtil;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractPageController;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.util.GlobalMessages;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -40,9 +38,6 @@ import java.io.IOException;
 @Scope("tenant")
 @RequestMapping("/")
 public class HomePageController extends AbstractPageController {
-
-    @Autowired
-    private CatalogFeedsProcessor feedsProcessor;
 
     @Autowired
     private TurntoContentUtil turntoContentUtil;
@@ -62,17 +57,11 @@ public class HomePageController extends AbstractPageController {
         return getViewForPage(model);
     }
 
-    @RequestMapping(value = "/sendCatalogFeed", method = RequestMethod.GET)
-    public void sendProducts(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String homeUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        response.getWriter().print(feedsProcessor.sendCatalogFeed(homeUrl));
-    }
-
     protected void updatePageTitle(final Model model, final AbstractPageModel cmsPage) {
         storeContentPageTitleInModel(model, getPageTitleResolver().resolveHomePageTitle(cmsPage.getTitle()));
     }
 
-    @RequestMapping(value = "/rest/{id}",method = RequestMethod.GET)
+    @RequestMapping(value = "/rest/{id}", method = RequestMethod.GET)
     public void getReviewContent(@PathVariable("id") String id, HttpServletResponse response) throws IOException {
         response.getWriter().print(turntoContentUtil.getAverageRatingForProduct(id));
     }

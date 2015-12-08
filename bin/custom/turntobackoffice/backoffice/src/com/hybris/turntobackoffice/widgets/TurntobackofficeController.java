@@ -96,16 +96,26 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
         if (selectbox != null) {
             selectbox.setDisabled(!checkbox.isChecked());
-            ((ListModelList) selectbox.getModel()).addSelection(model.getSetupType().getCode().toLowerCase().replace("embed",""));
+            ((ListModelList) selectbox.getModel()).add(model.getSetupType().getCode().toLowerCase().replace("embed",""));
         }
 
     }
 
     private void setTurntoModel(String id, StateTurnFlagModel model) {
-        if (id.equals("checkboxQA")) turntoQAModel = model;
-        else if (id.equals("checkboxRating")) turntoRatingModel = model;
-        else if (id.equals("turntoOrderReporting")) turntoOrderReportingModel = model;
-        else turntoCheckoutChatterModel = model;
+        switch (id) {
+            case "checkboxQA":
+                turntoQAModel = model;
+                break;
+            case "checkboxRating":
+                turntoRatingModel = model;
+                break;
+            case "turntoOrderReporting":
+                turntoOrderReportingModel = model;
+                break;
+            default:
+                turntoCheckoutChatterModel = model;
+                break;
+        }
 
     }
 

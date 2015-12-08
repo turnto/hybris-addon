@@ -1,10 +1,14 @@
 package de.hybris.merchandise.storefront.util;
 
+import com.hybris.turntobackoffice.model.StateTurnFlagModel;
 import de.hybris.platform.commercefacades.product.data.ProductData;
+import de.hybris.platform.servicelayer.search.FlexibleSearchService;
+import de.hybris.platform.servicelayer.search.SearchResult;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
@@ -19,6 +23,9 @@ import java.util.Map;
 
 @Component
 public class TurntoContentUtil {
+
+    @Autowired
+    private FlexibleSearchService flexibleSearchService;
 
     private static final Logger LOG = Logger.getLogger(TurntoContentUtil.class);
     private static final String SOURCE_URL = "http://static.www.turnto.com/sitedata/2qtC5sJ5gVYcfvesite/v4_2/";
@@ -48,6 +55,25 @@ public class TurntoContentUtil {
 
     public String getAverageRatingForProduct(String id) {
         return getAverageRatingById(id);
+    }
+
+    public void setTurnFlags(Model model) {
+        Map<String, StateTurnFlagModel> flagModelMap = new HashMap<>();
+
+        final String queryString = "SELECT {" + StateTurnFlagModel.PK + "} " +
+                "FROM {" + StateTurnFlagModel._TYPECODE + "} ";
+
+        final SearchResult<StateTurnFlagModel> searchResult = flexibleSearchService.search(queryString);
+
+        if (searchResult.getCount() > 0) {
+
+            for (StateTurnFlagModel turnFlagModel : searchResult.getResult()) {
+                flagModelMap.put(turnFlagModel.getCheckboxName(), turnFlagModel);
+            }
+
+            model.addAttribute("flags", flagModelMap);
+        }
+
     }
 
     private StringBuilder getResponse(URL url) throws IOException {

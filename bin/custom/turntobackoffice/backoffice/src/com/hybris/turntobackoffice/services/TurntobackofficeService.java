@@ -13,6 +13,7 @@ import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.search.SearchResult;
+import de.hybris.platform.util.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -26,22 +27,15 @@ import java.util.List;
 
 public class TurntobackofficeService {
 
-    private CatalogVersionService catalogVersionService;
-    private FlexibleSearchService flexibleSearchService;
-    private ModelService modelService;
-
     private Logger _logger = LoggerFactory.getLogger(getClass());
 
-    private static final String HYBRIS_HOME_URL = "https://turnto.zaelab.com:9002";
-    private static final String HYBRIS_STORE_PATH = "/store";
-    private static final String CATALOG_ID = "hybrisProductCatalog";
     private static final String CATALOG_VERSION = "Online";
-    private static final String SITE_KEY = "2qtC5sJ5gVYcfvesite";
-    private static final String AUTH_KEY = "5fU9iBPSPCoEQzqauth";
     private static final String FILE_NAME = "turnto_products_feed";
     private static final String FILE_TYPE = ".tsv";
 
-    private final static String TURNTO_SERVICE_URL = "https://www.turnto.com/feedUpload/postfile";
+    private CatalogVersionService catalogVersionService;
+    private FlexibleSearchService flexibleSearchService;
+    private ModelService modelService;
 
     public String createMessage(Boolean flag) {
         String trigger = "off";
@@ -53,8 +47,8 @@ public class TurntobackofficeService {
 
         List<FeedProduct> products = createProductFeed();
         File productsFile = writeProductsToFile(products);
-        return "test";
-        //return executeRequest(productsFile);
+        return executeRequest(productsFile);
+
 
     }
 
@@ -78,7 +72,7 @@ public class TurntobackofficeService {
         String boundary = Long.toHexString(System.currentTimeMillis());
         String CRLF = "\r\n";
 
-        URLConnection connection = new URL(TURNTO_SERVICE_URL).openConnection();
+        URLConnection connection = new URL(Config.getParameter("turnto.service.url")).openConnection();
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
         connection.setRequestProperty("User-Agent", "Mozilla/5.0");
@@ -92,12 +86,12 @@ public class TurntobackofficeService {
             writer.append("--").append(boundary).append(CRLF);
             writer.append("Content-Disposition: form-data; name=\"siteKey\"").append(CRLF);
             writer.append("Content-Type: text/plain; charset=").append(charset).append(CRLF);
-            writer.append(CRLF).append(SITE_KEY).append(CRLF).flush();
+            writer.append(CRLF).append(Config.getParameter("turnto.site.key")).append(CRLF).flush();
 
             writer.append("--").append(boundary).append(CRLF);
             writer.append("Content-Disposition: form-data; name=\"authKey\"").append(CRLF);
             writer.append("Content-Type: text/plain; charset=").append(charset).append(CRLF);
-            writer.append(CRLF).append(AUTH_KEY).append(CRLF).flush();
+            writer.append(CRLF).append(Config.getParameter("turnto.auth.key")).append(CRLF).flush();
 
             writer.append("--").append(boundary).append(CRLF);
             writer.append("Content-Disposition: form-data; name=\"feedStyle\"").append(CRLF);
@@ -105,7 +99,7 @@ public class TurntobackofficeService {
             writer.append(CRLF).append("tab-style.1").append(CRLF).flush();
 
             // Send text file.
-            writer.append("--" + boundary).append(CRLF);
+            writer.append("--").append(boundary).append(CRLF);
             writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"").append(file.getName()).append("\"").append(CRLF);
             writer.append("Content-Type: text/plain; charset=").append(charset).append(CRLF);
             writer.append(CRLF).flush();
@@ -133,28 +127,6 @@ public class TurntobackofficeService {
 
         return response.toString();
     }
-//    private HttpResponse executeRequest(File file) {
-//        HttpEntity entity = MultipartEntityBuilder
-//                .create()
-//                .addTextBody("siteKey", SITE_KEY)
-//                .addTextBody("authKey", AUTH_KEY)
-//                .addTextBody("feedStyle", "tab-style.1")
-//                .addBinaryBody("file", file)
-//                .build();
-//
-//        HttpPost post = new HttpPost(TURNTO_SERVICE_URL);
-//        post.setEntity(entity);
-//        HttpResponse response = null;
-//
-//        try {
-//            response = HttpClientBuilder.create().build().execute(post);
-//        } catch (IOException e) {
-//            _logger.error("Error with execution , cause: " + e.getMessage(), e);
-//        }
-//
-//        return response;
-//    }
-
 
     public StateTurnFlagModel loadByCheckboxId(String checkboxId) {
         StateTurnFlagModel model = new StateTurnFlagModel();
@@ -176,7 +148,6 @@ public class TurntobackofficeService {
         }
 
         return model;
-
     }
 
     public CatalogVersionService getCatalogVersionService() {
@@ -241,7 +212,7 @@ public class TurntobackofficeService {
             String itemURL = getItemURL(model);
             String price = getProductPrice(model);
 
-            FeedProduct feedProduct = new FeedProduct(model, HYBRIS_HOME_URL);
+            FeedProduct feedProduct = new FeedProduct(model, Config.getParameter("hybris.main.path"));
             feedProduct.setItemURL(itemURL);
             feedProduct.setPrice(price);
 
@@ -266,7 +237,7 @@ public class TurntobackofficeService {
     }
 
     private List<CategoryModel> getCategories() {
-        catalogVersionService.setSessionCatalogVersion(CATALOG_ID, CATALOG_VERSION);
+        catalogVersionService.setSessionCatalogVersion(Config.getParameter("hybris.catalog.id"), CATALOG_VERSION);
         final FlexibleSearchQuery flexibleSearchQuery = new FlexibleSearchQuery("SELECT {cat."
                 + CategoryModel.PK
                 + "} "
@@ -274,7 +245,7 @@ public class TurntobackofficeService {
                 + CategoryModel._TYPECODE
                 + " AS cat} ");
 
-        flexibleSearchQuery.setCatalogVersions(catalogVersionService.getCatalogVersion(CATALOG_ID, CATALOG_VERSION));
+        flexibleSearchQuery.setCatalogVersions(catalogVersionService.getCatalogVersion(Config.getParameter("hybris.catalog.id"), CATALOG_VERSION));
         final SearchResult<CategoryModel> searchResult = flexibleSearchService.search(flexibleSearchQuery);
         return searchResult.getResult();
     }
@@ -294,11 +265,15 @@ public class TurntobackofficeService {
         String category = "Stuff";
         String subcategory = model.getEan();
 
-        if (category.equals(subcategory))
-            subcategory = "";
-        else
-            category = "Clothes/";
+        if (category.equals(subcategory)) subcategory = "";
+        else category = "Clothes/";
 
-        return HYBRIS_HOME_URL + HYBRIS_STORE_PATH + "/Hybris-Catalogue/" + category + subcategory + "/" + (model.getName() == null ? model.getName() : model.getName().trim().replace(' ', '-')) + "/p/" + model.getCode() + "?site=hybris";
+        return Config.getParameter("hybris.main.path")
+                + Config.getParameter("hybris.store.path")
+                + Config.getParameter("hybris.catalog.name")
+                + category + subcategory + "/"
+                + (model.getName() == null ? model.getName() : model.getName().trim().replace(' ', '-'))
+                + "/p/" + model.getCode()
+                + "?site=hybris";
     }
 }
