@@ -3,6 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ attribute name="flags" required="false" type="java.util.Map" %>
 
 <div class="tabs js-tabs tabs-responsive">
 
@@ -15,7 +16,7 @@
     </div>
 
 
-    <c:if test="${flags.get('checkboxQA').getFlag() eq 'true'}">
+    <c:if test="${flags.get('checkboxQA').getFlag() eq 'true' && flags.get('checkboxQA').getSetupType().getCode() ne 'overlay'}">
         <div class="tabhead">
             <a href=""><spring:theme code="product.product.spec"/></a> <span
                 class="glyphicon"></span>
@@ -25,8 +26,7 @@
     <div class="tabbody">
         <product:productDetailsClassifications product="${product}"/>
     </div>
-
-    <c:if test="${flags.get('checkboxRating').getFlag() eq 'true'}">
+    <c:if test="${flags.get('checkboxRating').getFlag() eq 'true' && flags.get('checkboxRating').getSetupType().getCode() ne 'overlay'}">
         <div id="tabreview" class="tabhead">
             <a href=""><spring:theme code="review.reviews"/></a> <span
                 class="glyphicon"></span>

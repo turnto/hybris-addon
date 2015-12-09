@@ -147,7 +147,7 @@
     }
 
     function clickQaTab() {
-        $('#accessibletabsnavigation0-4').find('a').click();
+        $('#accessibletabsnavigation0-1').find('a').click();
     }
 
     function clickQaTabFromTeaser() {

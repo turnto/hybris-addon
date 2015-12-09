@@ -96,7 +96,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
         if (selectbox != null) {
             selectbox.setDisabled(!checkbox.isChecked());
-            ((ListModelList) selectbox.getModel()).add(model.getSetupType().getCode().toLowerCase().replace("embed",""));
+            ((ListModelList) selectbox.getModel()).addSelection(model.getSetupType().getCode().toLowerCase().replace("embed",""));
         }
 
     }
