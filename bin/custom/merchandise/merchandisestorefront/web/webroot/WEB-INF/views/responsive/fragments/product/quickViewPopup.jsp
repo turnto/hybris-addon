@@ -26,8 +26,6 @@
 			<a href="${productUrl}">${product.name}</a>
 		</div>
 
-		<product:productReviewSummary product="${product}" showLinks="false" starsClass="quick-view-stars"/>
-
 		<div class="summary">${product.summary}</div>
 
 		<c:if test="${not empty product.potentialPromotions}">
@@ -114,6 +112,14 @@
 			<c:remove var="actionUrl"/>
 		</c:if>
 
-	</div>	
+	</div>
+
+	<div id="addToCartTitle" style="display:none">
+		<div class="add-to-cart-header">
+			<div class="headline">
+				<span class="headline-text"><spring:theme code="basket.added.to.basket"/></span>
+			</div>
+		</div>
+	</div>
 </div>
 	
