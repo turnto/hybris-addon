@@ -1,11 +1,16 @@
 package de.hybris.merchandise.storefront.util;
 
 import com.hybris.turntobackoffice.model.StateTurnFlagModel;
+import de.hybris.merchandise.core.model.TurnToStaticContentsModel;
 import de.hybris.platform.commercefacades.product.data.ProductData;
+import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.search.SearchResult;
+import de.hybris.platform.util.Config;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +30,9 @@ import java.util.Map;
 public class TurntoContentUtil {
 
     @Autowired
+    private ModelService modelService;
+
+    @Autowired
     private FlexibleSearchService flexibleSearchService;
 
     private static final Logger LOG = Logger.getLogger(TurntoContentUtil.class);
@@ -34,16 +42,73 @@ public class TurntoContentUtil {
     private static final String PRODUCT_JSON_URL_CHUNCK = "/d/exportjson/5fU9iBPSPCoEQzqauth";
 
     public void renderContent(Model model, String id) {
+        final String queryString = "SELECT {"
+                + TurnToStaticContentsModel.PK
+                + "} "
+                + "FROM {"
+                + TurnToStaticContentsModel._TYPECODE
+                + "} WHERE p_productid="
+                + id;
+        SearchResult<TurnToStaticContentsModel> search = flexibleSearchService.search(queryString);
+        turntoCaching(id, search);
+
+        TurnToStaticContentsModel tm = (TurnToStaticContentsModel) flexibleSearchService.search(queryString).getResult().get(0);
+        setModelAttribute(model, tm.getQaContent(), tm.getReviewsContent());
+    }
+
+    private void turntoCaching(String id, SearchResult<TurnToStaticContentsModel> searchResult) {
+        if (isNotEmptySearchResult(searchResult)) {
+            if (isCashingTimeOver(id, searchResult.getResult().get(0)))
+                modelService.refresh(fillTurntoContentModel(id));
+
+        } else modelService.save(fillTurntoContentModel(id));
+    }
+
+    private boolean isCashingTimeOver(String id, TurnToStaticContentsModel tm) {
+        return id.equals(tm.getProductId()) && getTimestampWithCachingLimit(tm) < getTimestamp();
+    }
+
+    private TurnToStaticContentsModel fillTurntoContentModel(String id) {
+        TurnToStaticContentsModel model = new TurnToStaticContentsModel();
+        model.setProductId(id);
+        model.setTimestamp(getTimestamp());
+
         try {
             for (String appendix : APPENDIXES) {
                 URL url = new URL(SOURCE_URL + id + appendix);
                 StringBuilder response = getResponse(url);
 
-                setModelAttribute(model, appendix, response);
+                setModelContent(model, appendix, response);
             }
         } catch (IOException e) {
             LOG.error("Error while getting content from TurnTo service, cause: ", e);
         }
+        return model;
+    }
+
+    private long getTimestampWithCachingLimit(TurnToStaticContentsModel model) {
+        DateTime dt = new DateTime(model.getTimestamp());
+        return dt.plusMinutes(Integer.parseInt(Config.getParameter("turnto.caching.time"))).getMillis();
+    }
+
+    private boolean isNotEmptySearchResult(SearchResult<TurnToStaticContentsModel> searchResult) {
+        return searchResult.getCount() > 0;
+    }
+
+    private long getTimestamp() {
+        return DateTimeUtils.currentTimeMillis();
+    }
+
+    private void setModelContent(TurnToStaticContentsModel model, String appendix, StringBuilder response) {
+        if (StringUtils.isNotBlank(appendix) && appendix.equals("/d/catitemhtml"))
+            model.setQaContent(String.valueOf(response));
+        else
+            model.setReviewsContent(String.valueOf(response));
+    }
+
+    private void setModelAttribute(Model model, String qa, String reviews) {
+        model.addAttribute("qaContent", qa);
+        model.addAttribute("reviewContent", reviews);
     }
 
     public void renderReviewContent(Model model, List<ProductData> productData) {
@@ -128,14 +193,4 @@ public class TurntoContentUtil {
             return "0";
         }
     }
-
-    private void setModelAttribute(Model model, String appendix, StringBuilder response) {
-        String modelAttribute = "reviewContent";
-
-        if (StringUtils.isNotBlank(appendix) && appendix.equals("/d/catitemhtml"))
-            modelAttribute = "qaContent";
-
-        model.addAttribute(modelAttribute, response);
-    }
-
 }
