@@ -30,7 +30,21 @@
                     <defaultvalue>em().getEnumerationValue("SetupType","staticEmbed")</defaultvalue>
                 </attribute>
             </attributes>
-
         </itemtype>
+
+        <itemtype code="TurnToGeneralStore" autocreate="true" generate="true">
+            <deployment table="TurnToGeneralStore" typecode="7767"/>
+            <attributes>
+                <attribute qualifier="key" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers optional="false" unique="true"/>
+                </attribute>
+                <attribute qualifier="value" type="java.lang.Object">
+                    <persistence type="property"/>
+                    <modifiers optional="false"/>
+                </attribute>
+            </attributes>
+        </itemtype>
+
     </itemtypes>
 </items>

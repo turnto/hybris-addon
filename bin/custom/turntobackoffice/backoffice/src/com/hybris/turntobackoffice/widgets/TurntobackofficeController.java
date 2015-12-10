@@ -15,14 +15,12 @@ import com.hybris.cockpitng.annotations.ViewEvent;
 import com.hybris.cockpitng.util.DefaultWidgetController;
 import com.hybris.turntobackoffice.enums.SetupType;
 import com.hybris.turntobackoffice.model.StateTurnFlagModel;
+import com.hybris.turntobackoffice.model.TurnToGeneralStoreModel;
 import com.hybris.turntobackoffice.services.TurntobackofficeService;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Selectbox;
+import org.zkoss.zul.*;
 
 
 public class TurntobackofficeController extends DefaultWidgetController {
@@ -40,6 +38,9 @@ public class TurntobackofficeController extends DefaultWidgetController {
     private StateTurnFlagModel turntoOrderReportingModel;
     private StateTurnFlagModel turntoCheckoutChatterModel;
 
+    private Intbox cachingTime;
+    private TurnToGeneralStoreModel cachingTimeModel;
+
     @WireVariable
     private TurntobackofficeService turntobackofficeService;
 
@@ -50,7 +51,9 @@ public class TurntobackofficeController extends DefaultWidgetController {
         init(checkboxRating, selectboxRating);
         init(turntoOrderReporting, null);
         init(turntoCheckoutChatter, null);
+        init(cachingTime);
     }
+
 
     @ViewEvent(componentID = "sendFeedBtn", eventName = Events.ON_CLICK)
     public void sendProducts() throws Exception {
@@ -88,6 +91,14 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
     }
 
+    @ViewEvent(componentID = "cachingTime", eventName = Events.ON_BLUR)
+    public void setCachingTime() throws InterruptedException {
+        cachingTimeModel.setValue(cachingTime.getValue());
+        turntobackofficeService.saveToTurnToStore(cachingTimeModel);
+        Messagebox.show("caching time is set");
+
+    }
+
     private void init(Checkbox checkbox, Selectbox selectbox) {
         final String id = checkbox.getId();
         StateTurnFlagModel model = turntobackofficeService.loadByCheckboxId(id);
@@ -96,9 +107,31 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
         if (selectbox != null) {
             selectbox.setDisabled(!checkbox.isChecked());
-            ((ListModelList) selectbox.getModel()).addSelection(model.getSetupType().getCode().toLowerCase().replace("embed",""));
+            ((ListModelList) selectbox.getModel()).addSelection(model.getSetupType().getCode().toLowerCase().replace("embed", ""));
         }
 
+    }
+
+    private void init(Intbox cachingTimeBox) {
+        cachingTimeModel = turntobackofficeService.loadFromTurntoToStoreByKey(cachingTimeBox.getId());
+
+        Integer cachingTime;
+
+        if (cachingTimeModel == null) {
+            cachingTime = 1;
+            createCachingMode(cachingTimeBox, cachingTime);
+            turntobackofficeService.saveToTurnToStore(cachingTimeModel);
+        } else {
+            cachingTime = (Integer) cachingTimeModel.getValue();
+        }
+
+        cachingTimeBox.setValue(cachingTime);
+    }
+
+    private void createCachingMode(Intbox cachingTimeBox, Integer cachingTime) {
+        cachingTimeModel = new TurnToGeneralStoreModel();
+        cachingTimeModel.setKey(cachingTimeBox.getId());
+        cachingTimeModel.setValue(cachingTime);
     }
 
     private void setTurntoModel(String id, StateTurnFlagModel model) {

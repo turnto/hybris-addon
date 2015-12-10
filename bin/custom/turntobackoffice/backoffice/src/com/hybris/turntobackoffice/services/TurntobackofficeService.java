@@ -5,6 +5,7 @@ import com.hybris.turntobackoffice.enums.SetupType;
 import com.hybris.turntobackoffice.jalo.StateTurnFlag;
 import com.hybris.turntobackoffice.model.FeedProduct;
 import com.hybris.turntobackoffice.model.StateTurnFlagModel;
+import com.hybris.turntobackoffice.model.TurnToGeneralStoreModel;
 import de.hybris.platform.catalog.CatalogVersionService;
 import de.hybris.platform.category.model.CategoryModel;
 import de.hybris.platform.core.model.product.ProductModel;
@@ -57,7 +58,7 @@ public class TurntobackofficeService {
         model.setCheckboxName(checkboxName);
         model.setFlag(flag);
         model.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
-        getModelService().refresh(model);
+        getModelService().save(model);
 
     }
 
@@ -65,6 +66,11 @@ public class TurntobackofficeService {
         getModelService().save(turnFlagModel);
 
     }
+
+    public void saveToTurnToStore(TurnToGeneralStoreModel storeModel) {
+        getModelService().save(storeModel);
+    }
+
 
     private String executeRequest(File file) throws IOException {
 
@@ -148,6 +154,20 @@ public class TurntobackofficeService {
         }
 
         return model;
+    }
+
+    public TurnToGeneralStoreModel loadFromTurntoToStoreByKey(String key) {
+
+        final String queryString = "SELECT {" + TurnToGeneralStoreModel.PK + "} " +
+                "FROM {" + TurnToGeneralStoreModel._TYPECODE + "} " +
+                "WHERE {" + TurnToGeneralStoreModel.KEY + "} = ?key";
+
+        final FlexibleSearchQuery query = new FlexibleSearchQuery(queryString);
+        query.addQueryParameter("key", key);
+
+        final SearchResult<TurnToGeneralStoreModel> searchResult = flexibleSearchService.search(query);
+
+        return searchResult.getResult().get(0);
     }
 
     public CatalogVersionService getCatalogVersionService() {

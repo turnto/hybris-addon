@@ -1,12 +1,12 @@
 package de.hybris.merchandise.storefront.util;
 
 import com.hybris.turntobackoffice.model.StateTurnFlagModel;
+import com.hybris.turntobackoffice.model.TurnToGeneralStoreModel;
 import de.hybris.merchandise.core.model.TurnToStaticContentsModel;
 import de.hybris.platform.commercefacades.product.data.ProductData;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.search.SearchResult;
-import de.hybris.platform.util.Config;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -88,7 +88,7 @@ public class TurntoContentUtil {
 
     private long getTimestampWithCachingLimit(TurnToStaticContentsModel model) {
         DateTime dt = new DateTime(model.getTimestamp());
-        return dt.plusMinutes(Integer.parseInt(Config.getParameter("turnto.caching.time"))).getMillis();
+        return dt.plusMinutes(loadCachingTime()).getMillis();
     }
 
     private boolean isNotEmptySearchResult(SearchResult<TurnToStaticContentsModel> searchResult) {
@@ -139,6 +139,20 @@ public class TurntoContentUtil {
             model.addAttribute("flags", flagModelMap);
         }
 
+    }
+
+    private Integer loadCachingTime() {
+        final String queryString = "SELECT {" + TurnToGeneralStoreModel.PK + "} " +
+                "FROM {" + TurnToGeneralStoreModel._TYPECODE + "} " +
+                "WHERE {" + TurnToGeneralStoreModel.KEY + "} = cachingTime";
+
+        final SearchResult<TurnToGeneralStoreModel> searchResult = flexibleSearchService.search(queryString);
+
+        if (searchResult.getCount() > 0) {
+            return (Integer) searchResult.getResult().iterator().next().getValue();
+        }
+
+        return 1;
     }
 
     private StringBuilder getResponse(URL url) throws IOException {

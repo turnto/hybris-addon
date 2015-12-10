@@ -24,9 +24,15 @@
 .main-container select {
     background-color: #fffbff;
 }
+
 .main-container select[disabled] {
     color: #797474;
     background-color: #D4D0D0;
+}
+
+.main-container .caching-time {
+    line-height: 0;
+    min-height: 0;
 }
 
 .button-custom {

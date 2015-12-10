@@ -149,11 +149,6 @@
                         <persistence type="property"/>
                         <modifiers optional="false"/>
                     </attribute>
-                    <attribute qualifier="cachingTime" type="java.lang.Integer">
-                        <defaultvalue>1</defaultvalue>
-                        <persistence type="property"/>
-                        <modifiers optional="false"/>
-                    </attribute>
                 </attributes>
             </itemtype>
         </typegroup>

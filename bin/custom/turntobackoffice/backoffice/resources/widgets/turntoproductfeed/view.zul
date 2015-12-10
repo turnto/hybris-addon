@@ -13,7 +13,14 @@
 
     <div sclass="main-container">
         <vlayout sclass="content-vlayout">
-            <button id="sendFeedBtn" label="Send products!" sclass="button-custom"/>
+            <button id="sendFeedBtn" label="Send catalog feed!" sclass="button-custom"/>
+        </vlayout>
+
+        <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label value="time for cashing content:"/>
+                <intbox id="cachingTime" constraint="no empty, no negative" sclass="caching-time"/>
+            </hlayout>
         </vlayout>
 
         <vlayout sclass="content-vlayout">
