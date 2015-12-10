@@ -141,6 +141,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
         if (turnFlag) {
             model.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
             turntobackofficeService.saveStateTurnFlag(model);
+            Messagebox.show("setup type is changed");
         }
 
     }

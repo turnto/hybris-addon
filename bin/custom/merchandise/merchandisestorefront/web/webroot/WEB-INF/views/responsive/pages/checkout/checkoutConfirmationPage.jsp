@@ -74,8 +74,7 @@
     var turnToConfig = {
         siteKey: "2qtC5sJ5gVYcfvesite",
         orderConfFlowPauseSeconds: 3,
-        postPurchaseFlow: true,
-        embedCommentCapture: true
+        postPurchaseFlow: true
     };
 
     (function () {

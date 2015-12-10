@@ -175,7 +175,7 @@ public class ProductPageController extends AbstractPageController {
         sortVariantOptionData(productData);
         populateProductData(productData, model);
         getRequestContextData(request).setProduct(productModel);
-
+        turntoContentUtil.setTurnFlags(model);
         return ControllerConstants.Views.Fragments.Product.QuickViewPopup;
     }
 
