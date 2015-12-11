@@ -54,7 +54,6 @@ public class TurntobackofficeController extends DefaultWidgetController {
         init(cachingTime);
     }
 
-
     @ViewEvent(componentID = "sendFeedBtn", eventName = Events.ON_CLICK)
     public void sendProducts() throws Exception {
         Messagebox.show(turntobackofficeService.sendCatalogFeed());
@@ -95,7 +94,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
     public void setCachingTime() throws InterruptedException {
         cachingTimeModel.setValue(cachingTime.getValue());
         turntobackofficeService.saveToTurnToStore(cachingTimeModel);
-        Messagebox.show("caching time is set");
+        Messagebox.show("Caching time has been changed");
 
     }
 
@@ -174,7 +173,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
         if (turnFlag) {
             model.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
             turntobackofficeService.saveStateTurnFlag(model);
-            Messagebox.show("setup type is changed");
+            Messagebox.show("Setup type has been changed");
         }
 
     }

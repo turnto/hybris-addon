@@ -10,7 +10,6 @@
         </enumtype>
     </enumtypes>
 
-
     <itemtypes>
         <itemtype code="StateTurnFlag" autocreate="true" generate="true">
             <deployment table="StateTurnFlag" typecode="777"/>

@@ -49,8 +49,6 @@ public class TurntobackofficeService {
         List<FeedProduct> products = createProductFeed();
         File productsFile = writeProductsToFile(products);
         return executeRequest(productsFile);
-
-
     }
 
     public void saveStateTurnFlag(String checkboxName, boolean flag, String setupType) {
@@ -59,18 +57,15 @@ public class TurntobackofficeService {
         model.setFlag(flag);
         model.setSetupType(SetupType.valueOf(setupType.toUpperCase()));
         getModelService().save(model);
-
     }
 
     public void saveStateTurnFlag(StateTurnFlagModel turnFlagModel) {
         getModelService().save(turnFlagModel);
-
     }
 
     public void saveToTurnToStore(TurnToGeneralStoreModel storeModel) {
         getModelService().save(storeModel);
     }
-
 
     private String executeRequest(File file) throws IOException {
 

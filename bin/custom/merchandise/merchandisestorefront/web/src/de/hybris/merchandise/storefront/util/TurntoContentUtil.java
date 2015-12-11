@@ -50,25 +50,30 @@ public class TurntoContentUtil {
                 + "} WHERE p_productid="
                 + id;
         SearchResult<TurnToStaticContentsModel> search = flexibleSearchService.search(queryString);
-        turntoCaching(id, search);
+        turnToCaching(id, search);
 
         TurnToStaticContentsModel tm = (TurnToStaticContentsModel) flexibleSearchService.search(queryString).getResult().get(0);
         setModelAttribute(model, tm.getQaContent(), tm.getReviewsContent());
     }
 
-    private void turntoCaching(String id, SearchResult<TurnToStaticContentsModel> searchResult) {
-        if (isNotEmptySearchResult(searchResult)) {
-            if (isCashingTimeOver(id, searchResult.getResult().get(0)))
-                modelService.refresh(fillTurntoContentModel(id));
-
-        } else modelService.save(fillTurntoContentModel(id));
+    private void turnToCaching(String id, SearchResult<TurnToStaticContentsModel> searchResult) {
+        if (searchResult.getCount() == 0) modelService.save(fillTurnToContentModel(id));
+        else checkTurnToContentStaticModel(id, searchResult);
     }
 
-    private boolean isCashingTimeOver(String id, TurnToStaticContentsModel tm) {
-        return id.equals(tm.getProductId()) && getTimestampWithCachingLimit(tm) < getTimestamp();
+    private void checkTurnToContentStaticModel(String id, SearchResult<TurnToStaticContentsModel> searchResult) {
+        TurnToStaticContentsModel tm = searchResult.getResult().get(0);
+        if (isCachingTimeOver(tm)) {
+            modelService.remove(tm);
+            modelService.save(fillTurnToContentModel(id));
+        }
     }
 
-    private TurnToStaticContentsModel fillTurntoContentModel(String id) {
+    private boolean isCachingTimeOver(TurnToStaticContentsModel tm) {
+        return getTimestampWithCachingLimit(tm) < getTimestamp();
+    }
+
+    private TurnToStaticContentsModel fillTurnToContentModel(String id) {
         TurnToStaticContentsModel model = new TurnToStaticContentsModel();
         model.setProductId(id);
         model.setTimestamp(getTimestamp());
@@ -91,19 +96,15 @@ public class TurntoContentUtil {
         return dt.plusMinutes(loadCachingTime()).getMillis();
     }
 
-    private boolean isNotEmptySearchResult(SearchResult<TurnToStaticContentsModel> searchResult) {
-        return searchResult.getCount() > 0;
-    }
-
     private long getTimestamp() {
         return DateTimeUtils.currentTimeMillis();
     }
 
     private void setModelContent(TurnToStaticContentsModel model, String appendix, StringBuilder response) {
         if (StringUtils.isNotBlank(appendix) && appendix.equals("/d/catitemhtml"))
-            model.setQaContent(String.valueOf(response));
+            model.setQaContent(String.valueOf("response")); //longtext
         else
-            model.setReviewsContent(String.valueOf(response));
+            model.setReviewsContent(String.valueOf("response"));//longtext
     }
 
     private void setModelAttribute(Model model, String qa, String reviews) {
@@ -144,7 +145,7 @@ public class TurntoContentUtil {
     private Integer loadCachingTime() {
         final String queryString = "SELECT {" + TurnToGeneralStoreModel.PK + "} " +
                 "FROM {" + TurnToGeneralStoreModel._TYPECODE + "} " +
-                "WHERE {" + TurnToGeneralStoreModel.KEY + "} = cachingTime";
+                "WHERE {" + TurnToGeneralStoreModel.KEY + "} = 'cachingTime'";
 
         final SearchResult<TurnToGeneralStoreModel> searchResult = flexibleSearchService.search(queryString);
 
