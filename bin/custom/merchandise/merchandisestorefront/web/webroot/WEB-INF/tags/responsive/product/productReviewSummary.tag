@@ -10,6 +10,7 @@
 <%@ attribute name="product" required="true"
               type="de.hybris.platform.commercefacades.product.data.ProductData" %>
 
+<c:set var="isOverlay" value="${flags.get('checkboxQA').getFlag() eq 'true' and flags.get('checkboxQA').getSetupType().getCode() eq \"overlay\"}" />
 <link rel="stylesheet" href="https://static.www.turnto.com/css/teasers/inputteasers.css"/>
 <div class="rating js-ratingCalc ${starsClass}" data-rating='{"rating":${product.averageRating},"total":5}'>
     <%--   <div class="rating-stars">
@@ -102,9 +103,9 @@
         var iteasers = TurnTojQuery("." + clazzNam);
 
         var htmlCode = '<div class="TTinputTeaserCust1"> <div class="TTteaserHeaderCust1">Need advice? More information?</div><div style="position:relative">' +
-                '<div id="TTinputTeaserBoxCust1">' +
-                    /* '<a class="TTteaBubble1Cust1" href="javascript:void(0)" style="text-decoration:none"></a>' +*/
-                '<input type="text" id="TTinputTeaserQCust1" placeholder="Type in your question. We\'ll search for answers.">  <!--<a class="TTteaNext1Cust1" href="javascript:void(0)" style="display:none;text-decoration:none"></a>--></div>'
+                '<div id="TTinputTeaserBoxCust1" style="width: 310px;" >' +
+                '<a class="TTteaBubble1Cust1" href="javascript:void(0)" style="text-decoration:none;margin-left: 4px;"></a>' +
+                '<input type="text" id="TTinputTeaserQCust1" style="width: 304px;" placeholder="Type in your question. We\'ll search for answers.">  <!--<a class="TTteaNext1Cust1" href="javascript:void(0)" style="display:none;text-decoration:none"></a>--></div>'
                 + '<div class="TT2clearBoth"></div>'
                 + ((data.counts.q > 0) ? '<div class="TTteaSearchlineCust2">or <a class="TTteaSearchLinkCust2" href="javascript:void(0)" style="text-decoration:underline">Browse ' + (data.counts.q + ' question' + (data.counts.q == 1 ? "" : "s") + ' and ' + data.counts.a + ' answer' + (data.counts.a == 1 ? "" : "s")) + '</a></div>' : "" )
                 + '</div>'
@@ -151,9 +152,11 @@
     }
 
     function clickQaTabFromTeaser() {
-        clickQaTab();
-        var qaTabPos = TurnTojQuery('#accessibletabsnavigation0-4');
-        window.scrollTo(0, qaTabPos.offset().top);
+        if (!${isOverlay}) {
+            clickQaTab();
+            var qaTabPos = TurnTojQuery('#accessibletabsnavigation0-1');
+            window.scrollTo(0, qaTabPos.offset().top);
+        }
     }
 
     function customReviewsTeaser(clazz, data) {
@@ -165,7 +168,7 @@
         var rating = Math.round((TurnToItemData.counts.ar + 0.25) * 100.0) / 100.0;
         rating = rating.toString();
         var decimal = parseInt(rating.substring(2, 3))
-        rating = rating.substring(0, 1) + "-" + (decimal >= 5 ? '5' : '0')
+        rating = rating.substring(0, 1) + "-" + (decimal >= 5 ? '5' : '0');
 
         var html = '<div>' +
                 '<div class="TT2left TTratingBox TTrating-' + rating + '">' +
