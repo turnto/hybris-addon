@@ -167,7 +167,11 @@ public class TurntobackofficeService {
 
         final SearchResult<TurnToGeneralStoreModel> searchResult = flexibleSearchService.search(query);
 
-        return searchResult.getResult().get(0);
+        if (searchResult.getCount() > 0) {
+            return searchResult.getResult().get(0);
+        }
+
+        return null;
     }
 
     public CatalogVersionService getCatalogVersionService() {
