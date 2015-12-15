@@ -102,9 +102,9 @@ public class TurntoContentUtil {
 
     private void setModelContent(TurnToStaticContentsModel model, String appendix, StringBuilder response) {
         if (StringUtils.isNotBlank(appendix) && appendix.equals("/d/catitemhtml"))
-            model.setQaContent(String.valueOf("response")); //longtext
+            model.setQaContent(String.valueOf(response));//longtext
         else
-            model.setReviewsContent(String.valueOf("response"));//longtext
+            model.setReviewsContent(String.valueOf(response));//longtext
     }
 
     private void setModelAttribute(Model model, String qa, String reviews) {
