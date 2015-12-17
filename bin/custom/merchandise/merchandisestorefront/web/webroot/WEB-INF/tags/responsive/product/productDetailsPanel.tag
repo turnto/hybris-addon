@@ -3,6 +3,7 @@
 <%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags"%>
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags"%>
 <%@ taglib prefix="product" tagdir="/WEB-INF/tags/responsive/product"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="flags" required="false" type="java.util.Map"%>
 
 
@@ -41,6 +42,12 @@
 				<cms:pageSlot position="AddToCart" var="component">
 					<cms:component component="${component}" />
 				</cms:pageSlot>
+
+				<div style="margin-top: 10px">
+					<c:if test="${flags.get('checkboxQA').getFlag() eq 'true'}">
+						<span class="TurnToItemInputTeaser"></span>
+					</c:if>
+				</div>
 
 			</div>
 		</div>

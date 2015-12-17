@@ -11,7 +11,7 @@
               type="de.hybris.platform.commercefacades.product.data.ProductData" %>
 
 <c:set var="isOverlay" value="${flags.get('checkboxQA').getFlag() eq 'true' and flags.get('checkboxQA').getSetupType().getCode() eq \"overlay\"}" />
-<link rel="stylesheet" href="https://static.www.turnto.com/css/teasers/inputteasers.css"/>
+<link rel="stylesheet" href="https://static.www.turnto.com/css/teasers/tt4_1/inputteasers.css" />
 <div class="rating js-ratingCalc ${starsClass}" data-rating='{"rating":${product.averageRating},"total":5}'>
     <%--   <div class="rating-stars">
            <span class="js-ratingIcon glyphicon glyphicon-star"></span>
@@ -36,9 +36,6 @@
         <tr>
             <c:if test="${flags.get('checkboxRating').getFlag() eq 'true'}">
                 <th><span class="TurnToReviewsTeaser"></span></th>
-            </c:if>
-            <c:if test="${flags.get('checkboxQA').getFlag() eq 'true'}">
-                <th><span class="TurnToItemInputTeaser"></span></th>
             </c:if>
         </tr>
     </table>
@@ -102,10 +99,10 @@
         var clazzNam = clazz || "TurnToItemInputTeaser";
         var iteasers = TurnTojQuery("." + clazzNam);
 
-        var htmlCode = '<div class="TTinputTeaserCust1"> <div class="TTteaserHeaderCust1">Need advice? More information?</div><div style="position:relative">' +
-                '<div id="TTinputTeaserBoxCust1" style="width: 310px;" >' +
-                '<a class="TTteaBubble1Cust1" href="javascript:void(0)" style="text-decoration:none;margin-left: 4px;"></a>' +
-                '<input type="text" id="TTinputTeaserQCust1" style="width: 304px;" placeholder="Type in your question. We\'ll search for answers.">  <!--<a class="TTteaNext1Cust1" href="javascript:void(0)" style="display:none;text-decoration:none"></a>--></div>'
+        var htmlCode= '<div class="TTinputTeaserCust1"> <div class="TTteaserHeaderCust1">Need advice? More information?</div><div style="position:relative">' +
+                '<div id="TTinputTeaserBoxCust1">' +
+                '<a class="TTteaBubble1Cust1" href="javascript:void(0)" style="text-decoration:none"></a>' +
+                '<input type="text" id="TTinputTeaserQCust1" style="width: 310px;" placeholder="Type in your question. We\'ll search for answers."></div>'
                 + '<div class="TT2clearBoth"></div>'
                 + ((data.counts.q > 0) ? '<div class="TTteaSearchlineCust2">or <a class="TTteaSearchLinkCust2" href="javascript:void(0)" style="text-decoration:underline">Browse ' + (data.counts.q + ' question' + (data.counts.q == 1 ? "" : "s") + ' and ' + data.counts.a + ' answer' + (data.counts.a == 1 ? "" : "s")) + '</a></div>' : "" )
                 + '</div>'
@@ -116,7 +113,7 @@
         TurnTojQuery("#TTinputTeaserQCust1").keypress(function (e) {
             if (e.which == 13) {
                 clickQaTabFromTeaser();
-                TurnTo.itemTeaserClick({fromInputTeaser: true, text: TurnTojQuery("#TTinputTeaserQCust1").val()});
+                TurnTo.itemTeaserClick({fromInputTeaser: true, text:TurnTojQuery("#TTinputTeaserQCust1").val()});
             }
         }).focus(function () {
             TurnTojQuery(".TTteaNext1Cust1").show();
@@ -137,10 +134,12 @@
         };
 
         TurnTojQuery("#TTinputTeaserQCust1").keyup(clearHandler).blur(clearHandler);
-        TurnTojQuery(".TTteaNext1Cust1").click(function () {
+
+        TurnTojQuery(".TTteaNext1Cust1").click(function(){
             clickQaTabFromTeaser();
-            TurnTo.itemTeaserClick({fromInputTeaser: true, text: TurnTojQuery("#TTinputTeaserQCust1").val()});
+            TurnTo.itemTeaserClick({fromInputTeaser: true, text:TurnTojQuery("#TTinputTeaserQCust1").val()});
         });
+
         TurnTojQuery(".TTteaSearchLinkCust2").click(function () {
             clickQaTabFromTeaser();
             TurnTo.itemTeaserClick({fromInputTeaser: false});
