@@ -53,4 +53,5 @@
 		</div>
 	</div>
 </div>
+<span id="TurnToChatterContent"></span>
 
