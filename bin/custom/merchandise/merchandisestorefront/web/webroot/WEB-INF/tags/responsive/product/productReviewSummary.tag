@@ -50,7 +50,6 @@
                 setupType: "${flags.get('checkboxQA').getSetupType().getCode()}",
                 reviewsSetupType: "${flags.get('checkboxRating').getSetupType().getCode()}",
                 itemInputTeaserFunc: customItemInputTeaserFunc,
-                reviewsTeaserFunc: customReviewsTeaser,
                 chatter: {
                     columns: 4,
                     rowsInCollapsedView: 2,
