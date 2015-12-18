@@ -10,8 +10,11 @@
 <%@ attribute name="product" required="true"
               type="de.hybris.platform.commercefacades.product.data.ProductData" %>
 
-<c:set var="isOverlay" value="${flags.get('checkboxQA').getFlag() eq 'true' and flags.get('checkboxQA').getSetupType().getCode() eq \"overlay\"}" />
-<link rel="stylesheet" href="https://static.www.turnto.com/css/teasers/tt4_1/inputteasers.css" />
+<c:set var="isOverlay"
+       value="${flags.get('checkboxQA').getFlag() eq 'true' and flags.get('checkboxQA').getSetupType().getCode() eq \"overlay\"}"/>
+<c:set var="isOverlayRating"
+       value="${flags.get('checkboxRating').getFlag() eq 'true' and flags.get('checkboxRating').getSetupType().getCode() eq \"overlay\"}"/>
+<link rel="stylesheet" href="https://static.www.turnto.com/css/teasers/inputteasers.css"/>
 <div class="rating js-ratingCalc ${starsClass}" data-rating='{"rating":${product.averageRating},"total":5}'>
     <%--   <div class="rating-stars">
            <span class="js-ratingIcon glyphicon glyphicon-star"></span>
@@ -66,6 +69,10 @@
             },
             TurnToChatterSku = "${product.code}",
             TurnToItemSku = "${product.code}";
+
+    if (!${isOverlayRating}) {
+        turnToConfig.reviewsTeaserFunc = customReviewsTeaser;
+    }
 
     (function () {
         var tt = document.createElement('script');
