@@ -15,7 +15,7 @@
 <c:set var="isOverlayRating"
        value="${flags.get('checkboxRating').getFlag() eq 'true' and flags.get('checkboxRating').getSetupType().getCode() eq \"overlay\"}"/>
 <link rel="stylesheet" href="https://static.www.turnto.com/css/teasers/inputteasers.css"/>
-<link rel="stylesheet" href="${commonResourcePath}/css/custom.css" />
+<link rel="stylesheet" href="${commonResourcePath}/css/custom.css"/>
 <div class="rating js-ratingCalc ${starsClass}" data-rating='{"rating":${product.averageRating},"total":5}'>
     <%--   <div class="rating-stars">
            <span class="js-ratingIcon glyphicon glyphicon-star"></span>
@@ -106,7 +106,7 @@
         var clazzNam = clazz || "TurnToItemInputTeaser";
         var iteasers = TurnTojQuery("." + clazzNam);
 
-        var htmlCode= '<div class="TTinputTeaserCust1"> <div class="TTteaserHeaderCust1">Need advice? More information?</div><div style="position:relative">' +
+        var htmlCode = '<div class="TTinputTeaserCust1"> <div class="TTteaserHeaderCust1">Need advice? More information?</div><div style="position:relative">' +
                 '<div id="TTinputTeaserBoxCust1">' +
                 '<a class="TTteaBubble1Cust1" href="javascript:void(0)" style="text-decoration:none"></a>' +
                 '<input type="text" id="TTinputTeaserQCust1" style="width: 310px;" placeholder="Type in your question. We\'ll search for answers."></div>'
@@ -120,7 +120,7 @@
         TurnTojQuery("#TTinputTeaserQCust1").keypress(function (e) {
             if (e.which == 13) {
                 clickQaTabFromTeaser();
-                TurnTo.itemTeaserClick({fromInputTeaser: true, text:TurnTojQuery("#TTinputTeaserQCust1").val()});
+                TurnTo.itemTeaserClick({fromInputTeaser: true, text: TurnTojQuery("#TTinputTeaserQCust1").val()});
             }
         }).focus(function () {
             TurnTojQuery(".TTteaNext1Cust1").show();
@@ -142,9 +142,9 @@
 
         TurnTojQuery("#TTinputTeaserQCust1").keyup(clearHandler).blur(clearHandler);
 
-        TurnTojQuery(".TTteaNext1Cust1").click(function(){
+        TurnTojQuery(".TTteaNext1Cust1").click(function () {
             clickQaTabFromTeaser();
-            TurnTo.itemTeaserClick({fromInputTeaser: true, text:TurnTojQuery("#TTinputTeaserQCust1").val()});
+            TurnTo.itemTeaserClick({fromInputTeaser: true, text: TurnTojQuery("#TTinputTeaserQCust1").val()});
         });
 
         TurnTojQuery(".TTteaSearchLinkCust2").click(function () {

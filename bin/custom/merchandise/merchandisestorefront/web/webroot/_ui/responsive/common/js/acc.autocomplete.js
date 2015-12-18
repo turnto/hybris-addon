@@ -52,12 +52,15 @@ ACC.autocomplete = {
                     }
 
                     var data = $.parseJSON($.ajax({
-                        url: 'https://' + location.host + '/store/hybris/en/rest/' + item.code,
-                        dataType: "json",
-                        async: false
-                    }).responseText);
+                            url: 'https://' + location.host + '/store/hybris/en/rest/' + item.code,
+                            dataType: "json",
+                            async: false
+                        }).responseText),
+                        starsCount = Math.round(data);
 
-                    renderHtml += "<div class='rating'><img src='" + ACC.config.commonResourcePath + "/images/" + Math.round(data) + ".png'" + "/></div>";
+                    if (starsCount != 0) {
+                        renderHtml += "<div class='rating'><img src='" + ACC.config.commonResourcePath + "/images/" + starsCount + ".png'" + "/></div>";
+                    }
                     renderHtml += "<div class='name'>" + item.value + "</div>";
                     renderHtml += "<div class='price'>" + item.price + "</div>";
                     renderHtml += "</a>";

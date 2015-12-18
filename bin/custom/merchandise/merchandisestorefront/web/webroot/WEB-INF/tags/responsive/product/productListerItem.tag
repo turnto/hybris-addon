@@ -11,7 +11,11 @@
 <fmt:formatNumber var="numberOfStars"
                   value="${rating[product.code]}"
                   maxFractionDigits="0"/>
-<div><img src="${commonResourcePath}/images/${numberOfStars}.png"></div>
+
+<c:if test="${numberOfStars ne '0'}">
+    <div><img src="${commonResourcePath}/images/${numberOfStars}.png"></div>
+</c:if>
+
 <spring:theme code="text.addToCart" var="addToCartText"/>
 <c:url value="${product.url}" var="productUrl"/>
 
@@ -44,7 +48,6 @@
         <c:if test="${not empty product.summary}">
             <div class="description">${product.summary}</div>
         </c:if>
-
 
         <c:set var="product" value="${product}" scope="request"/>
         <c:set var="addToCartText" value="${addToCartText}" scope="request"/>
