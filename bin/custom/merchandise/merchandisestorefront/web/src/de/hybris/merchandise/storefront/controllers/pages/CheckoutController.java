@@ -192,7 +192,8 @@ public class CheckoutController extends AbstractCheckoutController {
 
         orderDetails.setNet(true);
 
-        turnToContentFacade.populateModelWithTurnFlags(model);
+        turnToContentFacade.populateModelWithTurnToFlags(model);
+        turnToContentFacade.populateModelWithTurnToSiteKey(model);
         model.addAttribute("orderCode", orderCode);
         model.addAttribute("orderData", orderDetails);
         model.addAttribute("allItems", orderDetails.getEntries());

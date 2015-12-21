@@ -139,7 +139,8 @@ public class ProductPageController extends AbstractPageController {
         setUpMetaData(model, metaKeywords, metaDescription);
 
         setAverageRating(productCode, productModel);
-        turnToContentFacade.populateModelWithTurnFlags(model);
+        turnToContentFacade.populateModelWithTurnToSiteKey(model);
+        turnToContentFacade.populateModelWithTurnToFlags(model);
         turnToContentFacade.populateModelWithContent(model, productCode);
 
         return getViewForPage(model);
@@ -175,7 +176,7 @@ public class ProductPageController extends AbstractPageController {
         sortVariantOptionData(productData);
         populateProductData(productData, model);
         getRequestContextData(request).setProduct(productModel);
-        turnToContentFacade.populateModelWithTurnFlags(model);
+        turnToContentFacade.populateModelWithTurnToFlags(model);
         return ControllerConstants.Views.Fragments.Product.QuickViewPopup;
     }
 

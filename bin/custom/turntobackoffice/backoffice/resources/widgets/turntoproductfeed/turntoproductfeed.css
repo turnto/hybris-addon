@@ -35,6 +35,11 @@
     min-height: 0;
 }
 
+.main-container .site-key {
+    line-height: 0;
+    min-height: 0;
+}
+
 .button-custom {
     border-radius: 2px;
 }

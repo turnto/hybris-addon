@@ -36,9 +36,9 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     private ModelService modelService;
 
     private static final String QA_CONTENT = "/d/catitemhtml";
-    private static final String SOURCE_URL = "http://static.www.turnto.com/sitedata/2qtC5sJ5gVYcfvesite/v4_2/";
+    private static final String SOURCE_URL = "http://static.www.turnto.com/sitedata/";
     private static final String[] APPENDIXES = {"/d/catitemreviewshtml", "/d/catitemhtml"};
-    private static final String PRODUCT_JSON_URL = "http://static.www.turnto.com/sitedata/2qtC5sJ5gVYcfvesite/";
+    private static final String PRODUCT_JSON_URL = "http://static.www.turnto.com/sitedata/";
     private static final String PRODUCT_JSON_URL_CHUNCK = "/d/exportjson/5fU9iBPSPCoEQzqauth";
 
     @Override
@@ -52,7 +52,7 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     }
 
     @Override
-    public void populateModelWithTurnFlags(Model model) {
+    public void populateModelWithTurnToFlags(Model model) {
         Map<String, StateTurnFlagModel> flagModelMap = new HashMap<>();
 
         final List<StateTurnFlagModel> searchResult = turnToContentService.getStateTurnFlags();
@@ -65,6 +65,11 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
 
             model.addAttribute("flags", flagModelMap);
         }
+    }
+
+    @Override
+    public void populateModelWithTurnToSiteKey(Model model) {
+        model.addAttribute("siteKey", getSiteKey());
     }
 
     @Override
@@ -109,7 +114,7 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     private String getAverageRatingById(String id) {
         String averageRating = "";
         try {
-            URL url = new URL(PRODUCT_JSON_URL + id + PRODUCT_JSON_URL_CHUNCK);
+            URL url = new URL(PRODUCT_JSON_URL + getSiteKey() + "/" + id + PRODUCT_JSON_URL_CHUNCK);
             StringBuilder response = getResponse(url);
 
             if (StringUtils.isNotBlank(response.toString())) averageRating = parseAverageRating(response);
@@ -136,21 +141,17 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
 
 
     private void turnToCaching(String id, List<TurnToStaticContentsModel> searchResult) {
-
-        TurnToStaticContentsModel contentsModel;
         boolean needToSave = true;
 
         if (searchResult.size() > 0) {
             TurnToStaticContentsModel tm = searchResult.get(0);
             needToSave = isCachingTimeOver(tm);
 
-            if (needToSave) {
-                modelService.remove(tm);
-            }
+            if (needToSave) modelService.remove(tm);
         }
 
         if (needToSave) {
-            contentsModel = fillTurnToContentModel(id);
+            TurnToStaticContentsModel contentsModel = fillTurnToContentModel(id);
             modelService.save(contentsModel);
         }
     }
@@ -166,7 +167,7 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
 
         try {
             for (String appendix : APPENDIXES) {
-                URL url = new URL(SOURCE_URL + id + appendix);
+                URL url = new URL(SOURCE_URL + getSiteKey() + "/v4_2/" + id + appendix);
                 StringBuilder response = getResponse(url);
 
                 setModelContent(model, appendix, response);
@@ -206,6 +207,10 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
         }
 
         return 1;
+    }
+
+    private String getSiteKey() {
+        return (String) turnToContentService.getItemFromTurnToGeneralStore("siteKey").get(0).getValue();
     }
 
     private StringBuilder getResponse(URL url) throws IOException {

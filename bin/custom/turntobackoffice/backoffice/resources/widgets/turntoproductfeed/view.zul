@@ -25,6 +25,13 @@
 
         <vlayout sclass="content-vlayout">
             <hlayout>
+                <label value="Site Key:"/>
+                <textbox id="siteKey" constraint="no empty" sclass="site-key"/>
+            </hlayout>
+        </vlayout>
+
+        <vlayout sclass="content-vlayout">
+            <hlayout>
                 <label>Q&amp;A</label>
                 <checkbox id="checkboxQA"/>
 

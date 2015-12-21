@@ -22,7 +22,9 @@ public interface TurnToContentFacade {
 
     void populateModelWithContent(Model model, String productId);
 
-    void populateModelWithTurnFlags(Model model);
+    void populateModelWithTurnToFlags(Model model);
+
+    void populateModelWithTurnToSiteKey(Model model);
 
     void populateModelWithRating(Model model, List<ProductData> productData);
 

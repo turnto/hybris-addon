@@ -29,17 +29,17 @@ public class TurntobackofficeController extends DefaultWidgetController {
     private Checkbox checkboxRating;
     private Checkbox turntoOrderReporting;
     private Checkbox turntoCheckoutChatter;
-
     private Selectbox selectboxQA;
     private Selectbox selectboxRating;
+    private Textbox siteKey;
+    private Intbox cachingTime;
 
     private StateTurnFlagModel turntoQAModel;
     private StateTurnFlagModel turntoRatingModel;
     private StateTurnFlagModel turntoOrderReportingModel;
     private StateTurnFlagModel turntoCheckoutChatterModel;
-
-    private Intbox cachingTime;
     private TurnToGeneralStoreModel cachingTimeModel;
+    private TurnToGeneralStoreModel siteKeyModel;
 
     @WireVariable
     private TurntobackofficeService turntobackofficeService;
@@ -52,6 +52,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
         init(turntoOrderReporting, null);
         init(turntoCheckoutChatter, null);
         init(cachingTime);
+        init(siteKey);
     }
 
     @ViewEvent(componentID = "sendFeedBtn", eventName = Events.ON_CLICK)
@@ -87,7 +88,6 @@ public class TurntobackofficeController extends DefaultWidgetController {
     @ViewEvent(componentID = "selectboxRating", eventName = Events.ON_SELECT)
     public void selectRatingMode() throws InterruptedException {
         updateSetupType(checkboxRating, selectboxRating, turntoRatingModel);
-
     }
 
     @ViewEvent(componentID = "cachingTime", eventName = Events.ON_BLUR)
@@ -95,7 +95,13 @@ public class TurntobackofficeController extends DefaultWidgetController {
         cachingTimeModel.setValue(cachingTime.getValue());
         turntobackofficeService.saveToTurnToStore(cachingTimeModel);
         Messagebox.show("Caching time has been changed");
+    }
 
+    @ViewEvent(componentID = "siteKey", eventName = Events.ON_BLUR)
+    public void setSiteKey() throws InterruptedException {
+        siteKeyModel.setValue(siteKey.getValue());
+        turntobackofficeService.saveToTurnToStore(siteKeyModel);
+        Messagebox.show("Site Key has been changed");
     }
 
     private void init(Checkbox checkbox, Selectbox selectbox) {
@@ -125,6 +131,30 @@ public class TurntobackofficeController extends DefaultWidgetController {
         }
 
         cachingTimeBox.setValue(cachingTime);
+    }
+
+    private void init(Textbox textbox) {
+        String siteKey = "Enter your Site Key";
+
+        if (isModelEmpty(textbox))
+            turntobackofficeService.saveToTurnToStore(fillSiteKeyModel(textbox, siteKey));
+        else
+            siteKey = (String) siteKeyModel.getValue();
+
+        textbox.setValue(siteKey);
+    }
+
+    private boolean isModelEmpty(Textbox textbox) {
+        siteKeyModel = turntobackofficeService.loadFromTurntoToStoreByKey(textbox.getId());
+        return siteKeyModel == null;
+    }
+
+    private TurnToGeneralStoreModel fillSiteKeyModel(Textbox textbox, String key) {
+        siteKeyModel = new TurnToGeneralStoreModel();
+        siteKeyModel.setKey(textbox.getId());
+        siteKeyModel.setValue(key);
+
+        return siteKeyModel;
     }
 
     private void createCachingMode(Intbox cachingTimeBox, Integer cachingTime) {
