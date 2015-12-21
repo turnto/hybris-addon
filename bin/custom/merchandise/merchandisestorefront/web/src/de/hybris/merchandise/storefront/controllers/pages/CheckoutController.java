@@ -13,8 +13,8 @@
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
+import de.hybris.merchandise.facades.suggestion.TurnToContentFacade;
 import de.hybris.merchandise.storefront.controllers.ControllerConstants;
-import de.hybris.merchandise.storefront.util.TurntoContentUtil;
 import de.hybris.platform.acceleratorfacades.flow.impl.SessionOverrideCheckoutFlowFacade;
 import de.hybris.platform.acceleratorservices.controllers.page.PageType;
 import de.hybris.platform.acceleratorstorefrontcommons.annotations.RequireHardLogIn;
@@ -62,8 +62,7 @@ import java.util.Arrays;
 @RequestMapping(value = "/checkout")
 public class CheckoutController extends AbstractCheckoutController {
 
-    @Autowired
-    private TurntoContentUtil turntoContentUtil;
+
 
     protected static final Logger LOG = Logger.getLogger(CheckoutController.class);
     /**
@@ -90,6 +89,9 @@ public class CheckoutController extends AbstractCheckoutController {
 
     @Resource(name = "autoLoginStrategy")
     private AutoLoginStrategy autoLoginStrategy;
+
+    @Autowired
+    private TurnToContentFacade turnToContentFacade;
 
     @ExceptionHandler(ModelNotFoundException.class)
     public String handleModelNotFoundException(final ModelNotFoundException exception, final HttpServletRequest request) {
@@ -190,7 +192,7 @@ public class CheckoutController extends AbstractCheckoutController {
 
         orderDetails.setNet(true);
 
-        turntoContentUtil.setTurnFlags(model);
+        turnToContentFacade.populateModelWithTurnFlags(model);
         model.addAttribute("orderCode", orderCode);
         model.addAttribute("orderData", orderDetails);
         model.addAttribute("allItems", orderDetails.getEntries());

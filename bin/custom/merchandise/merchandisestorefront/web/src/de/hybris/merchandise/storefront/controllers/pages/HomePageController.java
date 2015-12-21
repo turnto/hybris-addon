@@ -13,7 +13,7 @@
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
-import de.hybris.merchandise.storefront.util.TurntoContentUtil;
+import de.hybris.merchandise.facades.suggestion.TurnToContentFacade;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractPageController;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.util.GlobalMessages;
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
@@ -40,7 +40,7 @@ import java.io.IOException;
 public class HomePageController extends AbstractPageController {
 
     @Autowired
-    private TurntoContentUtil turntoContentUtil;
+    private TurnToContentFacade turnToContentFacade;
 
     @RequestMapping(method = RequestMethod.GET)
     public String home(@RequestParam(value = "logout", defaultValue = "false") final boolean logout, final Model model,
@@ -63,7 +63,7 @@ public class HomePageController extends AbstractPageController {
 
     @RequestMapping(value = "/rest/{id}", method = RequestMethod.GET)
     public void getReviewContent(@PathVariable("id") String id, HttpServletResponse response) throws IOException {
-        response.getWriter().print(turntoContentUtil.getAverageRatingForProduct(id));
+        response.getWriter().print(turnToContentFacade.getAverageRatingForProduct(id));
     }
 
 }

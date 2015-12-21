@@ -13,8 +13,8 @@
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
+import de.hybris.merchandise.facades.suggestion.TurnToContentFacade;
 import de.hybris.merchandise.storefront.controllers.ControllerConstants;
-import de.hybris.merchandise.storefront.util.TurntoContentUtil;
 import de.hybris.platform.acceleratorservices.controllers.page.PageType;
 import de.hybris.platform.acceleratorstorefrontcommons.breadcrumb.impl.ProductBreadcrumbBuilder;
 import de.hybris.platform.acceleratorstorefrontcommons.constants.WebConstants;
@@ -80,7 +80,7 @@ public class ProductPageController extends AbstractPageController {
     private static final String REVIEWS_PATH_VARIABLE_PATTERN = "{numberOfReviews:.*}";
 
     @Autowired
-    private TurntoContentUtil turntoContentUtil;
+    private TurnToContentFacade turnToContentFacade;
 
     @Autowired
     private ModelService modelService;
@@ -139,8 +139,8 @@ public class ProductPageController extends AbstractPageController {
         setUpMetaData(model, metaKeywords, metaDescription);
 
         setAverageRating(productCode, productModel);
-        turntoContentUtil.setTurnFlags(model);
-        turntoContentUtil.renderContent(model, productCode);
+        turnToContentFacade.populateModelWithTurnFlags(model);
+        turnToContentFacade.populateModelWithContent(model, productCode);
 
         return getViewForPage(model);
     }
@@ -175,7 +175,7 @@ public class ProductPageController extends AbstractPageController {
         sortVariantOptionData(productData);
         populateProductData(productData, model);
         getRequestContextData(request).setProduct(productModel);
-        turntoContentUtil.setTurnFlags(model);
+        turnToContentFacade.populateModelWithTurnFlags(model);
         return ControllerConstants.Views.Fragments.Product.QuickViewPopup;
     }
 
@@ -284,7 +284,7 @@ public class ProductPageController extends AbstractPageController {
     private void setAverageRating(@PathVariable("productCode") String productCode, ProductModel productModel) {
         final ProductData productData = productFacade.getProductForOptions(productModel,
                 Arrays.asList(ProductOption.BASIC, ProductOption.REVIEW));
-        final double averageTTRating = Double.parseDouble(turntoContentUtil.getAverageRatingForProduct(productCode));
+        final double averageTTRating = Double.parseDouble(turnToContentFacade.getAverageRatingForProduct(productCode));
         final Object rating = productData.getAverageRating();
         final double averageRatingFromDB = rating != null ? (double) rating : 0;
 

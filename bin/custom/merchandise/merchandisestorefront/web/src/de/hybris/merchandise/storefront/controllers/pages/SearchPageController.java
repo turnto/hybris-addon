@@ -13,7 +13,7 @@
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
-import de.hybris.merchandise.storefront.util.TurntoContentUtil;
+import de.hybris.merchandise.facades.suggestion.TurnToContentFacade;
 import de.hybris.platform.acceleratorcms.model.components.SearchBoxComponentModel;
 import de.hybris.platform.acceleratorservices.controllers.page.PageType;
 import de.hybris.platform.acceleratorservices.customer.CustomerLocationService;
@@ -74,7 +74,7 @@ public class SearchPageController extends AbstractSearchPageController {
     private CMSComponentService cmsComponentService;
 
     @Autowired
-    TurntoContentUtil turntoContentUtil;
+    private TurnToContentFacade turnToContentFacade;
 
     @RequestMapping(method = RequestMethod.GET, params = "!q")
     public String textSearch(@RequestParam(value = "text", defaultValue = "") final String searchText,
@@ -90,7 +90,7 @@ public class SearchPageController extends AbstractSearchPageController {
             final ProductSearchPageData<SearchStateData, ProductData> searchPageData = productSearchFacade.textSearch(searchState,
                     pageableData);
 
-            turntoContentUtil.renderReviewContent(model, searchPageData.getResults());
+            turnToContentFacade.populateModelWithRating(model, searchPageData.getResults());
 
             if (searchPageData == null) {
                 storeCmsPageInModel(model, getContentPageForLabelOrId(NO_RESULTS_CMS_PAGE_ID));
@@ -144,7 +144,7 @@ public class SearchPageController extends AbstractSearchPageController {
         final ProductSearchPageData<SearchStateData, ProductData> searchPageData = performSearch(searchQuery, page, showMode,
                 sortCode, getSearchPageSize());
 
-        turntoContentUtil.renderReviewContent(model, searchPageData.getResults());
+        turnToContentFacade.populateModelWithRating(model, searchPageData.getResults());
 
         populateModel(model, searchPageData, showMode);
         model.addAttribute("userLocation", customerLocationService.getUserLocation());

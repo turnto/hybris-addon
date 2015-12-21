@@ -14,7 +14,7 @@
 package de.hybris.merchandise.storefront.controllers.pages;
 
 
-import de.hybris.merchandise.storefront.util.TurntoContentUtil;
+import de.hybris.merchandise.facades.suggestion.TurnToContentFacade;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractCategoryPageController;
 import de.hybris.platform.acceleratorstorefrontcommons.util.XSSFilterUtil;
 import de.hybris.platform.category.model.CategoryModel;
@@ -46,7 +46,7 @@ public class CategoryPageController extends AbstractCategoryPageController {
     protected static final Logger LOG = Logger.getLogger(CategoryPageController.class);
 
     @Autowired
-    TurntoContentUtil turntoContentUtil;
+    private TurnToContentFacade turnToContentFacade;
 
     @RequestMapping(value = CATEGORY_CODE_PATH_VARIABLE_PATTERN, method = RequestMethod.GET)
     public String category(@PathVariable("categoryCode") final String categoryCode,
@@ -100,6 +100,6 @@ public class CategoryPageController extends AbstractCategoryPageController {
 
         final ProductCategorySearchPageData<SearchStateData, ProductData, CategoryData> searchPageData = categorySearch.getSearchPageData();
 
-        turntoContentUtil.renderReviewContent(model, searchPageData.getResults());
+        turnToContentFacade.populateModelWithRating(model, searchPageData.getResults());
     }
 }
