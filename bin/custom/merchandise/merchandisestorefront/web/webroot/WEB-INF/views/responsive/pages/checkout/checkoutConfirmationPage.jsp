@@ -72,7 +72,7 @@
 
 <script type="text/javascript">
     var turnToConfig = {
-        siteKey: "2qtC5sJ5gVYcfvesite",
+        siteKey: "${siteKey}",
         orderConfFlowPauseSeconds: 3,
         postPurchaseFlow: true
     };

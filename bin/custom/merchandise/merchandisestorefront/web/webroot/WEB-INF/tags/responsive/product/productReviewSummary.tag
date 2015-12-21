@@ -6,9 +6,7 @@
 <%@ attribute name="showLinks" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="starsClass" required="false" type="java.lang.String" %>
 <%@ attribute name="flags" required="false" type="java.util.Map" %>
-
-<%@ attribute name="product" required="true"
-              type="de.hybris.platform.commercefacades.product.data.ProductData" %>
+<%@ attribute name="product" required="true" type="de.hybris.platform.commercefacades.product.data.ProductData" %>
 
 <c:set var="isOverlay"
        value="${flags.get('checkboxQA').getFlag() eq 'true' and flags.get('checkboxQA').getSetupType().getCode() eq \"overlay\"}"/>
@@ -47,7 +45,7 @@
 
 <script type="text/javascript">
     var turnToConfig = {
-                siteKey: "2qtC5sJ5gVYcfvesite",
+                siteKey: "${siteKey}",
                 setupType: "${flags.get('checkboxQA').getSetupType().getCode()}",
                 reviewsSetupType: "${flags.get('checkboxRating').getSetupType().getCode()}",
                 itemInputTeaserFunc: customItemInputTeaserFunc,
