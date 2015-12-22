@@ -69,7 +69,9 @@ import java.util.*;
 @RequestMapping(value = "/**/p")
 public class ProductPageController extends AbstractPageController {
     @SuppressWarnings("unused")
+
     private static final Logger LOG = Logger.getLogger(ProductPageController.class);
+//    private static final Logger LOG = Logger.getLogger(ProductPageController.class);
 
     /**
      * We use this suffix pattern because of an issue with Spring 3.1 where a Uri value is incorrectly extracted if it
