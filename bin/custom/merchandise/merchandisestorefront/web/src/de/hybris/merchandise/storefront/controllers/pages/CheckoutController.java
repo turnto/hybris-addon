@@ -61,9 +61,6 @@ import java.util.Arrays;
 @Scope("tenant")
 @RequestMapping(value = "/checkout")
 public class CheckoutController extends AbstractCheckoutController {
-
-
-
     protected static final Logger LOG = Logger.getLogger(CheckoutController.class);
     /**
      * We use this suffix pattern because of an issue with Spring 3.1 where a Uri value is incorrectly extracted if it
@@ -71,9 +68,11 @@ public class CheckoutController extends AbstractCheckoutController {
      * the issue and future resolution.
      */
     private static final String ORDER_CODE_PATH_VARIABLE_PATTERN = "{orderCode:.*}";
-
     private static final String CHECKOUT_ORDER_CONFIRMATION_CMS_PAGE_LABEL = "orderConfirmation";
     private static final String CONTINUE_URL_KEY = "continueUrl";
+
+    @Autowired
+    private TurnToContentFacade turnToContentFacade;
 
     @Resource(name = "productFacade")
     private ProductFacade productFacade;
@@ -89,9 +88,6 @@ public class CheckoutController extends AbstractCheckoutController {
 
     @Resource(name = "autoLoginStrategy")
     private AutoLoginStrategy autoLoginStrategy;
-
-    @Autowired
-    private TurnToContentFacade turnToContentFacade;
 
     @ExceptionHandler(ModelNotFoundException.class)
     public String handleModelNotFoundException(final ModelNotFoundException exception, final HttpServletRequest request) {

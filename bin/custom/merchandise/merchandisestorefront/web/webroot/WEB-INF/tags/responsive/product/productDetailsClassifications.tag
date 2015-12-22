@@ -5,7 +5,7 @@
 
 <div class="product-classifications">
     <c:choose>
-        <c:when test="${flags.get('checkboxQA').getSetupType().getCode() eq 'staticEmbed'}">
+        <c:when test="${flags.get('checkboxQA').getSetupType().getCode() eq 'staticEmbed' and flags.get('checkboxQA').getFlag()}">
             ${qaContent}
         </c:when>
         <c:otherwise>
