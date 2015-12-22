@@ -10,6 +10,10 @@
 
 <c:set var="isOverlay"
        value="${flags.get('checkboxQA').getFlag() eq 'true' and flags.get('checkboxQA').getSetupType().getCode() eq \"overlay\"}"/>
+
+<c:set var="isTurnOffCheckboxQA"
+       value="${flags.get('checkboxQA').getFlag() eq 'false'}"/>
+
 <c:set var="isOverlayRating"
        value="${flags.get('checkboxRating').getFlag() eq 'true' and flags.get('checkboxRating').getSetupType().getCode() eq \"overlay\"}"/>
 <link rel="stylesheet" href="https://static.www.turnto.com/css/teasers/inputteasers.css"/>
@@ -191,13 +195,17 @@
         iteasers.find('.TTwriteReview').click(teaserClickFn);
     }
 
-    function clickReviewsTab() {
-        $('#accessibletabsnavigation0-2').find('a').click();
+    function clickReviewsTab(tab) {
+        $(tab).find('a').click();
     }
 
     function clickReviewsTabFromTeaser() {
-        clickReviewsTab();
-        var qaTabPos = TurnTojQuery('#accessibletabsnavigation0-2');
+        var isOverlay = ${isOverlay};
+        var isTurnOffCheckboxQA = ${isTurnOffCheckboxQA};
+
+        var tab = (isOverlay || isTurnOffCheckboxQA) ? '#accessibletabsnavigation0-1' : '#accessibletabsnavigation0-2';
+        clickReviewsTab(tab);
+        var qaTabPos = TurnTojQuery(tab);
         window.scrollTo(0, qaTabPos.offset().top);
     }
 </script>

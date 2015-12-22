@@ -142,11 +142,19 @@
                         <modifiers optional="false"/>
                     </attribute>
                     <attribute qualifier="qaContent" type="java.lang.String">
-                        <persistence type="property"/>
+                        <persistence type="property">
+                            <columntype database="mysql">
+                                <value>LONGTEXT</value>
+                            </columntype>
+                        </persistence>
                         <modifiers optional="false"/>
                     </attribute>
                     <attribute qualifier="reviewsContent" type="java.lang.String">
-                        <persistence type="property"/>
+                        <persistence type="property">
+                            <columntype database="mysql">
+                                <value>LONGTEXT</value>
+                            </columntype>
+                        </persistence>
                         <modifiers optional="false"/>
                     </attribute>
                 </attributes>
