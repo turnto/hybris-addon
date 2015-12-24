@@ -26,6 +26,8 @@ public interface TurnToContentFacade {
 
     void populateModelWithTurnToSiteKey(Model model);
 
+    void populateModelWithSiteKeyValidationFlag(Model model);
+
     void populateModelWithRating(Model model, List<ProductData> productData);
 
     String getAverageRatingForProduct(String productId);

@@ -16,7 +16,7 @@
     </div>
 
 
-    <c:if test="${flags.get('checkboxQA').getFlag() eq 'true' && flags.get('checkboxQA').getSetupType().getCode() ne 'overlay'}">
+    <c:if test="${flags.get('checkboxQA').getFlag() eq 'true' and flags.get('checkboxQA').getSetupType().getCode() ne 'overlay' and isSiteKeyInvalid eq 'false'}">
         <div class="tabhead">
             <a href=""><spring:theme code="product.product.spec"/></a> <span
                 class="glyphicon"></span>
@@ -26,7 +26,7 @@
     <div class="tabbody">
         <product:productDetailsClassifications product="${product}"/>
     </div>
-    <c:if test="${flags.get('checkboxRating').getFlag() eq 'true' && flags.get('checkboxRating').getSetupType().getCode() ne 'overlay'}">
+    <c:if test="${flags.get('checkboxRating').getFlag() eq 'true' and flags.get('checkboxRating').getSetupType().getCode() ne 'overlay' and isSiteKeyInvalid eq 'false'}">
         <div id="tabreview" class="tabhead">
             <a href=""><spring:theme code="review.reviews"/></a> <span
                 class="glyphicon"></span>

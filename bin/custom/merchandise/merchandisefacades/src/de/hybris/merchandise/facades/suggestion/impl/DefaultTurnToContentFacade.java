@@ -32,8 +32,8 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     private static final Logger LOG = Logger.getLogger(DefaultTurnToContentFacade.class);
 
     private TurnToContentService turnToContentService;
-
     private ModelService modelService;
+    private TurnToGeneralStoreModel invalidResponseModel;
 
     private static final String QA_CONTENT = "/d/catitemhtml";
     private static final String SOURCE_URL = "http://static.www.turnto.com/sitedata/";
@@ -47,8 +47,8 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
         List<TurnToStaticContentsModel> search = turnToContentService.getTurnToStaticContents(productId);
         turnToCaching(productId, search);
 
-        TurnToStaticContentsModel tm = turnToContentService.getTurnToStaticContents(productId).get(0);
-        setModelAttribute(model, tm.getQaContent(), tm.getReviewsContent());
+        List<TurnToStaticContentsModel> tm = turnToContentService.getTurnToStaticContents(productId);
+        setModelAttribute(model, tm.get(0).getQaContent(), tm.get(0).getReviewsContent());
     }
 
     @Override
@@ -70,6 +70,11 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     @Override
     public void populateModelWithTurnToSiteKey(Model model) {
         model.addAttribute("siteKey", getSiteKey());
+    }
+
+    @Override
+    public void populateModelWithSiteKeyValidationFlag(Model model) {
+        model.addAttribute("isSiteKeyInvalid", isSiteKeyInvalid());
     }
 
     @Override
@@ -141,19 +146,21 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
 
 
     private void turnToCaching(String id, List<TurnToStaticContentsModel> searchResult) {
-        boolean needToSave = true;
+        if (isNeedToSave(searchResult)) {
+            TurnToStaticContentsModel contentsModel = fillTurnToContentModel(id);
+            modelService.save(contentsModel);
+        }
+    }
 
+    private boolean isNeedToSave(List<TurnToStaticContentsModel> searchResult) {
+        boolean needToSave = true;
         if (searchResult.size() > 0) {
             TurnToStaticContentsModel tm = searchResult.get(0);
             needToSave = isCachingTimeOver(tm);
 
             if (needToSave) modelService.remove(tm);
         }
-
-        if (needToSave) {
-            TurnToStaticContentsModel contentsModel = fillTurnToContentModel(id);
-            modelService.save(contentsModel);
-        }
+        return needToSave;
     }
 
     private boolean isCachingTimeOver(TurnToStaticContentsModel tm) {
@@ -170,12 +177,27 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
                 URL url = new URL(SOURCE_URL + getSiteKey() + "/v4_2/" + id + appendix);
                 StringBuilder response = getResponse(url);
 
+                validateResponse(response);
                 setModelContent(model, appendix, response);
             }
         } catch (IOException e) {
             LOG.error("Error while getting content from TurnTo service, cause: ", e);
         }
         return model;
+    }
+
+    private void validateResponse(StringBuilder response) {
+        invalidResponseModel = getSiteKeyValidationModel();
+        if (response.toString().contains("site does not exist")) {
+            LOG.error(response);
+            invalidResponseModel.setValue(true);
+        } else invalidResponseModel.setValue(false);
+
+        modelService.save(invalidResponseModel);
+    }
+
+    private TurnToGeneralStoreModel getSiteKeyValidationModel() {
+        return turnToContentService.getItemFromTurnToGeneralStore("isSiteKeyInvalid").get(0);
     }
 
     private long getTimestampWithCachingLimit(TurnToStaticContentsModel model) {
@@ -211,6 +233,10 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
 
     private String getSiteKey() {
         return (String) turnToContentService.getItemFromTurnToGeneralStore("siteKey").get(0).getValue();
+    }
+
+    private Boolean isSiteKeyInvalid() {
+        return (Boolean) getSiteKeyValidationModel().getValue();
     }
 
     private StringBuilder getResponse(URL url) throws IOException {

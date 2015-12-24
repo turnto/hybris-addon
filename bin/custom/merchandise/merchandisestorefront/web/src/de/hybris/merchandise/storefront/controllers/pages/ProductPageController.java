@@ -142,6 +142,7 @@ public class ProductPageController extends AbstractPageController {
         turnToContentFacade.populateModelWithTurnToSiteKey(model);
         turnToContentFacade.populateModelWithTurnToFlags(model);
         turnToContentFacade.populateModelWithContent(model, productCode);
+        turnToContentFacade.populateModelWithSiteKeyValidationFlag(model);
 
         return getViewForPage(model);
     }

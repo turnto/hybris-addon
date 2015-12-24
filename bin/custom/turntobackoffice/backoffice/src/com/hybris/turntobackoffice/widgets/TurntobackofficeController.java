@@ -42,6 +42,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
     private StateTurnFlagModel turntoCheckoutChatterModel;
     private TurnToGeneralStoreModel cachingTimeModel;
     private TurnToGeneralStoreModel siteKeyModel;
+    private TurnToGeneralStoreModel invalidResponseModel;
 
     @WireVariable
     private TurntobackofficeService turntobackofficeService;
@@ -55,6 +56,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
         init(turntoCheckoutChatter, null);
         init(cachingTime);
         init(siteKey);
+        init(invalidResponseModel, "isSiteKeyInvalid");
     }
 
     @ViewEvent(componentID = "sendFeedBtn", eventName = Events.ON_CLICK)
@@ -107,6 +109,8 @@ public class TurntobackofficeController extends DefaultWidgetController {
         if (!oldValue.equals(newVal)) {
             siteKeyModel.setValue(newVal);
             turntobackofficeService.saveToTurnToStore(siteKeyModel);
+            turntobackofficeService.invalidateCache();
+
             Messagebox.show("Site Key has been changed");
         }
     }
@@ -125,7 +129,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
     }
 
     private void init(Intbox cachingTimeBox) {
-        cachingTimeModel = turntobackofficeService.loadFromTurntoToStoreByKey(cachingTimeBox.getId());
+        cachingTimeModel = turntobackofficeService.loadFromTurnToStoreByKey(cachingTimeBox.getId());
 
         Integer cachingTime;
 
@@ -133,9 +137,8 @@ public class TurntobackofficeController extends DefaultWidgetController {
             cachingTime = 1;
             createCachingMode(cachingTimeBox, cachingTime);
             turntobackofficeService.saveToTurnToStore(cachingTimeModel);
-        } else {
+        } else
             cachingTime = (Integer) cachingTimeModel.getValue();
-        }
 
         cachingTimeBox.setValue(cachingTime);
     }
@@ -151,8 +154,26 @@ public class TurntobackofficeController extends DefaultWidgetController {
         textbox.setValue(siteKey);
     }
 
+    private void init(TurnToGeneralStoreModel model, String key) {
+        TurnToGeneralStoreModel storedModel = turntobackofficeService.loadFromTurnToStoreByKey(key);
+        model = (storedModel == null) ? fillEmptyGeneralStoreModel(model, key) : storedModel;
+
+        invalidResponseModel = model;
+    }
+
+    private TurnToGeneralStoreModel fillEmptyGeneralStoreModel(TurnToGeneralStoreModel model, String key) {
+        if (model == null) {
+            model = new TurnToGeneralStoreModel();
+            model.setKey(key);
+            model.setValue(false);
+
+            turntobackofficeService.saveToTurnToStore(model);
+        }
+        return model;
+    }
+
     private boolean isModelEmpty(Textbox textbox) {
-        siteKeyModel = turntobackofficeService.loadFromTurntoToStoreByKey(textbox.getId());
+        siteKeyModel = turntobackofficeService.loadFromTurnToStoreByKey(textbox.getId());
         return siteKeyModel == null;
     }
 

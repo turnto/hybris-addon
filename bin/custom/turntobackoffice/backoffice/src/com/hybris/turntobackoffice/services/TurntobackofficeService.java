@@ -6,6 +6,7 @@ import com.hybris.turntobackoffice.jalo.StateTurnFlag;
 import com.hybris.turntobackoffice.model.FeedProduct;
 import com.hybris.turntobackoffice.model.StateTurnFlagModel;
 import com.hybris.turntobackoffice.model.TurnToGeneralStoreModel;
+import de.hybris.merchandise.core.model.TurnToStaticContentsModel;
 import de.hybris.platform.catalog.CatalogVersionService;
 import de.hybris.platform.category.model.CategoryModel;
 import de.hybris.platform.core.model.product.ProductModel;
@@ -151,7 +152,18 @@ public class TurntobackofficeService {
         return model;
     }
 
-    public TurnToGeneralStoreModel loadFromTurntoToStoreByKey(String key) {
+    public void invalidateCache() {
+        final String queryInvalidateCache = "SELECT {"
+                + TurnToStaticContentsModel.PK
+                + "} "
+                +"FROM {"
+                + TurnToStaticContentsModel._TYPECODE
+                + "} ";
+
+        modelService.removeAll(getFlexibleSearchService().search(queryInvalidateCache).getResult());
+    }
+
+    public TurnToGeneralStoreModel loadFromTurnToStoreByKey(String key) {
 
         final String queryString = "SELECT {" + TurnToGeneralStoreModel.PK + "} " +
                 "FROM {" + TurnToGeneralStoreModel._TYPECODE + "} " +
