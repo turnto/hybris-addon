@@ -159,6 +159,21 @@
                     </attribute>
                 </attributes>
             </itemtype>
+
+            <itemtype code="TurnToColorVariantProduct" extends="VariantProduct"
+                      autocreate="true" generate="true"
+                      jaloclass="de.hybris.merchandise.core.jalo.TurnToColorVariantProduct">
+                <description>Hybris color variant type that contains additional attribute describing variant color.
+                </description>
+                <attributes>
+                    <attribute qualifier="color" type="localized:java.lang.String"
+                               metatype="VariantAttributeDescriptor">
+                        <description>Color of the product.</description>
+                        <modifiers/>
+                        <persistence type="property"/>
+                    </attribute>
+                </attributes>
+            </itemtype>
         </typegroup>
     </itemtypes>
 </items>

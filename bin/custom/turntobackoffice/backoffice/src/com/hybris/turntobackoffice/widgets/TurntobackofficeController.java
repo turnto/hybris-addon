@@ -22,6 +22,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
 
+import java.util.Objects;
+
 
 public class TurntobackofficeController extends DefaultWidgetController {
 
@@ -90,18 +92,23 @@ public class TurntobackofficeController extends DefaultWidgetController {
         updateSetupType(checkboxRating, selectboxRating, turntoRatingModel);
     }
 
-    @ViewEvent(componentID = "cachingTime", eventName = Events.ON_BLUR)
+    @ViewEvent(componentID = "cachingTime", eventName = Events.ON_CHANGE)
     public void setCachingTime() throws InterruptedException {
         cachingTimeModel.setValue(cachingTime.getValue());
         turntobackofficeService.saveToTurnToStore(cachingTimeModel);
         Messagebox.show("Caching time has been changed");
     }
 
-    @ViewEvent(componentID = "siteKey", eventName = Events.ON_BLUR)
+    @ViewEvent(componentID = "siteKey", eventName = Events.ON_CHANGE)
     public void setSiteKey() throws InterruptedException {
-        siteKeyModel.setValue(siteKey.getValue());
-        turntobackofficeService.saveToTurnToStore(siteKeyModel);
-        Messagebox.show("Site Key has been changed");
+        String oldValue = (String) siteKeyModel.getValue();
+        String newVal = siteKey.getValue().trim();
+
+        if (!oldValue.equals(newVal)) {
+            siteKeyModel.setValue(newVal);
+            turntobackofficeService.saveToTurnToStore(siteKeyModel);
+            Messagebox.show("Site Key has been changed");
+        }
     }
 
     private void init(Checkbox checkbox, Selectbox selectbox) {

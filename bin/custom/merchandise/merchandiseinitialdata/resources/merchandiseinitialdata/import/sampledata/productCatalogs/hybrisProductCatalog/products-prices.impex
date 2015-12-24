@@ -12,6 +12,9 @@ $approved=approvalstatus(code)[default='approved']
 
 UPDATE Product;code[unique=true];$prices;$approved;$catalogVersion;
 ;0001;5,00 GBP, 5,50 EUR, 7,48 USD, 765,33 JPY
+;0001_red;5,00 GBP, 5,50 EUR, 7,48 USD, 765,33 JPY
+;0001_green;5,00 GBP, 5,50 EUR, 7,48 USD, 765,33 JPY
+;0001_blue;5,00 GBP, 5,50 EUR, 7,48 USD, 765,33 JPY
 ;0002;2,50 GBP, 2,75 EUR, 3,74 USD, 382,66 JPY
 ;0003;5,00 GBP, 5,50 EUR, 7,48 USD, 765,33 JPY
 ;0004;10,00 GBP, 11,00 EUR, 14,96 USD, 1530,65 JPY
