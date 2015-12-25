@@ -268,15 +268,13 @@ public class TurntobackofficeService {
     }
 
     private List<CategoryModel> getCategories() {
-        catalogVersionService.setSessionCatalogVersion(Config.getParameter("hybris.catalog.id"), CATALOG_VERSION);
-        final FlexibleSearchQuery flexibleSearchQuery = new FlexibleSearchQuery("SELECT {cat."
-                + CategoryModel.PK
-                + "} "
-                + "FROM {"
-                + CategoryModel._TYPECODE
-                + " AS cat} ");
+//        catalogVersionService.setSessionCatalogVersion(Config.getParameter("hybris.catalog.id"), CATALOG_VERSION);
+        String query = "SELECT {cat." + CategoryModel.PK + "} " + "FROM {" + CategoryModel._TYPECODE + " AS cat} WHERE {cat."
+                + CategoryModel.CATALOGVERSION + "} = ?catalogVersion";
 
-        flexibleSearchQuery.setCatalogVersions(catalogVersionService.getCatalogVersion(Config.getParameter("hybris.catalog.id"), CATALOG_VERSION));
+        final FlexibleSearchQuery flexibleSearchQuery = new FlexibleSearchQuery(query);
+        flexibleSearchQuery.addQueryParameter("catalogVersion", catalogVersionService.getCatalogVersion(Config.getParameter("hybris.catalog.id"), CATALOG_VERSION));
+//        flexibleSearchQuery.setCatalogVersions(catalogVersionService.getCatalogVersion(Config.getParameter("hybris.catalog.id"), CATALOG_VERSION));
         final SearchResult<CategoryModel> searchResult = flexibleSearchService.search(flexibleSearchQuery);
         return searchResult.getResult();
     }
