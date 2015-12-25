@@ -8,8 +8,9 @@
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<c:set var="additionalValue" value="${rating[product.code] % 1 == 0.5 ? 0.5 : 0}"/>
 <fmt:formatNumber var="numberOfStars"
-                  value="${rating[product.code]}"
+                  value="${rating[product.code] + additionalValue}"
                   maxFractionDigits="0"/>
 
 <c:if test="${numberOfStars ne '0'}">
