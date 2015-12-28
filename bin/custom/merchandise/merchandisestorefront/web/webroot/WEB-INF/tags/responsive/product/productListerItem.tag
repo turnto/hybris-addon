@@ -13,9 +13,7 @@
                   value="${rating[product.code] + additionalValue}"
                   maxFractionDigits="0"/>
 
-<c:if test="${numberOfStars ne '0'}">
-    <div><img src="${commonResourcePath}/images/${numberOfStars}.png"></div>
-</c:if>
+<div><img src="${commonResourcePath}/images/${numberOfStars}.png"></div>
 
 <spring:theme code="text.addToCart" var="addToCartText"/>
 <c:url value="${product.url}" var="productUrl"/>
@@ -62,7 +60,6 @@
 
     </ycommerce:testId>
 </li>
-
 
 
 
