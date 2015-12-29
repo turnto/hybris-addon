@@ -1,3 +1,8 @@
 #TurnToChatterContent blockquote.TT4quote{
     border: 0;
 }
+
+#TT4questionTextWrap #TT2questionText{
+    height: 25px !important;
+    overflow: hidden !important;
+}
