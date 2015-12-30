@@ -16,9 +16,9 @@
     <c:when test="${flags.get('checkboxRating').getSetupType().getCode() eq 'staticEmbed'}">
         ${reviewContent}
     </c:when>
-    <c:otherwise>
+    <c:when test="${flags.get('checkboxRating').getSetupType().getCode() ne 'overlay'}">
         <div id="TurnToReviewsContent"></div>
-    </c:otherwise>
+    </c:when>
 </c:choose>
 
 <%--<div class="tab-review">

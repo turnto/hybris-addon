@@ -8,9 +8,9 @@
         <c:when test="${flags.get('checkboxQA').getSetupType().getCode() eq 'staticEmbed' and flags.get('checkboxQA').getFlag()and isSiteKeyInvalid eq 'false'}">
             ${qaContent}
         </c:when>
-        <c:otherwise>
+        <c:when test="${flags.get('checkboxQA').getSetupType().getCode() ne 'overlay'}">
             <div id="TurnToContent"></div>
-        </c:otherwise>
+        </c:when>
     </c:choose>
     <%--<c:if test="${not empty product.classifications}">
         <c:forEach items="${product.classifications}" var="classification">
