@@ -41,3 +41,5 @@
     </cms:pageSlot>
 
 </div>
+
+<div id="TurnToFullComments"></div>

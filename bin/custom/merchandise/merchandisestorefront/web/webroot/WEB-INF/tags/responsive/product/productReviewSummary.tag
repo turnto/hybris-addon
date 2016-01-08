@@ -65,6 +65,22 @@
                     sortOrder: "most recent",
                     minimumCommentWordCount: 0
                 },
+                fullComments: {
+                    height: "1000px",
+                    width: "1000px"
+                    //,category: "movies"
+                    ,titleMaxLength: 60
+                    ,nameMaxLength: 20
+                    ,boxWidth: "212px"
+                    ,limit:20
+                    // "centered" or "justified"
+                    ,layoutMode: "justified"
+                    // Always used for vertical spacing.
+                    // For horizontal spacing:
+                    // If layoutMode == "centered" then this is the exact spacing
+                    // If layoutMode == "justified" this value is used as the
+                    ,spacing: "20px"
+                },
                 embedCommentCapture: true,
                 postPurchaseFlow: true,
                 setTeaserCookieOnView: true
