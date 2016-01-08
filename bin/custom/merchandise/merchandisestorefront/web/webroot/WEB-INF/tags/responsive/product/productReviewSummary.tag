@@ -17,7 +17,6 @@
 <c:set var="isOverlayRating"
        value="${flags.get('checkboxRating').getFlag() eq 'true' and flags.get('checkboxRating').getSetupType().getCode() eq \"overlay\"}"/>
 <link rel="stylesheet" href="https://static.www.turnto.com/css/teasers/inputteasers.css"/>
-<link rel="stylesheet" href="${commonResourcePath}/css/custom.css"/>
 <div class="rating js-ratingCalc ${starsClass}" data-rating='{"rating":${product.averageRating},"total":5}'>
     <%--   <div class="rating-stars">
            <span class="js-ratingIcon glyphicon glyphicon-star"></span>
