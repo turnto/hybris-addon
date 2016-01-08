@@ -8,7 +8,7 @@
 	<link rel="stylesheet" type="text/css" media="all" href="${addOnCommonCss}"/>
 </c:forEach>
 
-
+<link rel="stylesheet" href="${commonResourcePath}/css/custom.css"/>
 
 
 
