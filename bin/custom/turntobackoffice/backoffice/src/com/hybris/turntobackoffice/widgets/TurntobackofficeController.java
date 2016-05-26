@@ -22,27 +22,37 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
 
-import java.util.Objects;
-
 
 public class TurntobackofficeController extends DefaultWidgetController {
+
+    public static final String DEFAULT_VERSION = "4_2";
 
     private Checkbox checkboxQA;
     private Checkbox checkboxRating;
     private Checkbox turntoOrderReporting;
     private Checkbox turntoCheckoutChatter;
+    private Checkbox buyerComments;
+    private Checkbox ccPinboard;
+
+
     private Selectbox selectboxQA;
     private Selectbox selectboxRating;
     private Textbox siteKey;
     private Intbox cachingTime;
 
+    private Selectbox selectboxVersion;
+
     private StateTurnFlagModel turntoQAModel;
     private StateTurnFlagModel turntoRatingModel;
     private StateTurnFlagModel turntoOrderReportingModel;
     private StateTurnFlagModel turntoCheckoutChatterModel;
+    private StateTurnFlagModel turntoBuyerCommentsModel;
+    private StateTurnFlagModel turntoCCPinboardModel;
+
     private TurnToGeneralStoreModel cachingTimeModel;
     private TurnToGeneralStoreModel siteKeyModel;
     private TurnToGeneralStoreModel invalidResponseModel;
+    private TurnToGeneralStoreModel curentVersionModel;
 
     @WireVariable
     private TurntobackofficeService turntobackofficeService;
@@ -54,9 +64,12 @@ public class TurntobackofficeController extends DefaultWidgetController {
         init(checkboxRating, selectboxRating);
         init(turntoOrderReporting, null);
         init(turntoCheckoutChatter, null);
+        init(buyerComments, null);
+        init(ccPinboard, null);
         init(cachingTime);
         init(siteKey);
         init(invalidResponseModel, "isSiteKeyInvalid");
+        initVersionModel(selectboxVersion);
     }
 
     @ViewEvent(componentID = "sendFeedBtn", eventName = Events.ON_CLICK)
@@ -82,6 +95,16 @@ public class TurntobackofficeController extends DefaultWidgetController {
     @ViewEvent(componentID = "turntoCheckoutChatter", eventName = Events.ON_CHECK)
     public void turnCheckoutChatter() throws InterruptedException {
         updateTurntoModuleStatus(turntoCheckoutChatter, null, turntoCheckoutChatterModel);
+    }
+
+    @ViewEvent(componentID = "buyerComments", eventName = Events.ON_CHECK)
+    public void buyerComments() throws InterruptedException {
+        updateTurntoModuleStatus(buyerComments, null, turntoBuyerCommentsModel);
+    }
+
+    @ViewEvent(componentID = "ccPinboard", eventName = Events.ON_CHECK)
+    public void ccPinboard() throws InterruptedException {
+        updateTurntoModuleStatus(ccPinboard, null, turntoCCPinboardModel);
     }
 
     @ViewEvent(componentID = "selectboxQA", eventName = Events.ON_SELECT)
@@ -113,6 +136,11 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
             Messagebox.show("Site Key has been changed");
         }
+    }
+
+    @ViewEvent(componentID = "selectboxVersion", eventName = Events.ON_SELECT)
+    public void selectCurentVesion() throws InterruptedException {
+        updateCurrentVersion(selectboxVersion, curentVersionModel);
     }
 
     private void init(Checkbox checkbox, Selectbox selectbox) {
@@ -161,6 +189,24 @@ public class TurntobackofficeController extends DefaultWidgetController {
         invalidResponseModel = model;
     }
 
+    private void initVersionModel(Selectbox selectVersion) {
+        String version = DEFAULT_VERSION;
+
+        curentVersionModel = turntobackofficeService.loadFromTurnToStoreByKey(selectVersion.getId());
+
+        if (curentVersionModel == null) {
+            curentVersionModel = new TurnToGeneralStoreModel();
+            curentVersionModel.setKey(selectVersion.getId());
+            curentVersionModel.setValue(version);
+            turntobackofficeService.saveToTurnToStore(curentVersionModel);
+        } else {
+            version = (String) curentVersionModel.getValue();
+        }
+
+        ((ListModelList) selectVersion.getModel()).addSelection(version);
+
+    }
+
     private TurnToGeneralStoreModel fillEmptyGeneralStoreModel(TurnToGeneralStoreModel model, String key) {
         if (model == null) {
             model = new TurnToGeneralStoreModel();
@@ -201,6 +247,12 @@ public class TurntobackofficeController extends DefaultWidgetController {
                 break;
             case "turntoOrderReporting":
                 turntoOrderReportingModel = model;
+                break;
+            case "buyerComments":
+                turntoBuyerCommentsModel = model;
+                break;
+            case "ccPinboard":
+                turntoCCPinboardModel = model;
                 break;
             default:
                 turntoCheckoutChatterModel = model;
@@ -243,5 +295,15 @@ public class TurntobackofficeController extends DefaultWidgetController {
         if (!"overlay".equals(type)) return type + "Embed";
 
         return type;
+    }
+
+    private void updateCurrentVersion(Selectbox selectVersion, TurnToGeneralStoreModel curentVersionModel) throws InterruptedException {
+        int index = selectVersion.getSelectedIndex();
+        String selectedVersion = (String) selectVersion.getModel().getElementAt(index);
+
+        curentVersionModel.setValue(selectedVersion);
+        turntobackofficeService.saveToTurnToStore(curentVersionModel);
+
+        Messagebox.show("Current version has been changed");
     }
 }

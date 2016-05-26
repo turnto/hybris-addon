@@ -31,6 +31,7 @@ import java.util.Map;
 public class DefaultTurnToContentFacade implements TurnToContentFacade {
     private static final Logger LOG = Logger.getLogger(DefaultTurnToContentFacade.class);
 
+
     private TurnToContentService turnToContentService;
     private ModelService modelService;
     private TurnToGeneralStoreModel invalidResponseModel;
@@ -40,6 +41,7 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     private static final String[] APPENDIXES = {"/d/catitemreviewshtml", "/d/catitemhtml"};
     private static final String PRODUCT_JSON_URL = "http://static.www.turnto.com/sitedata/";
     private static final String PRODUCT_JSON_URL_CHUNCK = "/d/exportjson/5fU9iBPSPCoEQzqauth";
+    private static final String DEFAULT_VERSION = "4_2";
 
     @Override
     public void populateModelWithContent(Model model, String productId) {
@@ -85,6 +87,23 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
         model.addAttribute("rating", rating);
     }
 
+    @Override
+    public void populateModelBuyerComments(Model model, List<ProductData> productData) {
+        Map<String, String> comments = new HashMap<>();
+        createCommentsAttribute(productData, comments);
+
+        model.addAttribute("countBuyerComment", comments);
+    }
+
+    @Override
+    public void populateModelWithTurnToVersion(Model model) {
+        model.addAttribute("currentVersion", getCurrentVersion());
+    }
+
+    public String getAverageRatingForProduct(String id) {
+        return getAverageRatingById(id);
+    }
+
     public ModelService getModelService() {
         return modelService;
     }
@@ -103,10 +122,6 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
         this.turnToContentService = turnToContentService;
     }
 
-    public String getAverageRatingForProduct(String id) {
-        return getAverageRatingById(id);
-    }
-
     private void createRatingAttribute(List<ProductData> productData, Map<String, String> rating) {
         for (ProductData pd : productData) {
             String id = pd.getCode();
@@ -116,19 +131,63 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
         }
     }
 
+    private void createCommentsAttribute(List<ProductData> productData, Map<String, String> comments) {
+        for (ProductData pd : productData) {
+            String id = pd.getCode();
+            String averageRating = getCountBuyerCommentsById(id);
+
+            comments.put(id, averageRating);
+        }
+    }
+
+    private String getCountBuyerCommentsById(String id) {
+        String countBuyerComments = "";
+        try {
+            StringBuilder response = getExportFromTurnTo(id);
+
+            if (StringUtils.isNotBlank(response.toString())) {
+                countBuyerComments = getValueFromTurnToItem(response, "comments", "commentCount", "0");
+            }
+
+        } catch (IOException e) {
+            LOG.error("Error while getting count buyer comments from TurnTo service, cause: ", e);
+        }
+        return countBuyerComments;
+    }
+
     private String getAverageRatingById(String id) {
         String averageRating = "";
         try {
-            URL url = new URL(PRODUCT_JSON_URL + getSiteKey() + "/" + id + PRODUCT_JSON_URL_CHUNCK);
-            StringBuilder response = getResponse(url);
+            StringBuilder response = getExportFromTurnTo(id);
 
-            if (StringUtils.isNotBlank(response.toString())) averageRating = parseAverageRating(response);
+            if (StringUtils.isNotBlank(response.toString())){
+                averageRating = getValueFromTurnToItem(response, "reviews", "averageRating", "0");
+            }
+
         } catch (IOException e) {
             LOG.error("Error while getting average rating from TurnTo service, cause: ", e);
         }
         return averageRating;
     }
 
+    private StringBuilder getExportFromTurnTo(String id) throws IOException {
+        URL url = new URL(PRODUCT_JSON_URL + getSiteKey() + "/" + id + PRODUCT_JSON_URL_CHUNCK);
+        return getResponse(url);
+    }
+
+    private String getValueFromTurnToItem(StringBuilder response, String arrayKey, String key, String defaultValue) {
+        try {
+            final JSONObject obj = new JSONObject(response.toString());
+            final JSONObject reviews = (JSONObject) obj.getJSONArray(arrayKey).get(0);
+            final JSONObject item = (JSONObject) reviews.get("item");
+
+            return String.valueOf(item.get(key));
+
+        } catch (JSONException e) {
+            LOG.info("There are no " + arrayKey + " for the item yet");
+            return defaultValue;
+        }
+    }
 
     private String parseAverageRating(StringBuilder response) {
         try {
@@ -172,9 +231,11 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
         model.setProductId(id);
         model.setTimestamp(getTimestamp());
 
+        String currentVersion = "/v" + getCurrentVersion() + "/";
+
         try {
             for (String appendix : APPENDIXES) {
-                URL url = new URL(SOURCE_URL + getSiteKey() + "/v4_2/" + id + appendix);
+                URL url = new URL(SOURCE_URL + getSiteKey() + currentVersion + id + appendix);
                 StringBuilder response = getResponse(url);
 
                 validateResponse(response);
@@ -191,7 +252,9 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
         if (response.toString().contains("site does not exist")) {
             LOG.error(response);
             invalidResponseModel.setValue(true);
-        } else invalidResponseModel.setValue(false);
+        } else {
+            invalidResponseModel.setValue(false);
+        }
 
         modelService.save(invalidResponseModel);
     }
@@ -239,6 +302,16 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
         return (Boolean) getSiteKeyValidationModel().getValue();
     }
 
+    private String getCurrentVersion() {
+        List<TurnToGeneralStoreModel> selectboxVersion = turnToContentService.getItemFromTurnToGeneralStore("selectboxVersion");
+
+        if (selectboxVersion.isEmpty()) {
+            return DEFAULT_VERSION;
+        }
+
+        return (String) selectboxVersion.get(0).getValue();
+    }
+
     private StringBuilder getResponse(URL url) throws IOException {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
@@ -255,6 +328,5 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
         in.close();
         return response;
     }
-
 
 }

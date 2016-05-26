@@ -8,6 +8,16 @@
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags" %>
 
 
+<c:choose>
+	<c:when test="${countBuyerComment[product.code] > 1}">
+		<c:set var="comments" value="${countBuyerComment[product.code]} Buyer Comments"/>
+	</c:when>
+	<c:otherwise>
+		<c:set var="comments" value="${countBuyerComment[product.code]} Buyer Comment"/>
+	</c:otherwise>
+</c:choose>
+
+
 <spring:theme code="text.addToCart" var="addToCartText"/>
 <c:url value="${product.url}" var="productUrl"/>
 <c:set value="${not empty product.potentialPromotions}" var="hasPromotion"/>
@@ -19,7 +29,13 @@
 		</a>
 		<div class="details">
 
-			<ycommerce:testId code="product_productName"><a class="name" href="${productUrl}">${product.name}</a></ycommerce:testId>
+			<ycommerce:testId code="product_productName">
+				<a class="name" href="${productUrl}">${product.name}</a>
+
+				<c:if test="${flags.get('buyerComments').getFlag() eq 'true'}">
+					<a class="name" href="${productUrl}">${comments}</a>
+				</c:if>
+			</ycommerce:testId>
 		
 
 			<c:if test="${not empty product.potentialPromotions}">

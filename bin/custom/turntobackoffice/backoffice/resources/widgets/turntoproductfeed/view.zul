@@ -9,11 +9,41 @@
         ListModelList modesForRating = new ListModelList(modeArray);
         modesForRating.addToSelection("static");
 
+        String[] versionArray= {"4_2", "4_3"};
+        ListModelList versions = new ListModelList(versionArray);
+        modesForQA.addToSelection("4_2");
+
     ]]></zscript>
+
+    <script type="text/javascript">
+           function addFeedPurchaseOrder(params){
+              console.log(JSON.parse(params).name);
+        }
+
+<!--        TurnToFeed.addFeedPurchaseOrder({
+            orderId: "${orderData.code}",
+            email: "${email}",
+            firstName: "${user.firstName}",
+            lastName: "${user.lastName}"
+        });
+        $.each($('.product'), function (i, item) {
+            TurnToFeed.addFeedLineItem({
+            title: $(item).data('name'),
+            url: $(item).data('url'),
+            sku: $(item).data('id'),
+            price: $(item).data('price'),
+            itemImageUrl: $(item).data('img')
+        });
+        });-->
+    </script>
 
     <div sclass="main-container">
         <vlayout sclass="content-vlayout">
             <button id="sendFeedBtn" label="Send catalog feed!" sclass="button-custom"/>
+        </vlayout>
+
+        <vlayout sclass="content-vlayout">
+            <button id="sendTransactionsFeedBtn" label="Send transactions feed!" sclass="button-custom"/>
         </vlayout>
 
         <vlayout sclass="content-vlayout">
@@ -32,6 +62,18 @@
 
         <vlayout sclass="content-vlayout">
             <hlayout>
+                <label>Version:</label>
+                <selectbox model="${versions}" id="selectboxVersion">
+                    <template name="model">
+                        ${each}
+                    </template>
+                </selectbox>
+            </hlayout>
+
+        </vlayout>
+
+         <vlayout sclass="content-vlayout">
+            <hlayout>
                 <label>Q&amp;A</label>
                 <checkbox id="checkboxQA"/>
 
@@ -43,6 +85,7 @@
             </hlayout>
 
         </vlayout>
+
         <vlayout sclass="content-vlayout">
             <hlayout>
                 <label>Rating &amp; Reviews</label>
@@ -56,16 +99,32 @@
             </hlayout>
 
         </vlayout>
+
         <vlayout sclass="content-vlayout">
             <hlayout>
                 <label>Order Reporting</label>
                 <checkbox id="turntoOrderReporting"/>
             </hlayout>
         </vlayout>
+
         <vlayout sclass="content-vlayout">
             <hlayout>
                 <label>Checkout Chatter</label>
                 <checkbox id="turntoCheckoutChatter"/>
+            </hlayout>
+        </vlayout>
+
+        <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label>Buyer Comments</label>
+                <checkbox id="buyerComments"/>
+            </hlayout>
+        </vlayout>
+
+        <vlayout sclass="content-vlayout" >
+            <hlayout>
+                <label id="ccPinboardLabel">Checkout Comments (Pinboard)</label>
+                <checkbox id="ccPinboard"/>
             </hlayout>
         </vlayout>
 

@@ -47,6 +47,7 @@
 </div>
 
 <script type="text/javascript">
+    var TurnToGallerySkus= ["0005"];
     var turnToConfig = {
                 siteKey: "${siteKey}",
                 setupType: "${flags.get('checkboxQA').getSetupType().getCode()}",
@@ -65,20 +66,23 @@
                     minimumCommentWordCount: 0
                 },
                 fullComments: {
-                    height: "1000px",
-                    width: "1000px"
-                    //,category: "movies"
-                    ,titleMaxLength: 60
-                    ,nameMaxLength: 20
-                    ,boxWidth: "212px"
-                    ,limit:20
-                    // "centered" or "justified"
-                    ,layoutMode: "justified"
+                    height: "500px",
+                    width: "1380px",
+                    titleMaxLength: 60,
+                    nameMaxLength: 20,
+                    boxWidth: "200px",
+                    limit:20,
+                    layoutMode: "justified",
                     // Always used for vertical spacing.
                     // For horizontal spacing:
                     // If layoutMode == "centered" then this is the exact spacing
-                    // If layoutMode == "justified" this value is used as the
-                    ,spacing: "20px"
+                    // If layoutMode == "justified" this value is used as the,
+                    spacing: "50px",
+                    maxDaysOld:-1
+                },
+                gallery: {
+                    // configuration options...
+                    // title: ‘Custom Title’ <- example
                 },
                 embedCommentCapture: true,
                 postPurchaseFlow: true,
@@ -95,7 +99,7 @@
         var tt = document.createElement('script');
         tt.type = 'text/javascript';
         tt.async = true;
-        tt.src = document.location.protocol + "//static.www.turnto.com/traServer4_2/trajs/" + turnToConfig.siteKey + "/tra.js";
+        tt.src = document.location.protocol + "//static.www.turnto.com/traServer${currentVersion}/trajs/" + turnToConfig.siteKey + "/tra.js";
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(tt, s);
     })();
@@ -104,17 +108,30 @@
         var t = document.createElement('script');
         t.type = 'text/javascript';
         t.async = true;
-        t.src = document.location.protocol + "//static.www.turnto.com/sitedata/" + turnToConfig.siteKey + "/v4_2/" + TurnToItemSku + "/d/itemjs";
+        t.src = document.location.protocol + "//static.www.turnto.com/sitedata/" + turnToConfig.siteKey + "/v${currentVersion}/" + TurnToItemSku + "/d/itemjs";
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(t, s);
     })();
+
+    if (${currentVersion eq "4_3"}) {
+        (function () {
+            var gallery = document.createElement('script');
+            gallery.type = 'text/javascript';
+            gallery.async = true;
+            gallery.src = document.location.protocol + "//static.www.turnto.com/traServer4_3/galleryjs/" + turnToConfig.siteKey + "/turnto-gallery.js";
+
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(gallery, s);
+        })();
+    }
+
 
     if (${flags.get('turntoCheckoutChatter').getFlag()}) {
         (function () {
             var t = document.createElement('script');
             t.type = 'text/javascript';
             t.async = true;
-            t.src = document.location.protocol + "//static.www.turnto.com/traServer4_2/chatterjs/" + turnToConfig.siteKey + "/turnto-chatter.js";
+            t.src = document.location.protocol + "//static.www.turnto.com/traServer${currentVersion}/chatterjs/" + turnToConfig.siteKey + "/turnto-chatter.js";
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(t, s);
         })();

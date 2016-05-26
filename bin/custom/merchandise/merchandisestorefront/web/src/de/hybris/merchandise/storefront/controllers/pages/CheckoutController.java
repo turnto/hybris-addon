@@ -190,6 +190,7 @@ public class CheckoutController extends AbstractCheckoutController {
 
         turnToContentFacade.populateModelWithTurnToFlags(model);
         turnToContentFacade.populateModelWithTurnToSiteKey(model);
+        turnToContentFacade.populateModelWithTurnToVersion(model);
         model.addAttribute("orderCode", orderCode);
         model.addAttribute("orderData", orderDetails);
         model.addAttribute("allItems", orderDetails.getEntries());

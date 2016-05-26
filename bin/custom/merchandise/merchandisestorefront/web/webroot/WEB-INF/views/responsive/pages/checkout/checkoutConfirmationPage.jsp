@@ -74,20 +74,41 @@
     var turnToConfig = {
         siteKey: "${siteKey}",
         orderConfFlowPauseSeconds: 3,
-        postPurchaseFlow: true
+        postPurchaseFlow: true,
+        commentCaptureShowUsername: true,
+        recentComments: {
+            height: "300px",
+            width: "310px",
+            // category: "movies",
+            // low or high
+            frequency: "high",
+            // Only used when frequency = low
+            timeWindowInHours: 48,
+            // crawlUp, zoomUp, none
+            animationType: "none",
+            animationFreqInMs: 5000
+            // Optional: Change "What's this" copy
+            ,titleMaxLength: 60
+            ,nameMaxLength: 20
+            // Optional: The URL of the full page checkout chatter
+            //,fullPageUrl: ""
+            // Optional: Change header copy
+            //,header: "My custom header here"
+        }
     };
 
     (function () {
         var tt = document.createElement('script');
         tt.type = 'text/javascript';
         tt.async = true;
-        tt.src = document.location.protocol + "//static.www.turnto.com/traServer4_2/trajs/" + turnToConfig.siteKey + "/tra.js";
+        tt.src = document.location.protocol + "//static.www.turnto.com/traServer${currentVersion}/trajs/" + turnToConfig.siteKey + "/tra.js";
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(tt, s);
     })();
+
 </script>
 
-<script type="text/javascript" src="//static.www.turnto.com/tra4_2/turntoFeed.js"></script>
+<script type="text/javascript" src="//static.www.turnto.com/tra${currentVersion}/turntoFeed.js"></script>
 
 <script type="text/javascript">
     TurnToFeed.addFeedPurchaseOrder({

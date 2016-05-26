@@ -9,6 +9,16 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:set var="additionalValue" value="${rating[product.code] % 1 == 0.5 ? 0.5 : 0}"/>
+
+<c:choose>
+    <c:when test="${countBuyerComment[product.code] > 1}">
+        <c:set var="comments" value="${countBuyerComment[product.code]} Buyer Comments"/>
+    </c:when>
+    <c:otherwise>
+        <c:set var="comments" value="${countBuyerComment[product.code]} Buyer Comment"/>
+    </c:otherwise>
+</c:choose>
+
 <fmt:formatNumber var="numberOfStars"
                   value="${rating[product.code] + additionalValue}"
                   maxFractionDigits="0"/>
@@ -28,6 +38,9 @@
         </a>
         <ycommerce:testId code="searchPage_productName_link_${product.code}">
             <a class="name" href="${productUrl}">${product.name}</a>
+            <c:if test="${flags.get('buyerComments').getFlag() eq 'true'}">
+                <a class="name" href="${productUrl}">${comments}</a>
+            </c:if>
         </ycommerce:testId>
 
         <div class="price-panel">

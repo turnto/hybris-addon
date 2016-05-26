@@ -32,4 +32,7 @@ public interface TurnToContentFacade {
 
     String getAverageRatingForProduct(String productId);
 
+    void populateModelWithTurnToVersion(Model model);
+
+    void populateModelBuyerComments(Model model, List<ProductData> results);
 }

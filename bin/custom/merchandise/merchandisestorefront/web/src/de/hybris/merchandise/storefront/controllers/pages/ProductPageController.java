@@ -140,6 +140,7 @@ public class ProductPageController extends AbstractPageController {
 
         setAverageRating(productCode, productModel);
         turnToContentFacade.populateModelWithTurnToSiteKey(model);
+        turnToContentFacade.populateModelWithTurnToVersion(model);
         turnToContentFacade.populateModelWithTurnToFlags(model);
         turnToContentFacade.populateModelWithContent(model, productCode);
         turnToContentFacade.populateModelWithSiteKeyValidationFlag(model);

@@ -55,10 +55,12 @@ public class CategoryPageController extends AbstractCategoryPageController {
                            @RequestParam(value = "show", defaultValue = "Page") final ShowMode showMode,
                            @RequestParam(value = "sort", required = false) final String sortCode, final Model model,
                            final HttpServletRequest request, final HttpServletResponse response) throws UnsupportedEncodingException {
+
+        turnToContentFacade.populateModelWithTurnToFlags(model);
         renderProductRating(categoryCode, searchQuery, page, showMode, sortCode, model);
+        populateBuyerComments(categoryCode, searchQuery, page, showMode, sortCode, model);
         return performSearchAndGetResultsPage(categoryCode, searchQuery, page, showMode, sortCode, model, request, response);
     }
-
 
 
     @ResponseBody
@@ -86,6 +88,21 @@ public class CategoryPageController extends AbstractCategoryPageController {
                                      @RequestParam(value = "page", defaultValue = "0") int page,
                                      @RequestParam(value = "show", defaultValue = "Page") ShowMode showMode,
                                      @RequestParam(value = "sort", required = false) String sortCode, Model model) {
+        final ProductCategorySearchPageData<SearchStateData, ProductData, CategoryData> searchPageData = getProductCategorySearchPageData(categoryCode, searchQuery, page, showMode, sortCode);
+
+        turnToContentFacade.populateModelWithRating(model, searchPageData.getResults());
+    }
+
+    private void populateBuyerComments(String categoryCode, String searchQuery, int page, ShowMode showMode, String sortCode, Model model) {
+        final ProductCategorySearchPageData<SearchStateData, ProductData, CategoryData> searchPageData = getProductCategorySearchPageData(categoryCode, searchQuery, page, showMode, sortCode);
+
+        turnToContentFacade.populateModelBuyerComments(model, searchPageData.getResults());
+
+    }
+
+    private ProductCategorySearchPageData<SearchStateData, ProductData, CategoryData> getProductCategorySearchPageData(
+            String categoryCode, String searchQuery, int page, ShowMode showMode, String sortCode) {
+
         final CategoryModel category = getCommerceCategoryService().getCategoryForCode(categoryCode);
         final CategoryPageModel categoryPage = getCategoryPage(category);
         final CategorySearchEvaluator categorySearch = new CategorySearchEvaluator(
@@ -98,8 +115,8 @@ public class CategoryPageController extends AbstractCategoryPageController {
 
         categorySearch.doSearch();
 
-        final ProductCategorySearchPageData<SearchStateData, ProductData, CategoryData> searchPageData = categorySearch.getSearchPageData();
-
-        turnToContentFacade.populateModelWithRating(model, searchPageData.getResults());
+        return categorySearch.getSearchPageData();
     }
+
+
 }

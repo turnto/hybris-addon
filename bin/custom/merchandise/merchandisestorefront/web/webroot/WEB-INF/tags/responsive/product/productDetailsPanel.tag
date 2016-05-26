@@ -54,4 +54,5 @@
 	</div>
 </div>
 <span id="TurnToChatterContent"></span>
+<div id="TurnToGalleryContent"></div>
 

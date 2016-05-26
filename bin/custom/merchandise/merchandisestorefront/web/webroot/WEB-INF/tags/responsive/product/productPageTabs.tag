@@ -42,4 +42,8 @@
 
 </div>
 
-<div id="TurnToFullComments"></div>
+<%----%>
+<c:if test="${flags.get('ccPinboard').getFlag() eq 'true' and isSiteKeyInvalid eq 'false'}">
+    <div id="TurnToFullComments"></div>
+</c:if>
+
