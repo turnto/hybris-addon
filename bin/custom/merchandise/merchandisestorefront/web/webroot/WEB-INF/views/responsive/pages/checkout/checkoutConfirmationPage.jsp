@@ -45,7 +45,7 @@
 
     <div id="TurnToRecentComments"></div>
     <div id="TT3commentCapture"></div>
-    <div id="TTcommentCapture"></div>
+    <%--<div id="TTcommentCapture"></div>--%>
     <div>
             <%--@elvariable id="allItems" type="java.util.List<de.hybris.platform.commercefacades.order.data.OrderEntryData>"--%>
         <c:forEach items="${allItems}" var="item">
@@ -75,8 +75,8 @@
         siteKey: "${siteKey}",
         orderConfFlowPauseSeconds: 3,
         postPurchaseFlow: true,
-        commentCaptureShowUsername: true,
-        recentComments: {
+        commentCaptureShowUsername: true
+/*        recentComments: {
             height: "300px",
             width: "310px",
             // category: "movies",
@@ -94,7 +94,7 @@
             //,fullPageUrl: ""
             // Optional: Change header copy
             //,header: "My custom header here"
-        }
+        }*/
     };
 
     (function () {

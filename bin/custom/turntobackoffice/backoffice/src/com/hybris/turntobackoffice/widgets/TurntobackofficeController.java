@@ -12,7 +12,9 @@
 package com.hybris.turntobackoffice.widgets;
 
 import com.hybris.cockpitng.annotations.ViewEvent;
+import com.hybris.cockpitng.util.CockpitComponentsUtils;
 import com.hybris.cockpitng.util.DefaultWidgetController;
+import com.hybris.cockpitng.util.WidgetUtils;
 import com.hybris.turntobackoffice.enums.SetupType;
 import com.hybris.turntobackoffice.model.StateTurnFlagModel;
 import com.hybris.turntobackoffice.model.TurnToGeneralStoreModel;
@@ -33,11 +35,14 @@ public class TurntobackofficeController extends DefaultWidgetController {
     private Checkbox turntoCheckoutChatter;
     private Checkbox buyerComments;
     private Checkbox ccPinboard;
+    private Checkbox customerGallery;
 
 
     private Selectbox selectboxQA;
     private Selectbox selectboxRating;
     private Textbox siteKey;
+    private Textbox authKey;
+
     private Intbox cachingTime;
 
     private Selectbox selectboxVersion;
@@ -48,9 +53,11 @@ public class TurntobackofficeController extends DefaultWidgetController {
     private StateTurnFlagModel turntoCheckoutChatterModel;
     private StateTurnFlagModel turntoBuyerCommentsModel;
     private StateTurnFlagModel turntoCCPinboardModel;
+    private StateTurnFlagModel turntoCustomerGalleryModel;
 
     private TurnToGeneralStoreModel cachingTimeModel;
     private TurnToGeneralStoreModel siteKeyModel;
+    private TurnToGeneralStoreModel authKeyModel;
     private TurnToGeneralStoreModel invalidResponseModel;
     private TurnToGeneralStoreModel curentVersionModel;
 
@@ -66,10 +73,14 @@ public class TurntobackofficeController extends DefaultWidgetController {
         init(turntoCheckoutChatter, null);
         init(buyerComments, null);
         init(ccPinboard, null);
+        init(customerGallery, null);
         init(cachingTime);
         init(siteKey);
+        initAuthKey(authKey);
         init(invalidResponseModel, "isSiteKeyInvalid");
         initVersionModel(selectboxVersion);
+        initHiddenWidgets();
+
     }
 
     @ViewEvent(componentID = "sendFeedBtn", eventName = Events.ON_CLICK)
@@ -107,6 +118,11 @@ public class TurntobackofficeController extends DefaultWidgetController {
         updateTurntoModuleStatus(ccPinboard, null, turntoCCPinboardModel);
     }
 
+    @ViewEvent(componentID = "customerGallery", eventName = Events.ON_CHECK)
+    public void customerGallery() throws InterruptedException {
+        updateTurntoModuleStatus(customerGallery, null, turntoCustomerGalleryModel);
+    }
+
     @ViewEvent(componentID = "selectboxQA", eventName = Events.ON_SELECT)
     public void selectQAMode() throws InterruptedException {
         updateSetupType(checkboxQA, selectboxQA, turntoQAModel);
@@ -138,8 +154,23 @@ public class TurntobackofficeController extends DefaultWidgetController {
         }
     }
 
+    @ViewEvent(componentID = "authKey", eventName = Events.ON_CHANGE)
+    public void setAuthKey() throws InterruptedException {
+        String oldValue = (String) authKeyModel.getValue();
+        String newVal = authKey.getValue().trim();
+
+        if (!oldValue.equals(newVal)) {
+            authKeyModel.setValue(newVal);
+            turntobackofficeService.saveToTurnToStore(authKeyModel);
+            turntobackofficeService.invalidateCache();
+
+            Messagebox.show("Auth Key has been changed");
+        }
+    }
+
     @ViewEvent(componentID = "selectboxVersion", eventName = Events.ON_SELECT)
     public void selectCurentVesion() throws InterruptedException {
+        hideWidgets();
         updateCurrentVersion(selectboxVersion, curentVersionModel);
     }
 
@@ -207,6 +238,27 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
     }
 
+    private void initHiddenWidgets() {
+        hideWidgets();
+    }
+
+    private void initAuthKey(Textbox authKey) {
+        String siteKey = "Enter your Auth Key";
+
+        authKeyModel = turntobackofficeService.loadFromTurnToStoreByKey(authKey.getId());
+
+        if (authKeyModel == null) {
+            authKeyModel = new TurnToGeneralStoreModel();
+            authKeyModel.setKey(authKey.getId());
+            authKeyModel.setValue(siteKey);
+            turntobackofficeService.saveToTurnToStore(authKeyModel);
+        } else {
+            siteKey = (String) authKeyModel.getValue();
+        }
+
+        authKey.setValue(siteKey);
+    }
+
     private TurnToGeneralStoreModel fillEmptyGeneralStoreModel(TurnToGeneralStoreModel model, String key) {
         if (model == null) {
             model = new TurnToGeneralStoreModel();
@@ -254,6 +306,9 @@ public class TurntobackofficeController extends DefaultWidgetController {
             case "ccPinboard":
                 turntoCCPinboardModel = model;
                 break;
+            case "customerGallery":
+                turntoCustomerGalleryModel = model;
+                break;
             default:
                 turntoCheckoutChatterModel = model;
                 break;
@@ -298,12 +353,26 @@ public class TurntobackofficeController extends DefaultWidgetController {
     }
 
     private void updateCurrentVersion(Selectbox selectVersion, TurnToGeneralStoreModel curentVersionModel) throws InterruptedException {
-        int index = selectVersion.getSelectedIndex();
-        String selectedVersion = (String) selectVersion.getModel().getElementAt(index);
+        String selectedVersion = getSelectedVersion(selectVersion);
 
         curentVersionModel.setValue(selectedVersion);
         turntobackofficeService.saveToTurnToStore(curentVersionModel);
 
         Messagebox.show("Current version has been changed");
     }
+
+    private String getSelectedVersion(Selectbox selectboxVersion) {
+        int index = selectboxVersion.getSelectedIndex();
+        return (String) selectboxVersion.getModel().getElementAt(index);
+    }
+
+    private void hideWidgets() {
+        String selectedVersion = getSelectedVersion(selectboxVersion);
+
+        boolean showNewWidgets = selectedVersion.equals(DEFAULT_VERSION);
+
+        Component customerGallery = getWidgetInstanceManager().getWidgetslot().getFellow("customer-gallery");
+        customerGallery.setVisible(!showNewWidgets);
+    }
+
 }

@@ -86,13 +86,14 @@
                 },
                 embedCommentCapture: true,
                 postPurchaseFlow: true,
-                setTeaserCookieOnView: true
+                setTeaserCookieOnView: true,
+                loadRteaserAfterChatter: true
             },
             TurnToChatterSku = "${product.code}",
             TurnToItemSku = "${product.code}";
 
     if (!${isOverlayRating}) {
-        turnToConfig.reviewsTeaserFunc = customReviewsTeaser;
+        turnToConfig.reviewsTeaserFunc = customReviewsTeaserDisplayWithCommentsLink;
     }
 
     (function () {
@@ -226,6 +227,71 @@
         iteasers.find('.TTreadReviews').click(teaserClickFn);
         iteasers.find('.TTwriteReview').click(teaserClickFn);
     }
+
+
+    function customReviewsTeaserDisplayWithCommentsLink(data){
+
+        var iteasers = TurnTojQuery(".TurnToReviewsTeaser");
+
+        // round the average rating to the nearest tenth
+        var rating = Math.round((TurnToItemData.counts.ar + 0.25) * 100.0) / 100.0;
+        rating = rating.toString();
+        var decimal = parseInt(rating.substring(2, 3))
+        rating = rating.substring(0, 1) + "-" + (decimal >= 5 ? '5' : '0')
+
+        var commentCnt = TurnToItemData.counts.c;
+        // this next if can be left out if you don't have the
+        // TurnToChatterContent widget/div on the page
+        if(turnToConfig != undefined && turnToConfig.loadRteaserAfterChatter == true){
+            commentCnt = TurnToItemData.counts.ccWdgtC;
+        }
+
+        var html = '<div>';
+        // if don't want 5 empty stars to display when no reviews,
+        // can wrap this next line in an if(TurnToItemData.counts.ar > 0)
+        html += '<div class="TT2left TTratingBox TTrating-' + rating + '"></div>';
+        if(TurnToItemData.counts.r == 0 && commentCnt == 0) {
+            html += '<div><a class="TTwriteReview" href="javascript:void(0);">Be the first to write a review</a></div>';
+        } else {
+            html += '<div class="TTratingLinks">';
+            if(TurnToItemData.counts.r > 0) {
+                html += ' <a class="TTreadReviews" href="javascript:void(0)">Read ' + TurnToItemData.counts.r + ' Review' + (TurnToItemData.counts.r == 1 ? '' : 's') + '</a>';
+            }
+            if(commentCnt > 0) {
+                if(TurnToItemData.counts.r > 0) {
+                    html += ' | ';
+                }
+                html += ' <a class="TTreadComments" href="javascript: void(0)">';
+                if(TurnToItemData.counts.r == 0) {
+                    html += ' Read ';
+                }
+                html += commentCnt + ' Buyer Comment' + (commentCnt == 1 ? '' : 's') + '</a>';
+            }
+            html += ' or <a class="TTwriteReview" href="javascript:void(0)">Write a Review</a>' +
+                    '</div>' +
+                    '<div class="TTclear"></div>';
+
+        }
+        html += '</div>';
+        iteasers.html(html);
+
+        iteasers.find('.TTreadReviews').click(clickReviewsTabFromTeaser);
+        iteasers.find('.TTwriteReview').click(function(){TurnTo.writeReview()});
+        iteasers.find('.TTreadComments').click(clickCommentsFromTeaser);
+    }
+
+    function clickCommentsFromTeaser() {
+        // your custom implementation should go here
+
+        //var idForScrollTo = '#TurnToContent'; // use this one if qa widget is in page
+        var idForScrollTo = '#TurnToChatterContent'; // use this one if checkout chatter widget is in page
+
+        // this implementation assumes the widget is directly visible in page not under a tab
+        TurnTojQuery('html, body').animate({
+            scrollTop: TurnTojQuery(idForScrollTo).offset().top
+        });
+    }
+
 
     function clickReviewsTab(tab) {
         $(tab).find('a').click();

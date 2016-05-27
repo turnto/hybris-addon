@@ -62,6 +62,13 @@
 
         <vlayout sclass="content-vlayout">
             <hlayout>
+                <label value="Auth Key:"/>
+                <textbox id="authKey" constraint="no empty" sclass="site-key"/>
+            </hlayout>
+        </vlayout>
+
+        <vlayout sclass="content-vlayout">
+            <hlayout>
                 <label>Version:</label>
                 <selectbox model="${versions}" id="selectboxVersion">
                     <template name="model">
@@ -123,8 +130,15 @@
 
         <vlayout sclass="content-vlayout" >
             <hlayout>
-                <label id="ccPinboardLabel">Checkout Comments (Pinboard)</label>
+                <label>Checkout Comments (Pinboard)</label>
                 <checkbox id="ccPinboard"/>
+            </hlayout>
+        </vlayout>
+
+        <vlayout sclass="content-vlayout" >
+            <hlayout id="customer-gallery">
+                <label >Customer Gallery</label>
+                <checkbox id="customerGallery" />
             </hlayout>
         </vlayout>
 

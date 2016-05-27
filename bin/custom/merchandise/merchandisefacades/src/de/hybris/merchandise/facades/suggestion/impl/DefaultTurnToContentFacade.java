@@ -40,7 +40,7 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     private static final String SOURCE_URL = "http://static.www.turnto.com/sitedata/";
     private static final String[] APPENDIXES = {"/d/catitemreviewshtml", "/d/catitemhtml"};
     private static final String PRODUCT_JSON_URL = "http://static.www.turnto.com/sitedata/";
-    private static final String PRODUCT_JSON_URL_CHUNCK = "/d/exportjson/5fU9iBPSPCoEQzqauth";
+    private static final String PRODUCT_JSON_URL_CHUNCK = "/d/exportjson/";
     private static final String DEFAULT_VERSION = "4_2";
 
     @Override
@@ -171,7 +171,7 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     }
 
     private StringBuilder getExportFromTurnTo(String id) throws IOException {
-        URL url = new URL(PRODUCT_JSON_URL + getSiteKey() + "/" + id + PRODUCT_JSON_URL_CHUNCK);
+        URL url = new URL(PRODUCT_JSON_URL + getSiteKey() + "/" + id + PRODUCT_JSON_URL_CHUNCK + getAuthKey());
         return getResponse(url);
     }
 
@@ -295,7 +295,22 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     }
 
     private String getSiteKey() {
-        return (String) turnToContentService.getItemFromTurnToGeneralStore("siteKey").get(0).getValue();
+        List<TurnToGeneralStoreModel> siteKey = turnToContentService.getItemFromTurnToGeneralStore("siteKey");
+        if (siteKey.isEmpty()) {
+            return "siteKey";
+        }
+
+        return (String) siteKey.get(0).getValue();
+    }
+
+    private String getAuthKey() {
+
+        List<TurnToGeneralStoreModel> authKey = turnToContentService.getItemFromTurnToGeneralStore("authKey");
+        if (authKey.isEmpty()) {
+            return "authKey";
+        }
+
+        return (String) authKey.get(0).getValue();
     }
 
     private Boolean isSiteKeyInvalid() {
