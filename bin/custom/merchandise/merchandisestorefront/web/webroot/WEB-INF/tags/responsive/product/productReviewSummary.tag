@@ -16,6 +16,9 @@
 
 <c:set var="isOverlayRating"
        value="${flags.get('checkboxRating').getFlag() eq 'true' and flags.get('checkboxRating').getSetupType().getCode() eq \"overlay\"}"/>
+
+<c:set var="buyerComments" value="${flags.get('buyerComments').getFlag() eq 'true'}"/>
+
 <link rel="stylesheet" href="https://static.www.turnto.com/css/teasers/inputteasers.css"/>
 <div class="rating js-ratingCalc ${starsClass}" data-rating='{"rating":${product.averageRating},"total":5}'>
     <%--   <div class="rating-stars">
@@ -230,6 +233,8 @@
 
 
     function customReviewsTeaserDisplayWithCommentsLink(data){
+        var buyerComments = ${buyerComments};
+
 
         var iteasers = TurnTojQuery(".TurnToReviewsTeaser");
 
@@ -257,16 +262,18 @@
             if(TurnToItemData.counts.r > 0) {
                 html += ' <a class="TTreadReviews" href="javascript:void(0)">Read ' + TurnToItemData.counts.r + ' Review' + (TurnToItemData.counts.r == 1 ? '' : 's') + '</a>';
             }
-            if(commentCnt > 0) {
-                if(TurnToItemData.counts.r > 0) {
+
+            if (buyerComments && commentCnt > 0) {
+                if (TurnToItemData.counts.r > 0) {
                     html += ' | ';
                 }
                 html += ' <a class="TTreadComments" href="javascript: void(0)">';
-                if(TurnToItemData.counts.r == 0) {
+                if (TurnToItemData.counts.r == 0) {
                     html += ' Read ';
                 }
                 html += commentCnt + ' Buyer Comment' + (commentCnt == 1 ? '' : 's') + '</a>';
             }
+
             html += ' or <a class="TTwriteReview" href="javascript:void(0)">Write a Review</a>' +
                     '</div>' +
                     '<div class="TTclear"></div>';
