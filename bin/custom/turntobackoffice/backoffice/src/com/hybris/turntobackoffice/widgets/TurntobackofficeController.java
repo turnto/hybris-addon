@@ -12,9 +12,7 @@
 package com.hybris.turntobackoffice.widgets;
 
 import com.hybris.cockpitng.annotations.ViewEvent;
-import com.hybris.cockpitng.util.CockpitComponentsUtils;
 import com.hybris.cockpitng.util.DefaultWidgetController;
-import com.hybris.cockpitng.util.WidgetUtils;
 import com.hybris.turntobackoffice.enums.SetupType;
 import com.hybris.turntobackoffice.model.StateTurnFlagModel;
 import com.hybris.turntobackoffice.model.TurnToGeneralStoreModel;
@@ -23,6 +21,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
+
+import java.util.Date;
 
 
 public class TurntobackofficeController extends DefaultWidgetController {
@@ -37,11 +37,15 @@ public class TurntobackofficeController extends DefaultWidgetController {
     private Checkbox ccPinboard;
     private Checkbox customerGallery;
 
+    private Checkbox ongoingTransactionsFeed;
 
     private Selectbox selectboxQA;
     private Selectbox selectboxRating;
     private Textbox siteKey;
     private Textbox authKey;
+
+    private Datebox startDate;
+    private Timebox dailyFeedTime;
 
     private Intbox cachingTime;
 
@@ -54,12 +58,15 @@ public class TurntobackofficeController extends DefaultWidgetController {
     private StateTurnFlagModel turntoBuyerCommentsModel;
     private StateTurnFlagModel turntoCCPinboardModel;
     private StateTurnFlagModel turntoCustomerGalleryModel;
+    private StateTurnFlagModel ongoingTransactionsFeedModel;
 
     private TurnToGeneralStoreModel cachingTimeModel;
     private TurnToGeneralStoreModel siteKeyModel;
     private TurnToGeneralStoreModel authKeyModel;
     private TurnToGeneralStoreModel invalidResponseModel;
     private TurnToGeneralStoreModel curentVersionModel;
+    private TurnToGeneralStoreModel dailyFeedTimeModel;
+
 
     @WireVariable
     private TurntobackofficeService turntobackofficeService;
@@ -74,18 +81,58 @@ public class TurntobackofficeController extends DefaultWidgetController {
         init(buyerComments, null);
         init(ccPinboard, null);
         init(customerGallery, null);
+        init(ongoingTransactionsFeed, null);
         init(cachingTime);
         init(siteKey);
         initAuthKey(authKey);
         init(invalidResponseModel, "isSiteKeyInvalid");
         initVersionModel(selectboxVersion);
+        initDailyFeedTime(dailyFeedTime);
         initHiddenWidgets();
 
+
+    }
+
+    private void initDailyFeedTime(Timebox dailyFeedTime) {
+        long time = new Date().getTime();
+
+        dailyFeedTimeModel = turntobackofficeService.loadFromTurnToStoreByKey(dailyFeedTime.getId());
+
+        if (dailyFeedTimeModel == null) {
+            dailyFeedTimeModel = new TurnToGeneralStoreModel();
+            dailyFeedTimeModel.setKey(dailyFeedTime.getId());
+            dailyFeedTimeModel.setValue(time);
+            turntobackofficeService.saveToTurnToStore(dailyFeedTimeModel);
+        } else {
+            time = (Long) dailyFeedTimeModel.getValue();
+        }
+
+        dailyFeedTime.setValue(new Date(time));
     }
 
     @ViewEvent(componentID = "sendFeedBtn", eventName = Events.ON_CLICK)
     public void sendProducts() throws Exception {
         Messagebox.show(turntobackofficeService.sendCatalogFeed());
+    }
+
+    @ViewEvent(componentID = "sendTransactionsFeedBtn", eventName = Events.ON_CLICK)
+    public void sendTransactionsFeed() throws Exception {
+        Date date = startDate.getValue();
+        Messagebox.show(turntobackofficeService.sendTransactionsFeed(date));
+    }
+
+    @ViewEvent(componentID = "ongoingTransactionsFeed", eventName = Events.ON_CHECK)
+    public void ongoingTransactionsFeed() throws InterruptedException {
+        boolean isChecked = ongoingTransactionsFeed.isChecked();
+
+        if (isChecked) {
+            Date date = dailyFeedTime.getValue();
+            dailyFeedTimeModel.setValue(date.getTime());
+            turntobackofficeService.saveToTurnToStore(dailyFeedTimeModel);
+        }
+
+        turntobackofficeService.turnCronJob(isChecked);
+        updateTurntoModuleStatus(ongoingTransactionsFeed, null, ongoingTransactionsFeedModel);
     }
 
     @ViewEvent(componentID = "checkboxQA", eventName = Events.ON_CHECK)
@@ -308,6 +355,9 @@ public class TurntobackofficeController extends DefaultWidgetController {
                 break;
             case "customerGallery":
                 turntoCustomerGalleryModel = model;
+                break;
+            case "ongoingTransactionsFeed":
+                ongoingTransactionsFeedModel = model;
                 break;
             default:
                 turntoCheckoutChatterModel = model;

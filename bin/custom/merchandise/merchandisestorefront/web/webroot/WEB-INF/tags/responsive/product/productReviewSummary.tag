@@ -50,7 +50,7 @@
 </div>
 
 <script type="text/javascript">
-    var TurnToGallerySkus= ["0005"];
+    var TurnToGallerySkus= ["${product.code}"];
     var turnToConfig = {
                 siteKey: "${siteKey}",
                 setupType: "${flags.get('checkboxQA').getSetupType().getCode()}",
@@ -90,7 +90,7 @@
                 embedCommentCapture: true,
                 postPurchaseFlow: true,
                 setTeaserCookieOnView: true,
-                loadRteaserAfterChatter: true
+                loadRteaserAfterChatter: false
             },
             TurnToChatterSku = "${product.code}",
             TurnToItemSku = "${product.code}";
@@ -98,6 +98,8 @@
     if (!${isOverlayRating}) {
         turnToConfig.reviewsTeaserFunc = customReviewsTeaserDisplayWithCommentsLink;
     }
+
+    <%--TurnToChatter.reset({'sku': "${product.code}"});--%>
 
     (function () {
         var tt = document.createElement('script');
@@ -122,7 +124,7 @@
             var gallery = document.createElement('script');
             gallery.type = 'text/javascript';
             gallery.async = true;
-            gallery.src = document.location.protocol + "//static.www.turnto.com/traServer4_3/galleryjs/" + turnToConfig.siteKey + "/turnto-gallery.js";
+            gallery.src = document.location.protocol + "//static.www.turnto.com/traServer4_3/galleryjs/" + turnToConfig.siteKey + "/turnto-gallery.js/en_US";
 
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(gallery, s);
@@ -139,6 +141,8 @@
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(t, s);
         })();
+
+
     }
     function customItemInputTeaserFunc(clazz, data) {
         var clazzNam = clazz || "TurnToItemInputTeaser";

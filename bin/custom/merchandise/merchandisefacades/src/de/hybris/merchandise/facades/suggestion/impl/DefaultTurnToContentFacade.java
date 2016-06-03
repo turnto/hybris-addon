@@ -96,6 +96,11 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     }
 
     @Override
+    public List<TurnToGeneralStoreModel> getItemFromTurnToGeneralStore(String key) {
+        return turnToContentService.getItemFromTurnToGeneralStore(key);
+    }
+
+    @Override
     public void populateModelWithTurnToVersion(Model model) {
         model.addAttribute("currentVersion", getCurrentVersion());
     }
@@ -141,7 +146,7 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     }
 
     private String getCountBuyerCommentsById(String id) {
-        String countBuyerComments = "";
+        String countBuyerComments = "0";
         try {
             StringBuilder response = getExportFromTurnTo(id);
 
@@ -156,15 +161,16 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     }
 
     private String getAverageRatingById(String id) {
-        String averageRating = "";
+        String averageRating = "0";
         try {
             StringBuilder response = getExportFromTurnTo(id);
 
-            if (StringUtils.isNotBlank(response.toString())){
+            if (StringUtils.isNotBlank(response.toString())) {
                 averageRating = getValueFromTurnToItem(response, "reviews", "averageRating", "0");
             }
 
         } catch (IOException e) {
+
             LOG.error("Error while getting average rating from TurnTo service, cause: ", e);
         }
         return averageRating;
@@ -242,6 +248,8 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
                 setModelContent(model, appendix, response);
             }
         } catch (IOException e) {
+            model.setQaContent("");
+            model.setReviewsContent("");
             LOG.error("Error while getting content from TurnTo service, cause: ", e);
         }
         return model;
@@ -260,7 +268,17 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     }
 
     private TurnToGeneralStoreModel getSiteKeyValidationModel() {
-        return turnToContentService.getItemFromTurnToGeneralStore("isSiteKeyInvalid").get(0);
+
+        List<TurnToGeneralStoreModel> isSiteKeyInvalid = turnToContentService.getItemFromTurnToGeneralStore("isSiteKeyInvalid");
+
+        if (isSiteKeyInvalid.isEmpty()) {
+            TurnToGeneralStoreModel temp = new TurnToGeneralStoreModel();
+            temp.setKey("isSiteKeyInvalid");
+            temp.setValue(true);
+            return temp;
+        }
+
+        return isSiteKeyInvalid.get(0);
     }
 
     private long getTimestampWithCachingLimit(TurnToStaticContentsModel model) {

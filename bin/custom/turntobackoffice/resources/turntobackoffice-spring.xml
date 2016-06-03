@@ -49,6 +49,26 @@
 	</bean>
 	-->
 
+	<bean id="turntobackofficeService" class="com.hybris.turntobackoffice.services.TurntobackofficeService">
+		<property name="modelService" ref="modelService"/>
+		<property name="flexibleSearchService" ref="flexibleSearchService"/>
+		<property name="catalogVersionService" ref="catalogVersionService"/>
+		<property name="baseStoreService" ref="baseStoreService"/>
+		<property name="orderConverter" ref="orderConverter"/>
+		<property name="productFacade" ref="productFacade"/>
+		<property name="historicalTransactionFeedJobFactory" ref="historicalTransactionFeedJobFactory"/>
+	</bean>
+
+
+	<bean id="historicalTransactionFeedJob" class="com.hybris.turntobackoffice.job.HistoricalTransactionFeedJob" parent="abstractJobPerformable">
+		<property name="turntobackofficeService" ref="turntobackofficeService"/>
+	</bean>
+
+	<bean id="historicalTransactionFeedJobFactory" class="com.hybris.turntobackoffice.job.HistoricalTransactionFeedJobFactory">
+		<property name="modelService" ref="modelService"/>
+		<property name="flexibleSearchService" ref="flexibleSearchService"/>
+		<property name="turnToContentFacade" ref="turnToContentFacade"/>
+	</bean>
 
 	<!--  Example how to override an item  -->
 	<!--

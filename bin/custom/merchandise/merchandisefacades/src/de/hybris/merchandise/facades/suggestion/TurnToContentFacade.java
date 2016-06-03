@@ -13,6 +13,7 @@
  */
 package de.hybris.merchandise.facades.suggestion;
 
+import com.hybris.turntobackoffice.model.TurnToGeneralStoreModel;
 import de.hybris.platform.commercefacades.product.data.ProductData;
 import org.springframework.ui.Model;
 
@@ -35,4 +36,6 @@ public interface TurnToContentFacade {
     void populateModelWithTurnToVersion(Model model);
 
     void populateModelBuyerComments(Model model, List<ProductData> results);
+
+    List<TurnToGeneralStoreModel> getItemFromTurnToGeneralStore(String key);
 }

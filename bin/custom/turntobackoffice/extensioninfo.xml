@@ -7,6 +7,9 @@
 		<!-- <requires-extension name="cms"/> -->
 
         <requires-extension name="backoffice"/>
+        <requires-extension name="basecommerce"/>
+        <requires-extension name="commercefacades"/>
+        <requires-extension name="merchandisefacades"/>
 
 		<coremodule generated="true" manager="com.hybris.turntobackoffice.jalo.TurntobackofficeManager" packageroot="com.hybris.turntobackoffice"/>
 

@@ -5,16 +5,12 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="turntobackofficeService" class="com.hybris.turntobackoffice.services.TurntobackofficeService" >
-		<property name="modelService" ref="modelService"/>
-		<property name="flexibleSearchService" ref="flexibleSearchService"/>
-		<property name="catalogVersionService" ref="catalogVersionService"/>
-	</bean>
-
-    <bean id="turntobackofficeLabelLocator" class="com.hybris.cockpitng.util.labels.ResourcesLabelLocator"
-          scope="singleton" init-method="init" lazy-init="false">
+    <bean id="turntobackofficeLabelLocator" class="com.hybris.cockpitng.util.labels.ResourcesLabelLocator" scope="singleton" init-method="init" lazy-init="false">
         <property name="location" value="/turntobackoffice-backoffice-labels/"/>
         <property name="name" value="labels"/>
     </bean>
 
+
 </beans>
+
+
