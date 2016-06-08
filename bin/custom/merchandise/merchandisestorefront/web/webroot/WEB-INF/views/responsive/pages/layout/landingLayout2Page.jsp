@@ -25,9 +25,16 @@
 		</cms:pageSlot>
 
 		<c:if test="${flags.get('ccPinboard').getFlag() eq 'true' and isSiteKeyInvalid eq 'false'}">
-			<div id="TurnToPinboardContent"></div>
-		</c:if>
+			<c:choose>
+				<c:when test="${currentVersion eq '4_3'}">
+					<div id="TurnToPinboardContent"></div>
+				</c:when>
+				<c:otherwise>
+					<div id="TurnToFullComments"></div>
+				</c:otherwise>
+			</c:choose>
 
+		</c:if>
 
 		<div class="no-space">
 		
