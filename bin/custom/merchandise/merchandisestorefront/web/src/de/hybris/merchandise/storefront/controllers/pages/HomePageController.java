@@ -54,6 +54,11 @@ public class HomePageController extends AbstractPageController {
         setUpMetaDataForContentPage(model, getContentPageForLabelOrId(null));
         updatePageTitle(model, getContentPageForLabelOrId(null));
 
+        turnToContentFacade.populateModelWithTurnToSiteKey(model);
+        turnToContentFacade.populateModelWithTurnToVersion(model);
+        turnToContentFacade.populateModelWithTurnToFlags(model);
+        turnToContentFacade.populateModelWithSiteKeyValidationFlag(model);
+
         return getViewForPage(model);
     }
 

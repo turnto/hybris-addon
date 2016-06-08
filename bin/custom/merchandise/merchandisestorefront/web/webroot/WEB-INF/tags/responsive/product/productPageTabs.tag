@@ -18,8 +18,7 @@
 
     <c:if test="${flags.get('checkboxQA').getFlag() eq 'true' and flags.get('checkboxQA').getSetupType().getCode() ne 'overlay' and isSiteKeyInvalid eq 'false'}">
         <div class="tabhead">
-            <a href=""><spring:theme code="product.product.spec"/></a> <span
-                class="glyphicon"></span>
+            <a href=""><spring:theme code="product.product.spec"/></a> <span class="glyphicon"></span>
         </div>
     </c:if>
 
@@ -28,8 +27,7 @@
     </div>
     <c:if test="${flags.get('checkboxRating').getFlag() eq 'true' and flags.get('checkboxRating').getSetupType().getCode() ne 'overlay' and isSiteKeyInvalid eq 'false'}">
         <div id="tabreview" class="tabhead">
-            <a href=""><spring:theme code="review.reviews"/></a> <span
-                class="glyphicon"></span>
+            <a href=""><spring:theme code="review.reviews"/></a> <span class="glyphicon"></span>
         </div>
     </c:if>
     <div class="tabbody">
@@ -43,7 +41,9 @@
 </div>
 
 <%----%>
-<c:if test="${flags.get('ccPinboard').getFlag() eq 'true' and isSiteKeyInvalid eq 'false'}">
+<%--<c:if test="${flags.get('ccPinboard').getFlag() eq 'true' and isSiteKeyInvalid eq 'false'}">
     <div id="TurnToFullComments"></div>
-</c:if>
+</c:if>--%>
+
+<%--<div id="TurnToPinboardContent"></div>--%>
 

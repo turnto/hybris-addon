@@ -40,6 +40,10 @@
     min-height: 0;
 }
 
+.main-container .z-hlayout-inner{
+    vertical-align: inherit;
+}
+
 .button-custom {
     border-radius: 2px;
 }

@@ -50,7 +50,7 @@
 </div>
 
 <script type="text/javascript">
-    var TurnToGallerySkus= ["${product.code}"];
+    var TurnToGallerySkus = ["${product.code}"];
     var turnToConfig = {
                 siteKey: "${siteKey}",
                 setupType: "${flags.get('checkboxQA').getSetupType().getCode()}",
@@ -74,18 +74,22 @@
                     titleMaxLength: 60,
                     nameMaxLength: 20,
                     boxWidth: "200px",
-                    limit:20,
+                    limit: 20,
                     layoutMode: "justified",
                     // Always used for vertical spacing.
                     // For horizontal spacing:
                     // If layoutMode == "centered" then this is the exact spacing
                     // If layoutMode == "justified" this value is used as the,
                     spacing: "50px",
-                    maxDaysOld:-1
+                    maxDaysOld: -1
                 },
                 gallery: {
                     // configuration options...
                     // title: ‘Custom Title’ <- example
+                },
+                pinboard: {
+                    contentType: 'visualContent'//checkoutComments
+
                 },
                 embedCommentCapture: true,
                 postPurchaseFlow: true,
@@ -99,8 +103,6 @@
         turnToConfig.reviewsTeaserFunc = customReviewsTeaserDisplayWithCommentsLink;
     }
 
-    <%--TurnToChatter.reset({'sku': "${product.code}"});--%>
-
     (function () {
         var tt = document.createElement('script');
         tt.type = 'text/javascript';
@@ -109,6 +111,17 @@
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(tt, s);
     })();
+
+    if (${currentVersion eq "4_3"}) {
+        (function () {
+            var tt = document.createElement('script');
+            tt.type = 'text/javascript';
+            tt.async = true;
+            tt.src = document.location.protocol + "//static.www.turnto.com/traServer${currentVersion}/pinboardjs/" + turnToConfig.siteKey + "/turnto-pinboard.js";
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(tt, s);
+        })();
+    }
 
     (function () {
         var t = document.createElement('script');
@@ -124,7 +137,7 @@
             var gallery = document.createElement('script');
             gallery.type = 'text/javascript';
             gallery.async = true;
-            gallery.src = document.location.protocol + "//static.www.turnto.com/traServer4_3/galleryjs/" + turnToConfig.siteKey + "/turnto-gallery.js/en_US";
+            gallery.src = document.location.protocol + "//static.www.turnto.com/traServer${currentVersion}/galleryjs/" + turnToConfig.siteKey + "/turnto-gallery.js/en_US";
 
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(gallery, s);
@@ -141,9 +154,8 @@
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(t, s);
         })();
-
-
     }
+
     function customItemInputTeaserFunc(clazz, data) {
         var clazzNam = clazz || "TurnToItemInputTeaser";
         var iteasers = TurnTojQuery("." + clazzNam);
@@ -236,7 +248,7 @@
     }
 
 
-    function customReviewsTeaserDisplayWithCommentsLink(data){
+    function customReviewsTeaserDisplayWithCommentsLink(data) {
         var buyerComments = ${buyerComments};
 
 
@@ -251,7 +263,7 @@
         var commentCnt = TurnToItemData.counts.c;
         // this next if can be left out if you don't have the
         // TurnToChatterContent widget/div on the page
-        if(turnToConfig != undefined && turnToConfig.loadRteaserAfterChatter == true){
+        if (turnToConfig != undefined && turnToConfig.loadRteaserAfterChatter == true) {
             commentCnt = TurnToItemData.counts.ccWdgtC;
         }
 
@@ -259,11 +271,11 @@
         // if don't want 5 empty stars to display when no reviews,
         // can wrap this next line in an if(TurnToItemData.counts.ar > 0)
         html += '<div class="TT2left TTratingBox TTrating-' + rating + '"></div>';
-        if(TurnToItemData.counts.r == 0 && commentCnt == 0) {
+        if (TurnToItemData.counts.r == 0 && commentCnt == 0) {
             html += '<div><a class="TTwriteReview" href="javascript:void(0);">Be the first to write a review</a></div>';
         } else {
             html += '<div class="TTratingLinks">';
-            if(TurnToItemData.counts.r > 0) {
+            if (TurnToItemData.counts.r > 0) {
                 html += ' <a class="TTreadReviews" href="javascript:void(0)">Read ' + TurnToItemData.counts.r + ' Review' + (TurnToItemData.counts.r == 1 ? '' : 's') + '</a>';
             }
 
@@ -287,7 +299,9 @@
         iteasers.html(html);
 
         iteasers.find('.TTreadReviews').click(clickReviewsTabFromTeaser);
-        iteasers.find('.TTwriteReview').click(function(){TurnTo.writeReview()});
+        iteasers.find('.TTwriteReview').click(function () {
+            TurnTo.writeReview()
+        });
         iteasers.find('.TTreadComments').click(clickCommentsFromTeaser);
     }
 

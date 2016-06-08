@@ -11,18 +11,24 @@ public class FeedProduct {
     private String currency;
     private String itemURL;
     private String category;
+    private String brand;
+    private String mpn;
+    private String ean;
 
     public FeedProduct() {
     }
 
     public FeedProduct(ProductModel model, String homeURL) {
         this.setSku(model.getCode());
-        this.setCategory(model.getEan());
+        this.setCategory(model.getSegment());
         this.setCurrency("EUR");
         if (model.getPicture() != null) {
             this.setImageURL(homeURL + model.getPicture().getURL());
         }
         this.setTitle(model.getName());
+        this.setEan(model.getEan());
+        this.setBrand(model.getManufacturerName());
+        this.setMpn(model.getManufacturerAID());
     }
 
     public String getSku() {
@@ -80,4 +86,29 @@ public class FeedProduct {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getMpn() {
+        return mpn;
+    }
+
+    public void setMpn(String mpn) {
+        this.mpn = mpn;
+    }
+
+    public String getEan() {
+        return ean;
+    }
+
+    public void setEan(String ean) {
+        this.ean = ean;
+    }
 }
+

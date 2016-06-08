@@ -47,12 +47,19 @@
 					<c:if test="${flags.get('checkboxQA').getFlag() eq 'true'}">
 						<span class="TurnToItemInputTeaser"></span>
 					</c:if>
+
+					<c:if test="${flags.get('customerGallery').getFlag() eq 'true'}">
+						<div id="TurnToPinboardContent"></div>
+					</c:if>
+
 				</div>
 
 			</div>
 		</div>
 	</div>
 </div>
+
 <span id="TurnToChatterContent"></span>
-<div id="TurnToGalleryContent"></div>
+<%--<div id="TurnToGalleryContent"></div>--%>
+
 

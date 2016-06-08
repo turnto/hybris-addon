@@ -307,7 +307,7 @@ public class TurntobackofficeService {
             tsv = File.createTempFile(FILE_NAME, FILE_TYPE);
             FileWriter fw = new FileWriter(tsv);
             PrintWriter pw = new PrintWriter(fw);
-            pw.println("CATEGORY\tITEMURL\tPRICE\tCURRENCY\tSKU\tIMAGEURL\tTITLE\t");
+            pw.println("CATEGORY\tITEMURL\tPRICE\tCURRENCY\tSKU\tIMAGEURL\tTITLE\tBRAND\tMPN\tEAN\t");
             for (FeedProduct product : products) {
                 pw.print(product.getCategory() + "\t");
                 pw.print(product.getItemURL() + "\t");
@@ -316,6 +316,9 @@ public class TurntobackofficeService {
                 pw.print(product.getSku() + "\t");
                 pw.print(product.getImageURL() + "\t");
                 pw.print(product.getTitle() + "\t");
+                pw.print(product.getBrand() + "\t");
+                pw.print(product.getMpn() + "\t");
+                pw.print(product.getEan() + "\t");
                 pw.println();
             }
 
@@ -352,7 +355,7 @@ public class TurntobackofficeService {
         for (CategoryModel category : categories) {
             if (!category.getProducts().isEmpty()) {
                 for (ProductModel product : category.getProducts()) {
-                    product.setEan(category.getName());
+                    product.setSegment(category.getName());
                     productModels.add(product);
                 }
             }
@@ -385,7 +388,7 @@ public class TurntobackofficeService {
 
     private String getItemURL(ProductModel model) {
         String category = "Stuff";
-        String subcategory = model.getEan();
+        String subcategory = model.getSegment();
 
         if (category.equals(subcategory)) subcategory = "";
         else category = "Clothes/";
