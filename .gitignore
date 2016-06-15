@@ -4,11 +4,64 @@
 .classpath
 *.class
 *.iml
-bin/ext-*
-bin/platform
+#bin/ext-*
+#bin/platform
 data/*
 log/*
 sampleconfigurations/*
 roles/*
 temp/*
-config
+
+
+/config
+/data
+/licenses
+/log
+/sampleconfigurations
+/temp
+
+## hybris vanila
+/bin/platform
+/bin/ext-*
+
+## Generated stuff
+gensrc/
+eclipsebin/
+classes/
+testclasses/
+jalo/
+platformhome.properties
+extensioninfo.xsd
+items.xsd
+hmc.xsd
+beans.xsd
+*-testclasses.xml
+*-webtestclasses.xml
+#build.xml
+gencss/
+/bin/custom/*/*/web/*/*/messages/base.properties
+ruleset.xml
+web/testclasses/
+
+## Custom projects generated files
+/bin/custom/*/*/hmc/bin/
+/bin/custom/*/*/web/webroot/cockpit
+/bin/custom/*/*/web/webroot/cscockpit/
+/bin/custom/*/*/build.xml
+/bin/custom/*/*/web/addonsrc/*
+/bin/custom/*/*/web/*/*/addons
+/bin/custom/*/*/web/*/*/*/addons
+bin/custom/*/*/web/commonwebsrc/
+
+## Mac
+*.DS_Store
+.DS_Store
+
+.metadata/
+
+## Unit test related
+junitvmwatcher*.properties
+
+
+## Eclipse
+com.eclipsesource.jshint.ui.prefs
