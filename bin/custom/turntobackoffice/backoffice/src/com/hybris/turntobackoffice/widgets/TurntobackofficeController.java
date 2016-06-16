@@ -36,6 +36,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
     private Checkbox buyerComments;
     private Checkbox ccPinboard;
     private Checkbox customerGallery;
+    private Checkbox customerGalleryRowWidget;
 
     private Checkbox ongoingTransactionsFeed;
 
@@ -58,6 +59,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
     private StateTurnFlagModel turntoBuyerCommentsModel;
     private StateTurnFlagModel turntoCCPinboardModel;
     private StateTurnFlagModel turntoCustomerGalleryModel;
+    private StateTurnFlagModel turntoCustomerGalleryRowWidgetModel;
     private StateTurnFlagModel ongoingTransactionsFeedModel;
 
     private TurnToGeneralStoreModel cachingTimeModel;
@@ -81,6 +83,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
         init(buyerComments, null);
         init(ccPinboard, null);
         init(customerGallery, null);
+        init(customerGalleryRowWidget, null);
         init(ongoingTransactionsFeed, null);
         init(cachingTime);
         init(siteKey);
@@ -168,6 +171,11 @@ public class TurntobackofficeController extends DefaultWidgetController {
     @ViewEvent(componentID = "customerGallery", eventName = Events.ON_CHECK)
     public void customerGallery() throws InterruptedException {
         updateTurntoModuleStatus(customerGallery, null, turntoCustomerGalleryModel);
+    }
+
+    @ViewEvent(componentID = "customerGalleryRowWidget", eventName = Events.ON_CHECK)
+    public void customerGalleryRowWidget() throws InterruptedException {
+        updateTurntoModuleStatus(customerGalleryRowWidget, null, turntoCustomerGalleryRowWidgetModel);
     }
 
     @ViewEvent(componentID = "selectboxQA", eventName = Events.ON_SELECT)
@@ -358,6 +366,9 @@ public class TurntobackofficeController extends DefaultWidgetController {
                 break;
             case "ongoingTransactionsFeed":
                 ongoingTransactionsFeedModel = model;
+                break;
+            case "customerGalleryRowWidget":
+                turntoCustomerGalleryRowWidgetModel = model;
                 break;
             default:
                 turntoCheckoutChatterModel = model;

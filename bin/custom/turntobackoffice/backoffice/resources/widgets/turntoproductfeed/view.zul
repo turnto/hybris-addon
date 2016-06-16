@@ -146,10 +146,14 @@
             </hlayout>
         </vlayout>
 
-        <vlayout sclass="content-vlayout" >
-            <hlayout id="customer-gallery">
-                <label >Customer Gallery</label>
+        <vlayout sclass="content-vlayout" id="customer-gallery">
+            <hlayout >
+                <label >Customer Gallery(Pinboard)</label>
                 <checkbox id="customerGallery" />
+            </hlayout>
+            <hlayout >
+                <label>Gallery Row Widget</label>
+                <checkbox id="customerGalleryRowWidget" />
             </hlayout>
         </vlayout>
 

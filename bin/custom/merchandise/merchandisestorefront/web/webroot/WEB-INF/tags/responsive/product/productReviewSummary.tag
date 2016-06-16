@@ -88,8 +88,9 @@
                     // title: ‘Custom Title’ <- example
                 },
                 pinboard: {
-                    contentType: 'visualContent'//checkoutComments
-
+                    contentType: 'visualContent',//checkoutComments
+                    title: 'Gallery Pinboard',
+                    skus:["${product.code}"]
                 },
                 embedCommentCapture: true,
                 postPurchaseFlow: true,

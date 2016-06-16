@@ -48,8 +48,8 @@
 						<span class="TurnToItemInputTeaser"></span>
 					</c:if>
 
-					<c:if test="${flags.get('customerGallery').getFlag() eq 'true'}">
-						<div id="TurnToPinboardContent"></div>
+					<c:if test="${flags.get('customerGalleryRowWidget').getFlag() eq 'true'}">
+						<div id="TurnToGalleryContent"></div>
 					</c:if>
 
 				</div>
@@ -59,7 +59,9 @@
 	</div>
 </div>
 
+<c:if test="${flags.get('customerGallery').getFlag() eq 'true'}">
+	<div id="TurnToPinboardContent"></div>
+</c:if>
 <span id="TurnToChatterContent"></span>
-<%--<div id="TurnToGalleryContent"></div>--%>
 
 
