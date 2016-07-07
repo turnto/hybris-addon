@@ -1,4 +1,4 @@
-<h1><img src="https://cdn.frontify.com/api/screen/thumbnail/r0srTtQ-2fgwCQ3g3YoFfE0R1Be-HlxHpphOY_mDJUEgiiJWD-toZnU1wBjTkk_rix3z6Jq6IsgrMrnY1iXmtg/370" alt="TT-logo_mark-full.png" style="display:block;margin-left:auto;margin-right:auto;"></h1>
+<img src="https://cdn.frontify.com/api/screen/thumbnail/r0srTtQ-2fgwCQ3g3YoFfE0R1Be-HlxHpphOY_mDJUEgiiJWD-toZnU1wBjTkk_rix3z6Jq6IsgrMrnY1iXmtg/370" alt="TT-logo_mark-full.png" width="240" style="display:block;margin-left:auto;margin-right:auto;">
 
 <h1>TurnTo Networks - Hybris Extension</h1>
 
