@@ -105,6 +105,27 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
         model.addAttribute("currentVersion", getCurrentVersion());
     }
 
+    @Override
+    public String getSiteKey() {
+        List<TurnToGeneralStoreModel> siteKey = turnToContentService.getItemFromTurnToGeneralStore("siteKey");
+        if (siteKey.isEmpty()) {
+            return "siteKey";
+        }
+
+        return (String) siteKey.get(0).getValue();
+    }
+
+    @Override
+    public String getAuthKey() {
+
+        List<TurnToGeneralStoreModel> authKey = turnToContentService.getItemFromTurnToGeneralStore("authKey");
+        if (authKey.isEmpty()) {
+            return "authKey";
+        }
+
+        return (String) authKey.get(0).getValue();
+    }
+
     public String getAverageRatingForProduct(String id) {
         return getAverageRatingById(id);
     }
@@ -139,9 +160,9 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     private void createCommentsAttribute(List<ProductData> productData, Map<String, String> comments) {
         for (ProductData pd : productData) {
             String id = pd.getCode();
-            String averageRating = getCountBuyerCommentsById(id);
+            String buyerComments = getCountBuyerCommentsById(id);
 
-            comments.put(id, averageRating);
+            comments.put(id, buyerComments);
         }
     }
 
@@ -312,24 +333,7 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
         return 1;
     }
 
-    private String getSiteKey() {
-        List<TurnToGeneralStoreModel> siteKey = turnToContentService.getItemFromTurnToGeneralStore("siteKey");
-        if (siteKey.isEmpty()) {
-            return "siteKey";
-        }
 
-        return (String) siteKey.get(0).getValue();
-    }
-
-    private String getAuthKey() {
-
-        List<TurnToGeneralStoreModel> authKey = turnToContentService.getItemFromTurnToGeneralStore("authKey");
-        if (authKey.isEmpty()) {
-            return "authKey";
-        }
-
-        return (String) authKey.get(0).getValue();
-    }
 
     private Boolean isSiteKeyInvalid() {
         return (Boolean) getSiteKeyValidationModel().getValue();

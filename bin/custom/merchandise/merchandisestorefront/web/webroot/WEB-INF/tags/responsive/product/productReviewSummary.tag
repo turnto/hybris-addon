@@ -66,22 +66,7 @@
                     minimumCommentCount: 1,
                     minimumCommentCharacterCount: 1,
                     sortOrder: "most recent",
-                    minimumCommentWordCount: 0
-                },
-                fullComments: {
-                    height: "500px",
-                    width: "1380px",
-                    titleMaxLength: 60,
-                    nameMaxLength: 20,
-                    boxWidth: "200px",
-                    limit: 20,
-                    layoutMode: "justified",
-                    // Always used for vertical spacing.
-                    // For horizontal spacing:
-                    // If layoutMode == "centered" then this is the exact spacing
-                    // If layoutMode == "justified" this value is used as the,
-                    spacing: "50px",
-                    maxDaysOld: -1
+                    minimumCommentWordCount: 1
                 },
                 gallery: {
                     // configuration options...
@@ -90,7 +75,7 @@
                 pinboard: {
                     contentType: 'visualContent',//checkoutComments
                     title: 'Gallery Pinboard',
-                    skus:["${product.code}"]
+                    skus: ["${product.code}"]
                 },
                 embedCommentCapture: true,
                 postPurchaseFlow: true,

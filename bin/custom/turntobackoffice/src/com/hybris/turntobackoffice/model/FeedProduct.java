@@ -14,13 +14,14 @@ public class FeedProduct {
     private String brand;
     private String mpn;
     private String ean;
+    private String categorypathjson;
 
     public FeedProduct() {
     }
 
     public FeedProduct(ProductModel model, String homeURL) {
         this.setSku(model.getCode());
-        this.setCategory(model.getSegment());
+        this.setCategory("");
         this.setCurrency("EUR");
         if (model.getPicture() != null) {
             this.setImageURL(homeURL + model.getPicture().getURL());
@@ -109,6 +110,14 @@ public class FeedProduct {
 
     public void setEan(String ean) {
         this.ean = ean;
+    }
+
+    public String getCategorypathjson() {
+        return categorypathjson;
+    }
+
+    public void setCategorypathjson(String categorypathjson) {
+        this.categorypathjson = categorypathjson;
     }
 }
 

@@ -30,7 +30,6 @@
 						</div>
 					</div>
 					<button id="deliveryMethodSubmit" type="button" class="btn btn-primary btn-block checkout-next"><spring:theme code="checkout.multi.deliveryMethod.continue" text="Next"/></button>
-
 				</ycommerce:testId>
 			</jsp:body>
 		</multi-checkout:checkoutSteps>

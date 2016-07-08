@@ -2,6 +2,18 @@
     border: 0;
 }
 
+.TurnToReviewsTeaser {
+    font-size: 13px !important;
+}
+
+.TurnToReviewsTeaser a {
+    margin-left: 0 !important;
+}
+
+.TurnToReviewsTeaser .TTratingLinks {
+    padding-left: 10px;
+}
+
 #TT4questionTextWrap #TT2questionText {
     height: 25px !important;
     overflow: hidden !important;
@@ -11,6 +23,17 @@
     margin-top: 8px;
 }
 
-#sortOptions1{
+#sortOptions1 {
     width: 200px;
+}
+
+.product-listing a.buyer-comments {
+    display: block;
+    color: inherit;
+    text-decoration: underline;
+    margin-bottom: 10px;
+}
+
+#TurnToChatterContent .TT4quote-body {
+    word-wrap: break-word !important;
 }

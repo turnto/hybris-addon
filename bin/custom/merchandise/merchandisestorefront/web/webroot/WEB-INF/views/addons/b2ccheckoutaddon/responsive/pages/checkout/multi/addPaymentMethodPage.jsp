@@ -153,7 +153,7 @@
 
 
 										<button type="button"
-						class="btn btn-primary btn-block submit_silentOrderPostForm checkout-next"><spring:theme code="checkout.multi.paymentMethod.continue" text="Next"/> </button>
+						class="btn btn-primary btn-block submit_silentOrderPostForm checkout-next"><spring:theme code="checkout.multi.paymentMethod.continue" text="Next"/></button>
 
 									</form:form>
 								</ycommerce:testId>

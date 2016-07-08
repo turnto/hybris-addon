@@ -33,7 +33,7 @@
 				<a class="name" href="${productUrl}">${product.name}</a>
 
 				<c:if test="${flags.get('buyerComments').getFlag() eq 'true'}">
-					<a class="name" href="${productUrl}">${comments}</a>
+					<a class="buyer-comments" href="${productUrl}">${comments}</a>
 				</c:if>
 			</ycommerce:testId>
 		

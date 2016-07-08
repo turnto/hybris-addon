@@ -31,6 +31,10 @@ public interface TurnToContentFacade {
 
     void populateModelWithRating(Model model, List<ProductData> productData);
 
+    String getSiteKey();
+
+    String getAuthKey();
+
     String getAverageRatingForProduct(String productId);
 
     void populateModelWithTurnToVersion(Model model);
