@@ -37,3 +37,8 @@
 #TurnToChatterContent .TT4quote-body {
     word-wrap: break-word !important;
 }
+
+#TurnToPinboardContent .TTpinComments{
+    word-wrap: break-word !important;
+}
+

@@ -48,11 +48,13 @@
                 setupType: "${flags.get('checkboxQA').getSetupType().getCode()}",
                 reviewsSetupType: "${flags.get('checkboxRating').getSetupType().getCode()}",
                 pinboard: {
-                    contentType: 'checkoutComments'//checkoutComments
+                    contentType: 'checkoutComments',//checkoutComments
+                    maxDaysOld:-1
                 },
                 embedCommentCapture: true,
                 postPurchaseFlow: true,
                 setTeaserCookieOnView: true,
+
                 loadRteaserAfterChatter: false
             },
             TurnToChatterSku = "${product.code}",

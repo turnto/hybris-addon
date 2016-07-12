@@ -28,6 +28,7 @@ import java.util.Date;
 public class TurntobackofficeController extends DefaultWidgetController {
 
     public static final String DEFAULT_VERSION = "4_2";
+    public static final String OVERLAY_SETUP_TYPE = "overlay";
 
     private Checkbox checkboxQA;
     private Checkbox checkboxRating;
@@ -52,65 +53,22 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
     private Selectbox selectboxVersion;
 
-    private StateTurnFlagModel turntoQAModel;
-    private StateTurnFlagModel turntoRatingModel;
-    private StateTurnFlagModel turntoOrderReportingModel;
-    private StateTurnFlagModel turntoCheckoutChatterModel;
-    private StateTurnFlagModel turntoBuyerCommentsModel;
-    private StateTurnFlagModel turntoCCPinboardModel;
-    private StateTurnFlagModel turntoCustomerGalleryModel;
-    private StateTurnFlagModel turntoCustomerGalleryRowWidgetModel;
-    private StateTurnFlagModel ongoingTransactionsFeedModel;
-
-    private TurnToGeneralStoreModel cachingTimeModel;
-    private TurnToGeneralStoreModel siteKeyModel;
-    private TurnToGeneralStoreModel authKeyModel;
-    private TurnToGeneralStoreModel invalidResponseModel;
-    private TurnToGeneralStoreModel curentVersionModel;
-    private TurnToGeneralStoreModel dailyFeedTimeModel;
-
-
     @WireVariable
     private TurntobackofficeService turntobackofficeService;
 
     @Override
     public void initialize(Component comp) {
         super.initialize(comp);
-        init(checkboxQA, selectboxQA);
-        init(checkboxRating, selectboxRating);
-        init(turntoOrderReporting, null);
-        init(turntoCheckoutChatter, null);
-        init(buyerComments, null);
-        init(ccPinboard, null);
-        init(customerGallery, null);
-        init(customerGalleryRowWidget, null);
-        init(ongoingTransactionsFeed, null);
-        init(cachingTime);
-        init(siteKey);
+
+        initCheckBoxes();
+        initCachingTime(cachingTime);
+        initSiteKey(siteKey);
         initAuthKey(authKey);
-        init(invalidResponseModel, "isSiteKeyInvalid");
+        initInvalidResponse("isSiteKeyInvalid");
         initVersionModel(selectboxVersion);
         initDailyFeedTime(dailyFeedTime);
         initHiddenWidgets();
 
-
-    }
-
-    private void initDailyFeedTime(Timebox dailyFeedTime) {
-        long time = new Date().getTime();
-
-        dailyFeedTimeModel = turntobackofficeService.loadFromTurnToStoreByKey(dailyFeedTime.getId());
-
-        if (dailyFeedTimeModel == null) {
-            dailyFeedTimeModel = new TurnToGeneralStoreModel();
-            dailyFeedTimeModel.setKey(dailyFeedTime.getId());
-            dailyFeedTimeModel.setValue(time);
-            turntobackofficeService.saveToTurnToStore(dailyFeedTimeModel);
-        } else {
-            time = (Long) dailyFeedTimeModel.getValue();
-        }
-
-        dailyFeedTime.setValue(new Date(time));
     }
 
     @ViewEvent(componentID = "sendFeedBtn", eventName = Events.ON_CLICK)
@@ -130,79 +88,100 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
         if (isChecked) {
             Date date = dailyFeedTime.getValue();
+
+            TurnToGeneralStoreModel dailyFeedTimeModel = turntobackofficeService.loadFromTurnToStoreByKey(dailyFeedTime.getId());
             dailyFeedTimeModel.setValue(date.getTime());
             turntobackofficeService.saveToTurnToStore(dailyFeedTimeModel);
         }
 
         turntobackofficeService.turnCronJob(isChecked);
+
+        StateTurnFlagModel ongoingTransactionsFeedModel = getStateTurnFlagModelById(ongoingTransactionsFeed);
         updateTurntoModuleStatus(ongoingTransactionsFeed, null, ongoingTransactionsFeedModel);
     }
 
     @ViewEvent(componentID = "checkboxQA", eventName = Events.ON_CHECK)
     public void turnQA() throws InterruptedException {
+        StateTurnFlagModel turntoQAModel = getStateTurnFlagModelById(checkboxQA);
         updateTurntoModuleStatus(checkboxQA, selectboxQA, turntoQAModel);
     }
 
+
+
     @ViewEvent(componentID = "checkboxRating", eventName = Events.ON_CHECK)
     public void turnRating() throws InterruptedException {
+        StateTurnFlagModel turntoRatingModel = getStateTurnFlagModelById(checkboxRating);
         updateTurntoModuleStatus(checkboxRating, selectboxRating, turntoRatingModel);
     }
 
     @ViewEvent(componentID = "turntoOrderReporting", eventName = Events.ON_CHECK)
     public void turnOrderReporting() throws InterruptedException {
+        StateTurnFlagModel turntoOrderReportingModel = getStateTurnFlagModelById(turntoOrderReporting);
         updateTurntoModuleStatus(turntoOrderReporting, null, turntoOrderReportingModel);
     }
 
     @ViewEvent(componentID = "turntoCheckoutChatter", eventName = Events.ON_CHECK)
     public void turnCheckoutChatter() throws InterruptedException {
+        StateTurnFlagModel turntoCheckoutChatterModel = getStateTurnFlagModelById(turntoCheckoutChatter);
         updateTurntoModuleStatus(turntoCheckoutChatter, null, turntoCheckoutChatterModel);
     }
 
     @ViewEvent(componentID = "buyerComments", eventName = Events.ON_CHECK)
     public void buyerComments() throws InterruptedException {
+        StateTurnFlagModel turntoBuyerCommentsModel = getStateTurnFlagModelById(buyerComments);
         updateTurntoModuleStatus(buyerComments, null, turntoBuyerCommentsModel);
     }
 
     @ViewEvent(componentID = "ccPinboard", eventName = Events.ON_CHECK)
     public void ccPinboard() throws InterruptedException {
+        StateTurnFlagModel turntoCCPinboardModel = getStateTurnFlagModelById(ccPinboard);
         updateTurntoModuleStatus(ccPinboard, null, turntoCCPinboardModel);
     }
 
     @ViewEvent(componentID = "customerGallery", eventName = Events.ON_CHECK)
     public void customerGallery() throws InterruptedException {
+        StateTurnFlagModel turntoCustomerGalleryModel = getStateTurnFlagModelById(customerGallery);
         updateTurntoModuleStatus(customerGallery, null, turntoCustomerGalleryModel);
     }
 
     @ViewEvent(componentID = "customerGalleryRowWidget", eventName = Events.ON_CHECK)
     public void customerGalleryRowWidget() throws InterruptedException {
+        StateTurnFlagModel turntoCustomerGalleryRowWidgetModel = getStateTurnFlagModelById(customerGalleryRowWidget);
         updateTurntoModuleStatus(customerGalleryRowWidget, null, turntoCustomerGalleryRowWidgetModel);
     }
 
     @ViewEvent(componentID = "selectboxQA", eventName = Events.ON_SELECT)
     public void selectQAMode() throws InterruptedException {
+        StateTurnFlagModel turntoQAModel = getStateTurnFlagModelById(checkboxQA);
         updateSetupType(checkboxQA, selectboxQA, turntoQAModel);
     }
 
     @ViewEvent(componentID = "selectboxRating", eventName = Events.ON_SELECT)
     public void selectRatingMode() throws InterruptedException {
+        StateTurnFlagModel turntoRatingModel = getStateTurnFlagModelById(checkboxRating);
         updateSetupType(checkboxRating, selectboxRating, turntoRatingModel);
     }
 
     @ViewEvent(componentID = "cachingTime", eventName = Events.ON_CHANGE)
     public void setCachingTime() throws InterruptedException {
+        TurnToGeneralStoreModel cachingTimeModel = turntobackofficeService.loadFromTurnToStoreByKey(cachingTime.getId());
         cachingTimeModel.setValue(cachingTime.getValue());
         turntobackofficeService.saveToTurnToStore(cachingTimeModel);
+
         Messagebox.show("Caching time has been changed");
     }
 
     @ViewEvent(componentID = "siteKey", eventName = Events.ON_CHANGE)
     public void setSiteKey() throws InterruptedException {
+        TurnToGeneralStoreModel siteKeyModel = turntobackofficeService.loadFromTurnToStoreByKey(siteKey.getId());
+
         String oldValue = (String) siteKeyModel.getValue();
         String newVal = siteKey.getValue().trim();
 
         if (!oldValue.equals(newVal)) {
             siteKeyModel.setValue(newVal);
             turntobackofficeService.saveToTurnToStore(siteKeyModel);
+
             turntobackofficeService.invalidateCache();
 
             Messagebox.show("Site Key has been changed");
@@ -211,6 +190,8 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
     @ViewEvent(componentID = "authKey", eventName = Events.ON_CHANGE)
     public void setAuthKey() throws InterruptedException {
+        TurnToGeneralStoreModel authKeyModel = turntobackofficeService.loadFromTurnToStoreByKey(authKey.getId());
+
         String oldValue = (String) authKeyModel.getValue();
         String newVal = authKey.getValue().trim();
 
@@ -226,13 +207,40 @@ public class TurntobackofficeController extends DefaultWidgetController {
     @ViewEvent(componentID = "selectboxVersion", eventName = Events.ON_SELECT)
     public void selectCurentVesion() throws InterruptedException {
         hideWidgets();
+
+        TurnToGeneralStoreModel curentVersionModel = turntobackofficeService.loadFromTurnToStoreByKey(selectboxVersion.getId());
         updateCurrentVersion(selectboxVersion, curentVersionModel);
     }
 
-    private void init(Checkbox checkbox, Selectbox selectbox) {
-        final String id = checkbox.getId();
-        StateTurnFlagModel model = turntobackofficeService.loadByCheckboxId(id);
-        setTurntoModel(id, model);
+
+    private void initCheckBoxes() {
+        initCheckBox(checkboxQA, selectboxQA);
+        initCheckBox(checkboxRating, selectboxRating);
+        initCheckBox(turntoOrderReporting, null);
+        initCheckBox(turntoCheckoutChatter, null);
+        initCheckBox(buyerComments, null);
+        initCheckBox(ccPinboard, null);
+        initCheckBox(customerGallery, null);
+        initCheckBox(customerGalleryRowWidget, null);
+        initCheckBox(ongoingTransactionsFeed, null);
+    }
+
+    private void initDailyFeedTime(Timebox dailyFeedTime) {
+        long time = new Date().getTime();
+
+        TurnToGeneralStoreModel dailyFeedTimeModel = turntobackofficeService.loadFromTurnToStoreByKey(dailyFeedTime.getId());
+
+        if (dailyFeedTimeModel == null) {
+            createTurnToGeneralStoreModel(dailyFeedTime.getId(), time);
+        } else {
+            time = (Long) dailyFeedTimeModel.getValue();
+        }
+
+        dailyFeedTime.setValue(new Date(time));
+    }
+
+    private void initCheckBox(Checkbox checkbox, Selectbox selectbox) {
+        StateTurnFlagModel model = getStateTurnFlagModelById(checkbox);
         checkbox.setChecked(model.getFlag());
 
         if (selectbox != null) {
@@ -242,49 +250,58 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
     }
 
-    private void init(Intbox cachingTimeBox) {
-        cachingTimeModel = turntobackofficeService.loadFromTurnToStoreByKey(cachingTimeBox.getId());
+    private void initCachingTime(Intbox cachingTimeBox) {
+        Integer cachingTime = 1;
 
-        Integer cachingTime;
+        TurnToGeneralStoreModel cachingTimeModel = turntobackofficeService.loadFromTurnToStoreByKey(cachingTimeBox.getId());
 
         if (cachingTimeModel == null) {
-            cachingTime = 1;
-            createCachingMode(cachingTimeBox, cachingTime);
-            turntobackofficeService.saveToTurnToStore(cachingTimeModel);
-        } else
+            createTurnToGeneralStoreModel(cachingTimeBox.getId(), cachingTime);
+        } else {
             cachingTime = (Integer) cachingTimeModel.getValue();
+        }
 
         cachingTimeBox.setValue(cachingTime);
     }
 
-    private void init(Textbox textbox) {
+    private void initSiteKey(Textbox textbox) {
         String siteKey = "Enter your Site Key";
+        TurnToGeneralStoreModel siteKeyModel = turntobackofficeService.loadFromTurnToStoreByKey(textbox.getId());
 
-        if (isModelEmpty(textbox))
-            turntobackofficeService.saveToTurnToStore(fillSiteKeyModel(textbox, siteKey));
-        else
+        if (siteKeyModel == null) {
+            createTurnToGeneralStoreModel(textbox.getId(), siteKey);
+        } else {
             siteKey = (String) siteKeyModel.getValue();
+        }
 
         textbox.setValue(siteKey);
     }
 
-    private void init(TurnToGeneralStoreModel model, String key) {
+    private void initInvalidResponse(String key) {
         TurnToGeneralStoreModel storedModel = turntobackofficeService.loadFromTurnToStoreByKey(key);
-        model = (storedModel == null) ? fillEmptyGeneralStoreModel(model, key) : storedModel;
 
-        invalidResponseModel = model;
+        if (storedModel == null) {
+            createTurnToGeneralStoreModel(key, false);
+        }
+
+    }
+
+    private TurnToGeneralStoreModel createTurnToGeneralStoreModel(String key, Object value) {
+        TurnToGeneralStoreModel storedModel = new TurnToGeneralStoreModel();
+        storedModel.setKey(key);
+        storedModel.setValue(value);
+
+        turntobackofficeService.saveToTurnToStore(storedModel);
+        return storedModel;
     }
 
     private void initVersionModel(Selectbox selectVersion) {
         String version = DEFAULT_VERSION;
 
-        curentVersionModel = turntobackofficeService.loadFromTurnToStoreByKey(selectVersion.getId());
+        TurnToGeneralStoreModel curentVersionModel = turntobackofficeService.loadFromTurnToStoreByKey(selectVersion.getId());
 
         if (curentVersionModel == null) {
-            curentVersionModel = new TurnToGeneralStoreModel();
-            curentVersionModel.setKey(selectVersion.getId());
-            curentVersionModel.setValue(version);
-            turntobackofficeService.saveToTurnToStore(curentVersionModel);
+            createTurnToGeneralStoreModel(selectVersion.getId(), version);
         } else {
             version = (String) curentVersionModel.getValue();
         }
@@ -298,83 +315,22 @@ public class TurntobackofficeController extends DefaultWidgetController {
     }
 
     private void initAuthKey(Textbox authKey) {
-        String siteKey = "Enter your Auth Key";
+        String authKeyValue = "Enter your Auth Key";
 
-        authKeyModel = turntobackofficeService.loadFromTurnToStoreByKey(authKey.getId());
+        TurnToGeneralStoreModel authKeyModel = turntobackofficeService.loadFromTurnToStoreByKey(authKey.getId());
 
         if (authKeyModel == null) {
-            authKeyModel = new TurnToGeneralStoreModel();
-            authKeyModel.setKey(authKey.getId());
-            authKeyModel.setValue(siteKey);
-            turntobackofficeService.saveToTurnToStore(authKeyModel);
+            createTurnToGeneralStoreModel(authKey.getId(), authKeyValue);
         } else {
-            siteKey = (String) authKeyModel.getValue();
+            authKeyValue = (String) authKeyModel.getValue();
         }
 
-        authKey.setValue(siteKey);
+        authKey.setValue(authKeyValue);
     }
 
-    private TurnToGeneralStoreModel fillEmptyGeneralStoreModel(TurnToGeneralStoreModel model, String key) {
-        if (model == null) {
-            model = new TurnToGeneralStoreModel();
-            model.setKey(key);
-            model.setValue(false);
-
-            turntobackofficeService.saveToTurnToStore(model);
-        }
-        return model;
-    }
-
-    private boolean isModelEmpty(Textbox textbox) {
-        siteKeyModel = turntobackofficeService.loadFromTurnToStoreByKey(textbox.getId());
-        return siteKeyModel == null;
-    }
-
-    private TurnToGeneralStoreModel fillSiteKeyModel(Textbox textbox, String key) {
-        siteKeyModel = new TurnToGeneralStoreModel();
-        siteKeyModel.setKey(textbox.getId());
-        siteKeyModel.setValue(key);
-
-        return siteKeyModel;
-    }
-
-    private void createCachingMode(Intbox cachingTimeBox, Integer cachingTime) {
-        cachingTimeModel = new TurnToGeneralStoreModel();
-        cachingTimeModel.setKey(cachingTimeBox.getId());
-        cachingTimeModel.setValue(cachingTime);
-    }
-
-    private void setTurntoModel(String id, StateTurnFlagModel model) {
-        switch (id) {
-            case "checkboxQA":
-                turntoQAModel = model;
-                break;
-            case "checkboxRating":
-                turntoRatingModel = model;
-                break;
-            case "turntoOrderReporting":
-                turntoOrderReportingModel = model;
-                break;
-            case "buyerComments":
-                turntoBuyerCommentsModel = model;
-                break;
-            case "ccPinboard":
-                turntoCCPinboardModel = model;
-                break;
-            case "customerGallery":
-                turntoCustomerGalleryModel = model;
-                break;
-            case "ongoingTransactionsFeed":
-                ongoingTransactionsFeedModel = model;
-                break;
-            case "customerGalleryRowWidget":
-                turntoCustomerGalleryRowWidgetModel = model;
-                break;
-            default:
-                turntoCheckoutChatterModel = model;
-                break;
-        }
-
+    private StateTurnFlagModel getStateTurnFlagModelById(Checkbox checkBox) {
+        final String id = checkBox.getId();
+        return turntobackofficeService.loadByCheckboxId(id);
     }
 
     private void updateTurntoModuleStatus(Checkbox checkbox, Selectbox selectbox, StateTurnFlagModel model) throws InterruptedException {
@@ -408,7 +364,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
         int index = selectbox.getSelectedIndex();
         String type = (String) selectbox.getModel().getElementAt(index);
 
-        if (!"overlay".equals(type)) return type + "Embed";
+        if (!OVERLAY_SETUP_TYPE.equals(type)) return type + "Embed";
 
         return type;
     }
