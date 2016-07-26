@@ -6,6 +6,7 @@
 <%@ taglib prefix="common" tagdir="/WEB-INF/tags/responsive/common" %>
 <%@ taglib prefix="multi" tagdir="/WEB-INF/tags/addons/b2ccheckoutaddon/responsive/checkout/multi" %>
 
+<c:set var="isOnTurntoOrderReporting" value="${flags.get('turntoOrderReporting').getFlag() eq 'true'}"/>
 
 <template:page pageTitle="${pageTitle}" hideHeaderLinks="true">
 
@@ -43,9 +44,7 @@
     </div>
     <br>
 
-    <div id="TurnToRecentComments"></div>
-    <div id="TT3commentCapture"></div>
-    <%--<div id="TTcommentCapture"></div>--%>
+    <%--<div id="TT3commentCapture"></div>--%>
     <div>
             <%--@elvariable id="allItems" type="java.util.List<de.hybris.platform.commercefacades.order.data.OrderEntryData>"--%>
         <c:forEach items="${allItems}" var="item">
@@ -70,61 +69,48 @@
     </cms:pageSlot>
 </template:page>
 
-<script type="text/javascript">
-    var turnToConfig = {
-        siteKey: "${siteKey}",
-        orderConfFlowPauseSeconds: 3,
-        postPurchaseFlow: true,
-        commentCaptureShowUsername: true
-/*        recentComments: {
-            height: "300px",
-            width: "310px",
-            // category: "movies",
-            // low or high
-            frequency: "high",
-            // Only used when frequency = low
-            timeWindowInHours: 48,
-            // crawlUp, zoomUp, none
-            animationType: "none",
-            animationFreqInMs: 5000
-            // Optional: Change "What's this" copy
-            ,titleMaxLength: 60
-            ,nameMaxLength: 20
-            // Optional: The URL of the full page checkout chatter
-            //,fullPageUrl: ""
-            // Optional: Change header copy
-            //,header: "My custom header here"
-        }*/
-    };
+<c:if test="${isOnTurntoOrderReporting}">
+    <script type="text/javascript">
+        var turnToConfig = {
+            siteKey: "${siteKey}",
+            orderConfFlowPauseSeconds: 3,
+            postPurchaseFlow: true,
+            commentCaptureShowUsername: true
+        };
 
-    (function () {
-        var tt = document.createElement('script');
-        tt.type = 'text/javascript';
-        tt.async = true;
-        tt.src = document.location.protocol + "//static.www.turnto.com/traServer${currentVersion}/trajs/" + turnToConfig.siteKey + "/tra.js";
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(tt, s);
-    })();
+        (function () {
+            var tt = document.createElement('script');
+            tt.type = 'text/javascript';
+            tt.async = true;
+            tt.src = document.location.protocol + "//static.www.turnto.com/traServer${currentVersion}/trajs/" + turnToConfig.siteKey + "/tra.js";
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(tt, s);
+        })();
 
-</script>
+    </script>
 
-<script type="text/javascript" src="//static.www.turnto.com/tra${currentVersion}/turntoFeed.js"></script>
+    <script type="text/javascript" src="//static.www.turnto.com/tra${currentVersion}/turntoFeed.js"></script>
 
-<script type="text/javascript">
-    TurnToFeed.addFeedPurchaseOrder({
-        orderId: "${orderData.code}",
-        email: "${email}",
-        firstName: "${user.firstName}",
-        lastName: "${user.lastName}"
-    });
-    $.each($('.product'), function (i, item) {
-        TurnToFeed.addFeedLineItem({
-            title: $(item).data('name'),
-            url: $(item).data('url'),
-            sku: $(item).data('id'),
-            price: $(item).data('price'),
-            itemImageUrl: $(item).data('img')
+    <script type="text/javascript">
+        TurnToFeed.addFeedPurchaseOrder({
+            orderId: "${orderData.code}",
+            email: "${email}",
+            firstName: "${user.firstName}",
+            lastName: "${user.lastName}"
         });
-    });
-    if (${flags.get('turntoOrderReporting').getFlag()}) TurnToFeed.sendFeed();
-</script>
+        $.each($('.product'), function (i, item) {
+            TurnToFeed.addFeedLineItem({
+                title: $(item).data('name'),
+                url: $(item).data('url'),
+                sku: $(item).data('id'),
+                price: $(item).data('price'),
+                itemImageUrl: $(item).data('img')
+            });
+        });
+
+        if (${isOnTurntoOrderReporting}) {
+            TurnToFeed.sendFeed()
+        }
+
+    </script>
+</c:if>

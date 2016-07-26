@@ -5,10 +5,10 @@
 
 <div class="product-classifications">
     <c:choose>
-        <c:when test="${flags.get('checkboxQA').getSetupType().getCode() eq 'staticEmbed' and flags.get('checkboxQA').getFlag()and isSiteKeyInvalid eq 'false'}">
+        <c:when test="${flags.get('checkboxQA').getFlag() and flags.get('checkboxQA').getSetupType().getCode() eq 'staticEmbed' and flags.get('checkboxQA').getFlag() and isSiteKeyInvalid eq 'false'}">
             ${qaContent}
         </c:when>
-        <c:when test="${flags.get('checkboxQA').getSetupType().getCode() ne 'overlay'}">
+        <c:when test="${flags.get('checkboxQA').getFlag() and flags.get('checkboxQA').getSetupType().getCode() ne 'overlay'}">
             <div id="TurnToContent"></div>
         </c:when>
     </c:choose>

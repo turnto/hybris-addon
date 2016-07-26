@@ -82,13 +82,13 @@ public class CatalogFeedService {
         List<ProductModel> products = getProducts();
         Gson gson = new Gson();
 
-        for (ProductModel model : products) {
-            String price = getProductPrice(model);
-            List<CategoryPath> categoryPathList = categoryPathBuilder.getCategoryPaths(model);
-            String itemURL = getItemURL(categoryPathList);
+        for (ProductModel productModel : products) {
+            String price = getProductPrice(productModel);
+            List<CategoryPath> categoryPathList = categoryPathBuilder.getCategoryPaths(productModel);
+            String itemURL = getItemURL(productModel);
             String categoryPathJson = gson.toJson(categoryPathList);
 
-            FeedProduct feedProduct = new FeedProduct(model, Config.getParameter("hybris.main.path"));
+            FeedProduct feedProduct = new FeedProduct(productModel, Config.getParameter("hybris.main.path"));
             feedProduct.setPrice(price);
             feedProduct.setItemURL(itemURL);
             feedProduct.setCategorypathjson(categoryPathJson);
@@ -99,8 +99,8 @@ public class CatalogFeedService {
         return feedProducts;
     }
 
-    private String getItemURL(List<CategoryPath> categoryPathList) {
-        CategoryPath categoryPath = categoryPathList.get(categoryPathList.size() - 1);
+    private String getItemURL(ProductModel productModel) {
+        CategoryPath categoryPath = categoryPathBuilder.getProductPath(productModel);
         return categoryPath.getUrl();
     }
 
@@ -124,7 +124,7 @@ public class CatalogFeedService {
         }
         return price;
     }
-
+/*
     private String getItemURL(ProductModel model) {
         String category = "Stuff";
         String subcategory = model.getSegment();
@@ -139,6 +139,6 @@ public class CatalogFeedService {
                 + (model.getName() == null ? model.getName() : model.getName().trim().replace(' ', '-'))
                 + "/p/" + model.getCode()
                 + "?site=hybris";
-    }
+    }*/
 
 }

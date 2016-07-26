@@ -13,10 +13,10 @@
 <c:url value="${product.url}/review" var="productReviewActionUrl"/>
 
 <c:choose>
-    <c:when test="${flags.get('checkboxRating').getSetupType().getCode() eq 'staticEmbed'}">
+    <c:when test="${flags.get('checkboxRating').getFlag() and flags.get('checkboxRating').getSetupType().getCode() eq 'staticEmbed'}">
         ${reviewContent}
     </c:when>
-    <c:when test="${flags.get('checkboxRating').getSetupType().getCode() ne 'overlay'}">
+    <c:when test="${flags.get('checkboxRating').getFlag() and flags.get('checkboxRating').getSetupType().getCode() ne 'overlay'}">
         <div id="TurnToReviewsContent"></div>
     </c:when>
 </c:choose>

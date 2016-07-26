@@ -33,13 +33,13 @@
 				<div class="md-secondary-navigation">
 					<ul>
 						<c:if test="${empty hideHeaderLinks}">
-							<c:if test="${uiExperienceOverride}">
+<%--							<c:if test="${uiExperienceOverride}">
 								<li class="backToMobileLink"><c:url
 										value="/_s/ui-experience?level=" var="backToMobileStoreUrl" />
 									<a href="${backToMobileStoreUrl}"> <spring:theme
 											code="text.backToMobileStore" />
 								</a></li>
-							</c:if>
+							</c:if>--%>
 
 
 							<sec:authorize ifNotGranted="ROLE_ANONYMOUS">

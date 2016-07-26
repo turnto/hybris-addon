@@ -62,6 +62,9 @@
 <c:if test="${flags.get('customerGallery').getFlag() eq 'true'}">
 	<div id="TurnToPinboardContent"></div>
 </c:if>
+
+<c:if test="${flags.get('turntoCheckoutChatter').getFlag() eq 'true'}">
 <span id="TurnToChatterContent"></span>
+</c:if>
 
 

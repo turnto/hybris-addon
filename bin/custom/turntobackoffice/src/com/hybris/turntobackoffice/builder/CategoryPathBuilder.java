@@ -25,13 +25,13 @@ public class CategoryPathBuilder {
 
         final Collection<CategoryModel> categoryModels = new ArrayList<>();
 
-        categoryPathList.add(getProductPath(productModel));
+//        categoryPathList.add(getProductPath(productModel));
 
         final ProductModel baseProductModel = getBaseProduct(productModel);
 
-        if (!baseProductModel.getCode().equals(productModel.getCode())) {
-            categoryPathList.add(getProductPath(baseProductModel));
-        }
+//        if (!baseProductModel.getCode().equals(productModel.getCode())) {
+//            categoryPathList.add(getProductPath(baseProductModel));
+//        }
 
         categoryModels.addAll(baseProductModel.getSupercategories());
 
@@ -61,7 +61,7 @@ public class CategoryPathBuilder {
         return product;
     }
 
-    protected CategoryPath getProductPath(final ProductModel product) {
+    public CategoryPath getProductPath(final ProductModel product) {
         final String productUrl = getBasePath() + getProductModelUrlResolver().resolve(product);
         return new CategoryPath(product.getCode(), product.getName(), productUrl);
     }
