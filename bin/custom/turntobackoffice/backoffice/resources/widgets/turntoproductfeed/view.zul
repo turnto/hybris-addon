@@ -73,7 +73,7 @@
 
         <vlayout sclass="content-vlayout">
             <hlayout>
-                <label value="Time for cashing content (in minutes):"/>
+                <label value="Time for caching content (in minutes):"/>
                 <intbox id="cachingTime" constraint="no empty, no negative" sclass="caching-time"/>
             </hlayout>
         </vlayout>
