@@ -1,6 +1,7 @@
 package com.hybris.turntobackoffice.model;
 
 import de.hybris.platform.core.model.product.ProductModel;
+import org.apache.commons.lang.StringUtils;
 
 public class FeedProduct {
 
@@ -20,16 +21,20 @@ public class FeedProduct {
     }
 
     public FeedProduct(ProductModel model, String homeURL) {
-        this.setSku(model.getCode());
+        this.setSku(StringUtils.defaultIfEmpty(model.getCode(),""));
         this.setCategory("");
         this.setCurrency("EUR");
+
         if (model.getPicture() != null) {
             this.setImageURL(homeURL + model.getPicture().getURL());
+        }else{
+            this.setImageURL("");
         }
-        this.setTitle(model.getName());
-        this.setEan(model.getEan());
-        this.setBrand(model.getManufacturerName());
-        this.setMpn(model.getManufacturerAID());
+
+        this.setTitle(StringUtils.defaultIfEmpty(model.getName(),""));
+        this.setEan(StringUtils.defaultIfEmpty(model.getEan(),""));
+        this.setBrand(StringUtils.defaultIfEmpty(model.getManufacturerName(),""));
+        this.setMpn(StringUtils.defaultIfEmpty(model.getManufacturerAID(),""));
     }
 
     public String getSku() {
