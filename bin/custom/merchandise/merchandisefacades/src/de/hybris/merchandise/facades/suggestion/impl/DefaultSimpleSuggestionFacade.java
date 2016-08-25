@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.facades.suggestion.impl;
 
@@ -97,7 +97,7 @@ public class DefaultSimpleSuggestionFacade implements SimpleSuggestionFacade
 					getSimpleSuggestionService().getReferencesForProducts(new LinkedList<ProductModel>(products), referenceTypes,
 							getUserService().getCurrentUser(), excludePurchased, limit), getProductConverter());
 		}
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
 	}
 
 	protected Set<ProductModel> getAllBaseProducts(final ProductModel productModel)
