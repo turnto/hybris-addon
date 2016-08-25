@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.cmscockpit.sitewizard;
 
@@ -77,7 +77,7 @@ public class AcceleratorWizardHelper
 	/**
 	 * header of impex file used for creating content pages for current (new) content catalog
 	 */
-	private final String bshHeader = NEWLINE
+	private static final String BSH_HEADER = NEWLINE
 			+ "$contentCV=catalogVersion(CatalogVersion.catalog(Catalog.id[default=$contentCatalog]),CatalogVersion.version[default="
 			+ STAGED
 			+ "])[default=$contentCatalog:"
@@ -95,7 +95,7 @@ public class AcceleratorWizardHelper
 			+ "\"#% impex.includeExternalData(AcceleratorWizardHelper.class.getResourceAsStream(\"\"/merchandisecockpits/cmscockpit/import/wizard_sample_pages.impex\"\"), \"\"utf-8\"\", 0, 0 );\";"
 			+ NEWLINE;
 
-	public CMSSiteModel createSite(final Map<String, Object> context) throws Exception
+	public CMSSiteModel createSite(final Map<String, Object> context) throws Exception //NOSONAR
 	{
 		final CMSSiteModel item = (CMSSiteModel) context.get("item");
 		final UserModel user = (UserModel) context.get("user");
@@ -128,27 +128,8 @@ public class AcceleratorWizardHelper
 				}
 			}
 
-			if (cat != null)
-			{
-				item.setDefaultCatalog(cat);
-				item.setDefaultPreviewCatalog(cat);
-				if (!cat.getRootCategories().isEmpty())
-				{
-					final CategoryModel category = cat.getRootCategories().iterator().next();
-					item.setDefaultPreviewCategory(category);
+			processCatalog(item, cat);
 
-					final ProductModel defaultPreviewProduct = findDefaultProductPreview(cat);
-					item.setDefaultPreviewProduct(defaultPreviewProduct);
-					if (item.getDefaultPreviewProduct() == null)
-					{
-						LOG.warn("Cannot set default preview product for CMSSite: " + item.getName());
-					}
-				}
-				else
-				{
-					LOG.warn("Cannot set default preview category for CMSSite: " + item.getName());
-				}
-			}
 			setLanguageAndLocale(item);
 
 			if (StringUtils.isNotBlank(contentCatalogName))
@@ -181,7 +162,31 @@ public class AcceleratorWizardHelper
 		}
 	}
 
-	private ProductModel findDefaultProductPreview(final CatalogModel catalogModel)
+	protected void processCatalog(final CMSSiteModel item, final CatalogModel cat) {
+		if (cat != null)
+        {
+            item.setDefaultCatalog(cat);
+            item.setDefaultPreviewCatalog(cat);
+            if (!cat.getRootCategories().isEmpty())
+            {
+                final CategoryModel category = cat.getRootCategories().iterator().next();
+                item.setDefaultPreviewCategory(category);
+
+                final ProductModel defaultPreviewProduct = findDefaultProductPreview(cat);
+                item.setDefaultPreviewProduct(defaultPreviewProduct);
+                if (item.getDefaultPreviewProduct() == null)
+                {
+                    LOG.warn("Cannot set default preview product for CMSSite: " + item.getName());
+                }
+            }
+            else
+            {
+                LOG.warn("Cannot set default preview category for CMSSite: " + item.getName());
+            }
+        }
+	}
+
+	protected ProductModel findDefaultProductPreview(final CatalogModel catalogModel)
 	{
 		ProductModel product = null;
 		final List<CategoryModel> rootCategories = catalogModel.getRootCategories();
@@ -196,7 +201,7 @@ public class AcceleratorWizardHelper
 		return product;
 	}
 
-	private ProductModel findRecursivelyWhatsoeverVisibleProductInCategories(final CategoryModel category)
+	protected ProductModel findRecursivelyWhatsoeverVisibleProductInCategories(final CategoryModel category)
 	{
 		if (!category.getProducts().isEmpty())
 		{
@@ -283,7 +288,7 @@ public class AcceleratorWizardHelper
 		CMSSiteUtils.populateCmsSite(templates, stagedVersion, contentCatalog, item, HOMEPAGE, HOMEPAGE);
 
 		/* pages for all selected templates page */
-		final String header = "$contentCatalog=" + contentCatalog.getId() + bshHeader;
+		final String header = "$contentCatalog=" + contentCatalog.getId() + BSH_HEADER;
 		final InputStream resourceAsStream = new ByteArrayInputStream(header.getBytes());
 		final ImpExResource resource = new StreamBasedImpExResource(resourceAsStream, UTF_8);
 		getImportService().importData(resource);

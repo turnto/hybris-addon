@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.components.liveedit;
 
@@ -44,12 +44,7 @@ public class DefaultAcceleratorPreviewLoader extends DefaultPreviewLoader
 		previewCtx.setPreviewCatalog(null);
 		previewCtx.setPreviewCategory(null);
 		previewCtx.setPreviewProduct(null);
-		if (!page.getRestrictions().isEmpty())
-		{
-			previewCtx.setUser(null);
-			previewCtx.setUserGroup(null);
-			previewCtx.setTime(new Date());
-		}
+		processEmptyRestrictions(previewCtx, page);
 
 		final Collection<AbstractRestrictionModel> restrictions = page.getRestrictions();
 		if (restrictions != null && !restrictions.isEmpty())
@@ -61,30 +56,46 @@ public class DefaultAcceleratorPreviewLoader extends DefaultPreviewLoader
 					return oneRestrictionApplied;
 				}
 
-				if (restriction instanceof CMSTimeRestrictionModel)
-				{
-					loadTimeRestrictionBaseValues(previewCtx, (CMSTimeRestrictionModel) restriction);
-					oneRestrictionApplied = true;
-				}
-				else if (restriction instanceof CMSUserRestrictionModel)
-				{
-					loadUserRestrictionBaseValues(previewCtx, (CMSUserRestrictionModel) restriction);
-					oneRestrictionApplied = true;
-				}
-				else if (restriction instanceof CMSUserGroupRestrictionModel)
-				{
-					loadUserGroupRestrictionBaseValues(previewCtx, ((CMSUserGroupRestrictionModel) restriction));
-					oneRestrictionApplied = true;
-				}
-				else if (restriction instanceof CMSUiExperienceRestrictionModel)
-				{
-					loadUIExperienceRestrictionForProductPage(previewCtx, ((CMSUiExperienceRestrictionModel) restriction));
-					oneRestrictionApplied = true;
-				}
+				oneRestrictionApplied = processRestriction(previewCtx, restriction);
 			}
 		}
 		return oneRestrictionApplied && page.isOnlyOneRestrictionMustApply();
 
+	}
+
+	protected boolean processRestriction(final PreviewDataModel previewCtx, final AbstractRestrictionModel restriction) {
+		boolean oneRestrictionApplied = false;
+
+		if (restriction instanceof CMSTimeRestrictionModel)
+        {
+            loadTimeRestrictionBaseValues(previewCtx, (CMSTimeRestrictionModel) restriction);
+            oneRestrictionApplied = true;
+        }
+        else if (restriction instanceof CMSUserRestrictionModel)
+        {
+            loadUserRestrictionBaseValues(previewCtx, (CMSUserRestrictionModel) restriction);
+            oneRestrictionApplied = true;
+        }
+        else if (restriction instanceof CMSUserGroupRestrictionModel)
+        {
+            loadUserGroupRestrictionBaseValues(previewCtx, (CMSUserGroupRestrictionModel) restriction);
+            oneRestrictionApplied = true;
+        }
+        else if (restriction instanceof CMSUiExperienceRestrictionModel)
+        {
+            loadUIExperienceRestrictionForProductPage(previewCtx, (CMSUiExperienceRestrictionModel) restriction);
+            oneRestrictionApplied = true;
+        }
+		return oneRestrictionApplied;
+	}
+
+	protected void processEmptyRestrictions(final PreviewDataModel previewCtx, final AbstractPageModel page) {
+		if (!page.getRestrictions().isEmpty())
+		{
+			previewCtx.setUser(null);
+			previewCtx.setUserGroup(null);
+			previewCtx.setTime(new Date());
+		}
 	}
 
 	protected void loadUIExperienceRestrictionForProductPage(final PreviewDataModel previewCtx,

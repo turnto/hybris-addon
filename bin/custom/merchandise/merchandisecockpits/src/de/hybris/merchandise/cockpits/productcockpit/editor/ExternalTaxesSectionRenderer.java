@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.productcockpit.editor;
 
@@ -87,44 +87,49 @@ public class ExternalTaxesSectionRenderer implements SectionRenderer
 				{
 					final ExternalTaxesSectionConfiguration secConfig = (ExternalTaxesSectionConfiguration) customSection
 							.getSectionConfiguration();
-					if (secConfig != null)
-					{
-						final HtmlBasedComponent rowDiv = new Div();
-						rowDiv.setSclass(EDITOR_SECTION_ROW_CNT_SCLASS);
-						rowDiv.setParent(mainCnt);
-
-						final DescriptionTooltip descTooltip = new DescriptionTooltip("External taxes");
-
-						final Hbox rowCnt = new Hbox();
-						rowCnt.setParent(rowDiv);
-
-						final String rWidths = descTooltip.isRender().booleanValue() ? "11em" + ",none,18px" : "11em" + ",none";
-						rowCnt.setWidth("100%");
-						rowCnt.setStyle("table-layout:fixed;");
-						rowCnt.setWidths(rWidths);
-
-						final Label rowLabel = new Label(Labels.getLabel("merchandisecockpits.product.externalTaxes"));
-						rowLabel.setTooltiptext(Labels.getLabel("merchandisecockpits.product.externalTaxes"));
-
-						final Div labelContainer = new Div();
-						labelContainer.setSclass(EDITOR_LABEL_CNT_SCLASS);
-						labelContainer.setParent(rowCnt);
-						labelContainer.appendChild(rowLabel);
-
-						final ObjectValueContainer objectValueContainer = ((DefaultEditorSectionPanelModel) panel.getModel())
-									.getEditorArea().getCurrentObjectValues();
-						if (objectValueContainer != null && objectValueContainer.getObject() instanceof ProductModel)
-						{
-							final ProductModel product = (ProductModel)objectValueContainer.getObject();
-							rowCnt.appendChild(createExternalTaxesEditor(product));
-						}
-						
-					}
+					constructHbox(panel, mainCnt, secConfig);
 				}
 			}
 		}
 	}
 
+	protected void constructHbox(final SectionPanel panel, final Div mainCnt,
+			final ExternalTaxesSectionConfiguration secConfig) {
+		if (secConfig != null)
+		{
+			final HtmlBasedComponent rowDiv = new Div();
+			rowDiv.setSclass(EDITOR_SECTION_ROW_CNT_SCLASS);
+			rowDiv.setParent(mainCnt);
+
+			final DescriptionTooltip descTooltip = new DescriptionTooltip("External taxes");
+
+			final Hbox rowCnt = new Hbox();
+			rowCnt.setParent(rowDiv);
+
+			final String rWidths = descTooltip.isRender().booleanValue() ? "11em" + ",none,18px" : "11em" + ",none";
+			rowCnt.setWidth("100%");
+			rowCnt.setStyle("table-layout:fixed;");
+			rowCnt.setWidths(rWidths);
+
+			final Label rowLabel = new Label(Labels.getLabel("merchandisecockpits.product.externalTaxes"));
+			rowLabel.setTooltiptext(Labels.getLabel("merchandisecockpits.product.externalTaxes"));
+
+			final Div labelContainer = new Div();
+			labelContainer.setSclass(EDITOR_LABEL_CNT_SCLASS);
+			labelContainer.setParent(rowCnt);
+			labelContainer.appendChild(rowLabel);
+
+			final ObjectValueContainer objectValueContainer = ((DefaultEditorSectionPanelModel) panel.getModel())
+						.getEditorArea().getCurrentObjectValues();
+			if (objectValueContainer != null && objectValueContainer.getObject() instanceof ProductModel)
+			{
+				final ProductModel product = (ProductModel)objectValueContainer.getObject();
+				rowCnt.appendChild(createExternalTaxesEditor(product));
+			}
+			
+		}
+	}
+	
 	/**
 	 * Creates a special editor with custom editor listener.</p>
 	 */

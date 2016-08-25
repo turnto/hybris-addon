@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.cmscockpit.components.contentbrowser;
 
@@ -33,8 +33,6 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
@@ -52,9 +50,9 @@ public class DefaultCmsPageContentBrowser extends CmsPageContentBrowser
 	@Override
 	protected AbstractBrowserComponent createCaptionComponent()
 	{
-		return new CaptionBrowserComponent(this.getModel(), this)
+		return new CaptionBrowserComponent(this.getModel(), this) // NOSONAR
 		{
-			HtmlBasedComponent rightCaptionComponent = null;
+			private HtmlBasedComponent rightCaptionComponent = null;
 
 			@Override
 			protected HtmlBasedComponent createCaptionLabelComponent()
@@ -73,23 +71,7 @@ public class DefaultCmsPageContentBrowser extends CmsPageContentBrowser
 				{
 					final Button backBtn = new Button(Labels.getLabel("general.reload"));
 					backBtn.setSclass("btnred btnReload");
-					backBtn.addEventListener(Events.ON_CLICK, new EventListener()
-					{
-						@Override
-						public void onEvent(final Event event) throws Exception
-						{
-							final Object previewFrame = DefaultCmsPageContentBrowser.this
-									.getAttribute(CmsPageMainAreaPreviewComponentFactory.PREVIEW_FRAME_KEY);
-							if (previewFrame instanceof Iframe)
-							{
-								((Iframe) previewFrame).invalidate();
-							}
-							else
-							{
-								LOG.warn("Could not reset page preview. Reason: Preview frame is not an Iframe");
-							}
-						}
-					});
+					backBtn.addEventListener(Events.ON_CLICK, event -> backBtnAction());
 
 					rightCaptionComponent.appendChild(backBtn);
 				}
@@ -98,47 +80,7 @@ public class DefaultCmsPageContentBrowser extends CmsPageContentBrowser
 				final Button button = new Button(Labels.getLabel("browser.openInLiveEdit"));
 				rightCaptionComponent.appendChild(button);
 				button.setSclass("btnNavigationWithLabel btnGotoLiveEdit");
-				UITools.addBusyListener(button, Events.ON_CLICK, new EventListener()
-				{
-					@Override
-					public void onEvent(final Event event)
-					{
-						final Object browserModel = DefaultCmsPageContentBrowser.this.getModel();
-						if (browserModel instanceof DefaultCmsPageBrowserModel)
-						{
-							final DefaultCmsPageBrowserModel cmsPageBrowserModel = (DefaultCmsPageBrowserModel) browserModel;
-							if (cmsPageBrowserModel.getCurrentPageObject() != null && cmsPageBrowserModel.getActiveSite() != null
-									&& cmsPageBrowserModel.getActiveCatalogVersion() != null)
-							{
-								final Object activeItem = cmsPageBrowserModel.getCurrentPageObject().getObject();
-								final PK pagePk = ((AbstractPageModel) activeItem).getPk();
-
-								final StringBuilder urlBuilder = new StringBuilder();
-								urlBuilder.append("?").append(PERSP_TAG);
-								urlBuilder.append("=").append(LIVE_EDIT_PERSPECTIVE_ID);
-								urlBuilder.append("&").append(EVENTS_TAG);
-								urlBuilder.append("=").append(LIVE_EDIT_PAGE_NAVIGATION_EVENT);
-								urlBuilder.append("&").append(LIVE_EDIT_SITE);
-								urlBuilder.append("=").append(cmsPageBrowserModel.getActiveSite().getPk().toString());
-								urlBuilder.append("&").append(LIVE_EDIT_CATALOG);
-								urlBuilder.append("=").append(cmsPageBrowserModel.getActiveCatalogVersion().getPk().toString());
-								urlBuilder.append("&").append(LIVE_EDIT_PAGE);
-								urlBuilder.append("=").append(pagePk.getLongValueAsString());
-
-								if (LOG.isDebugEnabled())
-								{
-									LOG.debug("URL for Open in live edit page navigation event: " + urlBuilder.toString());
-								}
-
-								Executions.getCurrent().sendRedirect(urlBuilder.toString());
-							}
-							else
-							{
-								LOG.error("Either currentPageObject or ActiveSite or ActiveCatalogVersion is null");
-							}
-						}
-					}
-				}, null, null);
+				UITools.addBusyListener(button, Events.ON_CLICK, event -> liveEditBtnAction(), null, null);
 				return rightCaptionComponent;
 			}
 
@@ -157,6 +99,56 @@ public class DefaultCmsPageContentBrowser extends CmsPageContentBrowser
 				return ret;
 			}
 		};
+	}
+
+	protected void liveEditBtnAction() {
+		final Object browserModel = DefaultCmsPageContentBrowser.this.getModel();
+		if (browserModel instanceof DefaultCmsPageBrowserModel)
+        {
+            final DefaultCmsPageBrowserModel cmsPageBrowserModel = (DefaultCmsPageBrowserModel) browserModel;
+            if (cmsPageBrowserModel.getCurrentPageObject() != null && cmsPageBrowserModel.getActiveSite() != null
+                    && cmsPageBrowserModel.getActiveCatalogVersion() != null)
+            {
+                final Object activeItem = cmsPageBrowserModel.getCurrentPageObject().getObject();
+                final PK pagePk = ((AbstractPageModel) activeItem).getPk();
+
+                final StringBuilder urlBuilder = new StringBuilder();
+                urlBuilder.append("?").append(PERSP_TAG);
+                urlBuilder.append("=").append(LIVE_EDIT_PERSPECTIVE_ID);
+                urlBuilder.append("&").append(EVENTS_TAG);
+                urlBuilder.append("=").append(LIVE_EDIT_PAGE_NAVIGATION_EVENT);
+                urlBuilder.append("&").append(LIVE_EDIT_SITE);
+                urlBuilder.append("=").append(cmsPageBrowserModel.getActiveSite().getPk().toString());
+                urlBuilder.append("&").append(LIVE_EDIT_CATALOG);
+                urlBuilder.append("=").append(cmsPageBrowserModel.getActiveCatalogVersion().getPk().toString());
+                urlBuilder.append("&").append(LIVE_EDIT_PAGE);
+                urlBuilder.append("=").append(pagePk.getLongValueAsString());
+
+                if (LOG.isDebugEnabled())
+                {
+                    LOG.debug("URL for Open in live edit page navigation event: " + urlBuilder.toString());
+                }
+
+                Executions.getCurrent().sendRedirect(urlBuilder.toString());
+            }
+            else
+            {
+                LOG.error("Either currentPageObject or ActiveSite or ActiveCatalogVersion is null");
+            }
+        }
+	}
+
+	protected void backBtnAction() {
+		final Object previewFrame = DefaultCmsPageContentBrowser.this
+                .getAttribute(CmsPageMainAreaPreviewComponentFactory.PREVIEW_FRAME_KEY);
+		if (previewFrame instanceof Iframe)
+        {
+            ((Iframe) previewFrame).invalidate();
+        }
+        else
+        {
+            LOG.warn("Could not reset page preview. Reason: Preview frame is not an Iframe");
+        }
 	}
 
 	@Override

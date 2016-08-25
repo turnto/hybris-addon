@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,15 +9,10 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.productcockpit.editor;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.springframework.beans.factory.annotation.Required;
 import de.hybris.platform.cockpit.components.sectionpanel.SectionRenderer;
 import de.hybris.platform.cockpit.model.meta.ObjectType;
 import de.hybris.platform.cockpit.model.meta.PropertyDescriptor;
@@ -27,6 +22,13 @@ import de.hybris.platform.cockpit.services.config.EditorSectionConfiguration;
 import de.hybris.platform.cockpit.services.config.UpdateAwareCustomSectionConfiguration;
 import de.hybris.platform.cockpit.services.config.impl.DefaultEditorSectionConfiguration;
 import de.hybris.platform.cockpit.services.values.ObjectValueContainer;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Required;
 
 
 /**
@@ -48,7 +50,7 @@ public class ExternalTaxesSectionConfiguration extends DefaultEditorSectionConfi
 	public List<EditorSectionConfiguration> getAdditionalSections()
 	{
 		// NOP
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -95,13 +97,12 @@ public class ExternalTaxesSectionConfiguration extends DefaultEditorSectionConfi
 	@Override
 	public Set<PropertyDescriptor> getUpdateTriggerProperties()
 	{
-		final Set<PropertyDescriptor> ret = new HashSet<PropertyDescriptor>();
-		return ret;
+		return new HashSet<>();
 	}
 
 	@Override
 	public Set<ObjectType> getUpdateTriggerTypes()
 	{
-		return Collections.EMPTY_SET;
+		return Collections.emptySet();
 	}
 }

@@ -2,7 +2,7 @@
 <!--
  [y] hybris Platform
 
- Copyright (c) 2000-2015 hybris AG
+ Copyright (c) 2000-2016 hybris AG
  All rights reserved.
 
  This software is the confidential and proprietary information of hybris
@@ -148,5 +148,11 @@
 			<delete dir="${ext.merchandisecockpits.path}/web" quiet="true"/>
 		</sequential>
 	</macrodef>
+	
+	<!-- exclude impex files from localization --> 
+	<patternset id="merchandisecockpits.localization.pattern">
+		<patternset refid="localization.defaultpattern"/>
+		<exclude name="**/*.impex"/>
+	</patternset>
 
 </project>

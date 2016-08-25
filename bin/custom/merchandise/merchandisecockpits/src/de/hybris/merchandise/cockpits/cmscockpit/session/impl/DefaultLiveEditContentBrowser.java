@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.cmscockpit.session.impl;
 
@@ -72,7 +72,6 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
@@ -189,6 +188,11 @@ public class DefaultLiveEditContentBrowser extends LiveEditContentBrowser
 	{
 		private DefaultLiveEditView liveEditView;
 
+		public DefaultLiveEditMainAreaComponent(final AdvancedBrowserModel model, final AbstractContentBrowser contentBrowser)
+		{
+			super(model, contentBrowser);
+		}
+
 		public void fireModeChanged()
 		{
 			final BrowserModel model = getModel();
@@ -198,11 +202,6 @@ public class DefaultLiveEditContentBrowser extends LiveEditContentBrowser
 						((DefaultLiveEditBrowserArea) model.getArea()).isLiveEditModeEnabled());
 				this.liveEditView.update();
 			}
-		}
-
-		public DefaultLiveEditMainAreaComponent(final AdvancedBrowserModel model, final AbstractContentBrowser contentBrowser)
-		{
-			super(model, contentBrowser);
 		}
 
 		@Override
@@ -380,13 +379,15 @@ public class DefaultLiveEditContentBrowser extends LiveEditContentBrowser
 				}
 				catch (final Exception e)
 				{
-					//log.warn("Could not get search type for property descriptor (Reason: '" + e.getMessage() + "').");
+					if(LOG.isDebugEnabled()){
+						LOG.debug("Could not get search type for property descriptor", e);
+					}
 				}
 			}
 			return searchType;
 		}
 
-		private Component createEditor(final TypedObject object, final EditorRowConfiguration rowConfig,
+		protected Component createEditor(final TypedObject object, final EditorRowConfiguration rowConfig,
 				final ObjectValueContainer valueContainer)
 		{
 			final Div editorContainer = new Div();
@@ -394,7 +395,6 @@ public class DefaultLiveEditContentBrowser extends LiveEditContentBrowser
 					.setStyle("float: left; position: relative; padding-left: 25px; padding-top: 8px; padding-bottom: 5px; padding-right: 3px;");
 
 			final Div labelDiv = new Div();
-			//labelDiv.setStyle("width: 145px; overflow: hidden; text-align: right; position: relative; top: 3px;");
 			labelDiv.setStyle("overflow: hidden; text-align: left; padding: 3px;");
 			final PropertyDescriptor propDesc = rowConfig.getPropertyDescriptor();
 
@@ -423,53 +423,18 @@ public class DefaultLiveEditContentBrowser extends LiveEditContentBrowser
 						.createUIEditor(rowConfig.getEditor()) : ped.createUIEditor(TypeTools.getMultiplicityString(propDesc));
 				editor.setEditable(true);
 
-				CreateContext createContext = null;
-				if (editor instanceof ReferenceUIEditor)
-				{
-					SearchType rootType = getRootSearchType(propDesc);
-
-					if (rootType != null
-							&& rootType.isAssignableFrom(UISessionUtils.getCurrentSession().getTypeService()
-									.getObjectType(UserModel._TYPECODE)))
-					{
-						rootType = UISessionUtils.getCurrentSession().getSearchService().getSearchType(CustomerModel._TYPECODE);
-					}
-
-					if (rootType != null)
-					{
-						((ReferenceUIEditor) editor).setRootType(rootType);
-					}
-					//final SearchType rootType = getRootSearchType(propDesc);
-					createContext = new CreateContext(rootType, UISessionUtils.getCurrentSession().getTypeService()
-							.wrapItem(valueContainer.getObject()), propDesc, UISessionUtils.getCurrentSession().getLanguageIso());
-				}
+				CreateContext createContext = getCreateContext(valueContainer, propDesc, editor);
 
 				final Map<String, Object> customParameters = new HashMap<String, Object>(rowConfig.getParameters());
 				customParameters.put(AbstractUIEditor.ATTRIBUTE_QUALIFIER_PARAM, propDesc.getQualifier());
 				customParameters.put("languageIso", UISessionUtils.getCurrentSession().getLanguageIso());
 				final CMSSiteModel cmsSiteModel = getCmsAdminSiteService().getActiveSite();
 				final CatalogVersionModel catalogVersionModel = getCmsAdminSiteService().getActiveCatalogVersion();
-				if (cmsSiteModel != null)
-				{
-					customParameters.put("availableItems",
-							getCmsPreviewService().getEditableCatalogs(cmsSiteModel, catalogVersionModel));
-				}
 
-				if (createContext != null)
-				{
-					try
-					{
-						customParameters.put("createContext", createContext.clone());
-					}
-					catch (final CloneNotSupportedException e)
-					{
-						LOG.error("Clone not support for preview data!", e);
-					}
-				}
-
+				processParameters(createContext, customParameters, cmsSiteModel, catalogVersionModel);
 
 				final HtmlBasedComponent viewComponent = editor.createViewComponent(valueHolder.getCurrentValue(), customParameters,
-						new EditorListener()
+						new EditorListener() // NOSONAR
 						{
 							@Override
 							public void valueChanged(final Object value)
@@ -503,6 +468,30 @@ public class DefaultLiveEditContentBrowser extends LiveEditContentBrowser
 			}
 
 			return editorContainer;
+		}
+
+		protected CreateContext getCreateContext(final ObjectValueContainer valueContainer,
+											   final PropertyDescriptor propDesc, final UIEditor editor) {
+			CreateContext createContext = null;
+			if (editor instanceof ReferenceUIEditor)
+            {
+                SearchType rootType = getRootSearchType(propDesc);
+
+                if (rootType != null
+                        && rootType.isAssignableFrom(UISessionUtils.getCurrentSession().getTypeService()
+                                .getObjectType(UserModel._TYPECODE)))
+                {
+                    rootType = UISessionUtils.getCurrentSession().getSearchService().getSearchType(CustomerModel._TYPECODE);
+                }
+
+                if (rootType != null)
+                {
+                    ((ReferenceUIEditor) editor).setRootType(rootType);
+                }
+                createContext = new CreateContext(rootType, UISessionUtils.getCurrentSession().getTypeService()
+                        .wrapItem(valueContainer.getObject()), propDesc, UISessionUtils.getCurrentSession().getLanguageIso());
+            }
+			return createContext;
 		}
 
 		protected Collection<EditorRowConfiguration> getRowConfigs(final BaseType type)
@@ -542,7 +531,7 @@ public class DefaultLiveEditContentBrowser extends LiveEditContentBrowser
 					props.add(row.getPropertyDescriptor());
 				}
 				final ObjectValueContainer valueContainer = TypeTools.createValueContainer(previewDataTO,
-						new HashSet<PropertyDescriptor>(props), UISessionUtils.getCurrentSession().getSystemService()
+						new HashSet<>(props), UISessionUtils.getCurrentSession().getSystemService()
 								.getAvailableLanguageIsos());
 
 				int index = 0;
@@ -582,15 +571,7 @@ public class DefaultLiveEditContentBrowser extends LiveEditContentBrowser
 
 			final Button applyButton = new Button(Labels.getLabel("general.apply"));
 			applyButton.setStyle("position:absolute; right:20px; top: 4px");
-			applyButton.addEventListener(Events.ON_CLICK, new org.zkoss.zk.ui.event.EventListener()
-			{
-				@Override
-				public void onEvent(final Event event) throws Exception //NOPMD: ZK Specific
-				{
-
-					updatePreviewData();
-				}
-			});
+			applyButton.addEventListener(Events.ON_CLICK, event -> updatePreviewData());
 			buttonDiv.appendChild(applyButton);
 			previewDataAreaDiv.appendChild(buttonDiv);
 
@@ -614,65 +595,70 @@ public class DefaultLiveEditContentBrowser extends LiveEditContentBrowser
 						final boolean liveEditModeEnabled = liveEditArea.isLiveEditModeEnabled();
 						// Live edit button
 						createRightCaptionButton(Labels.getLabel(liveEditModeEnabled ? "browser.liveEditOn" : "browser.liveEditOff"),
-								(liveEditModeEnabled ? "btnliveeditcontent_quickedit_active" : "btnliveeditcontent_quickedit"), hbox, new org.zkoss.zk.ui.event.EventListener()
-								{
-									@Override
-									public void onEvent(final Event event) throws Exception //NOPMD: ZK Specific
-									{
-										liveEditArea.fireModeChange();
-									}
-								});
+								liveEditModeEnabled ? "btnliveeditcontent_quickedit_active" : "btnliveeditcontent_quickedit",
+								hbox, event -> liveEditArea.fireModeChange());
 
 						final boolean isPreviewDataActive = liveEditBrowserModel.isPreviewDataVisible();
 						// Preview context button
 						createRightCaptionButton(Labels.getLabel("browser.previewData"), 
-								(isPreviewDataActive ? "btnliveeditcontent_previewcontext_active" : "btnliveeditcontent_previewcontext"),
-								hbox, new org.zkoss.zk.ui.event.EventListener()
-								{
-									@Override
-									public void onEvent(final Event event) throws Exception //NOPMD: ZK Specific
-									{
-										liveEditBrowserModel.fireTogglePreviewDataMode(DefaultLiveEditContentBrowser.this);
-									}
-								});
+								isPreviewDataActive ? "btnliveeditcontent_previewcontext_active" : "btnliveeditcontent_previewcontext",
+								hbox, event -> liveEditBrowserModel.fireTogglePreviewDataMode(DefaultLiveEditContentBrowser.this));
 
 						final String sitePk = getCmsAdminSiteService().getActiveSite().getPk().toString();
 						final String catalogPk = getCmsAdminSiteService().getActiveCatalogVersion().getPk().toString();
 
-						// Open in page edit button
-						if (StringUtils.isNotBlank(liveEditBrowserModel.getRelatedPagePk()))
-						{
-							createRightCaptionButton(Labels.getLabel("browser.openInPageEdit"), "btnliveeditcontent_pageedit", hbox,
-									new org.zkoss.zk.ui.event.EventListener()
-									{
-										@Override
-										public void onEvent(final Event event) throws Exception //NOPMD: ZK Specific
-										{
-											final StringBuilder urlBuilder = new StringBuilder();
-											urlBuilder.append("?").append(PERSP_TAG);
-											urlBuilder.append("=").append(PAGE_VIEW_PERSPECTIVE_ID);
-											urlBuilder.append("&").append(EVENTS_TAG);
-											urlBuilder.append("=").append(CMS_NAVIGATION_EVENT);
-											urlBuilder.append("&").append(CMS_PNAV_SITE);
-											urlBuilder.append("=").append(sitePk);
-											urlBuilder.append("&").append(CMS_PNAV_CATALOG);
-											urlBuilder.append("=").append(catalogPk);
-											urlBuilder.append("&").append(CMS_PNAV_PAGE);
-											urlBuilder.append("=").append(liveEditBrowserModel.getRelatedPagePk());
-
-											if (LOG.isDebugEnabled())
-											{
-												LOG.debug("URL for Open in Page edit event: " + urlBuilder.toString());
-											}
-
-											Executions.getCurrent().sendRedirect(urlBuilder.toString());
-										}
-									});
-						}
+						processOpenInPageEditButton(hbox, liveEditBrowserModel, sitePk, catalogPk);
 					}
 				}
 			}
 		}
+	}
+
+	protected void processOpenInPageEditButton(final Hbox hbox, final DefaultLiveEditBrowserModel liveEditBrowserModel,
+											 final String sitePk, final String catalogPk) {
+		// Open in page edit button
+		if (StringUtils.isNotBlank(liveEditBrowserModel.getRelatedPagePk()))
+        {
+            createRightCaptionButton(Labels.getLabel("browser.openInPageEdit"), "btnliveeditcontent_pageedit", hbox,
+					event -> {
+                        final StringBuilder urlBuilder = new StringBuilder();
+                        urlBuilder.append("?").append(PERSP_TAG);
+                        urlBuilder.append("=").append(PAGE_VIEW_PERSPECTIVE_ID);
+                        urlBuilder.append("&").append(EVENTS_TAG);
+                        urlBuilder.append("=").append(CMS_NAVIGATION_EVENT);
+                        urlBuilder.append("&").append(CMS_PNAV_SITE);
+                        urlBuilder.append("=").append(sitePk);
+                        urlBuilder.append("&").append(CMS_PNAV_CATALOG);
+                        urlBuilder.append("=").append(catalogPk);
+                        urlBuilder.append("&").append(CMS_PNAV_PAGE);
+                        urlBuilder.append("=").append(liveEditBrowserModel.getRelatedPagePk());
+                        if (LOG.isDebugEnabled())
+                        {
+                            LOG.debug("URL for Open in Page edit event: " + urlBuilder.toString());
+                        }
+                        Executions.getCurrent().sendRedirect(urlBuilder.toString());
+                    });
+        }
+	}
+
+	protected void processParameters(CreateContext createContext, Map<String, Object> customParameters, CMSSiteModel cmsSiteModel, CatalogVersionModel catalogVersionModel) {
+		if (cmsSiteModel != null)
+        {
+            customParameters.put("availableItems",
+                    getCmsPreviewService().getEditableCatalogs(cmsSiteModel, catalogVersionModel));
+        }
+
+		if (createContext != null)
+        {
+            try
+            {
+                customParameters.put("createContext", createContext.clone());
+            }
+            catch (final CloneNotSupportedException e)
+            {
+                LOG.error("Clone not support for preview data!", e);
+            }
+        }
 	}
 
 	@Override

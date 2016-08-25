@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.cmscockpit.session.impl;
 
@@ -32,6 +32,7 @@ import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.user.UserService;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -104,10 +105,10 @@ public class DefaultLiveEditBrowserModel extends LiveEditBrowserModel
 
 
 	@Override
-	public Object clone() throws CloneNotSupportedException
+	public Object clone() throws CloneNotSupportedException // NOSONAR
 	{
 		// Isn't intended to be use here.
-		return null;
+		return null;// NOSONAR
 	}
 
 	@Override
@@ -206,8 +207,8 @@ public class DefaultLiveEditBrowserModel extends LiveEditBrowserModel
 	@Override
 	public List<TypedObject> getItems()
 	{
-		// Isn't intended to be use here.
-		return null;
+		// Isn't intended to be used here.
+		return Collections.emptyList();
 	}
 
 	@Override

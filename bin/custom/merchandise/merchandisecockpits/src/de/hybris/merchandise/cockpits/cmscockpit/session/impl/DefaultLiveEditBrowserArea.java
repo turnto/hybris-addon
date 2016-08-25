@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.cmscockpit.session.impl;
 
@@ -45,11 +45,13 @@ import org.springframework.beans.factory.annotation.Required;
 public class DefaultLiveEditBrowserArea extends LiveEditBrowserArea
 {
 	private static final Logger LOG = Logger.getLogger(DefaultLiveEditBrowserArea.class);
+	
+	private static final String UNABLE_TO_LOAD_LIVE_EDIT_BROWSER_MODEL_MSG = "It is not possible to load LiveEdit Browser Model";
 
 	private CommonI18NService commonI18NService;
 	private CMSSiteModel currentSite = null;
 	private AdvancedBrowserModel welcomeBrowserModel = null;
-	
+
 	private boolean initialized = false;
 	private boolean liveEditModeEnabled = false;
 	private final DefaultSearchBrowserModelListener liveEditBrowserListener = newDefaultSearchBrowserModelListener();
@@ -60,9 +62,6 @@ public class DefaultLiveEditBrowserArea extends LiveEditBrowserArea
 		if (!this.initialized)
 		{
 			this.initialized = true;
-
-			//TODO: add welcome browser model as default?
-
 			final DefaultLiveEditBrowserModel browserModel = newDefaultLiveEditBrowserModel();
 			browserModel.setCurrentSite(this.currentSite);
 			browserModel.addBrowserModelListener(liveEditBrowserListener);
@@ -71,20 +70,13 @@ public class DefaultLiveEditBrowserArea extends LiveEditBrowserArea
 
 			UISessionUtils.getCurrentSession().addSessionListener(newLiveEditBrowserAreaUISessionListener());
 		}
-		// else
-		// {
-			// if (this.currentSite != null)
-			// {
-			// 	refreshContent(this.currentSite, Boolean.TRUE.booleanValue());
-			// }
-		// }
 	}
-	
+
 	protected DefaultLiveEditBrowserModel newDefaultLiveEditBrowserModel()
 	{
 		return new DefaultLiveEditBrowserModel();
 	}
-	
+
 	protected DefaultSearchBrowserModelListener newDefaultSearchBrowserModelListener()
 	{
 		return new DefaultSearchBrowserModelListener(this);
@@ -128,7 +120,7 @@ public class DefaultLiveEditBrowserArea extends LiveEditBrowserArea
 		}
 		else
 		{
-			LOG.warn("It is not possible to load LiveEdit Browser Model");
+			LOG.warn(UNABLE_TO_LOAD_LIVE_EDIT_BROWSER_MODEL_MSG);
 		}
 	}
 
@@ -141,7 +133,7 @@ public class DefaultLiveEditBrowserArea extends LiveEditBrowserArea
 		}
 		else
 		{
-			LOG.warn("It is not possible to load LiveEdit Browser Model");
+			LOG.warn(UNABLE_TO_LOAD_LIVE_EDIT_BROWSER_MODEL_MSG);
 		}
 	}
 
@@ -167,7 +159,7 @@ public class DefaultLiveEditBrowserArea extends LiveEditBrowserArea
 		}
 		else
 		{
-			LOG.warn("It is not possible to load LiveEdit Browser Model");
+			LOG.warn(UNABLE_TO_LOAD_LIVE_EDIT_BROWSER_MODEL_MSG);
 		}
 	}
 
@@ -182,7 +174,7 @@ public class DefaultLiveEditBrowserArea extends LiveEditBrowserArea
 		}
 		else
 		{
-			LOG.warn("It is not possible to load LiveEdit Browser Model");
+			LOG.warn(UNABLE_TO_LOAD_LIVE_EDIT_BROWSER_MODEL_MSG);
 		}
 	}
 
@@ -235,66 +227,81 @@ public class DefaultLiveEditBrowserArea extends LiveEditBrowserArea
 
 		if (event instanceof CmsLiveEditEvent)
 		{
-			if (!((CmsLiveEditEvent) event).getUrl().isEmpty())
-			{
-				if (getFocusedBrowser() instanceof DefaultLiveEditBrowserModel)
-				{
-					((DefaultLiveEditBrowserModel) getFocusedBrowser()).setCurrentUrl(((CmsLiveEditEvent) event).getUrl());
-				}
-				refreshContent(this.getCurrentSite());
-			}
+			processCmsLiveEditEvent((CmsLiveEditEvent) event);
 		}
 		else if (event instanceof ItemChangedEvent)
 		{
-			final AbstractContentBrowser abstractContentBrowser = getCorrespondingContentBrowser(getFocusedBrowser());
-			if (abstractContentBrowser != null)
-			{ //update changed item
-				abstractContentBrowser.updateItem(((ItemChangedEvent) event).getItem(), Collections.EMPTY_SET);
-			}
+			processItemChangedEvent((ItemChangedEvent) event);
 		}
 		else if (event instanceof CmsUrlChangeEvent)
 		{
-			//exit when comes from another perspective!
-			if (!event.getSource().equals(getPerspective()))
-			{
-				return;
-			}
-			final AbstractContentBrowser abstractContentBrowser = getCorrespondingContentBrowser(getFocusedBrowser());
-			if (abstractContentBrowser != null)
-			{
-				final DefaultLiveEditContentBrowser liveEditContentBrowser = (DefaultLiveEditContentBrowser) abstractContentBrowser;
-				liveEditContentBrowser.updateAfterChangedUrl((CmsUrlChangeEvent) event);
-			}
+			processCmsUrlChangeEvent(event);
+
 		}
 		else if (event instanceof CmsPerspectiveInitEvent)
 		{
-			if (event.getSource() == null || !event.getSource().equals(getPerspective()))
-			{
-				return;
-			}
-			final BrowserModel focusedBrowserModel = getFocusedBrowser();
-			if (focusedBrowserModel instanceof DefaultLiveEditBrowserModel)
-			{
-				final DefaultLiveEditBrowserModel liveBrowserModel = (DefaultLiveEditBrowserModel) focusedBrowserModel;
-				liveBrowserModel.onCmsPerpsectiveInitEvent();
-			}
+			processCmsPerspectiveInitEvent(event);
 		}
 		else
 		{
-			//		final AbstractContentBrowser abstractContentBrowser = getCorrespondingContentBrowser(getFocusedBrowser());
-			//		if (abstractContentBrowser instanceof LiveEditContentBrowser)
-			//		{
-			//			final LiveEditContentBrowser liveEditContentBrowser = (LiveEditContentBrowser) abstractContentBrowser;
-			//			liveEditContentBrowser.setRelatedPagePk(null);
-			//		}
-			final BrowserModel focusedBrowserModel = getFocusedBrowser();
-			if (focusedBrowserModel instanceof DefaultLiveEditBrowserModel)
-			{
-				final DefaultLiveEditBrowserModel liveBrowserModel = (DefaultLiveEditBrowserModel) focusedBrowserModel;
-				liveBrowserModel.setRelatedPagePk(null);
-			}
+			processGenericEvent();
 		}
 
+	}
+
+	protected void processGenericEvent() {
+		final BrowserModel focusedBrowserModel = getFocusedBrowser();
+		if (focusedBrowserModel instanceof DefaultLiveEditBrowserModel)
+        {
+            final DefaultLiveEditBrowserModel liveBrowserModel = (DefaultLiveEditBrowserModel) focusedBrowserModel;
+            liveBrowserModel.setRelatedPagePk(null);
+        }
+	}
+
+	protected void processCmsPerspectiveInitEvent(final CockpitEvent event) {
+		if (event.getSource() == null || !event.getSource().equals(getPerspective()))
+        {
+            return;
+        }
+		final BrowserModel focusedBrowserModel = getFocusedBrowser();
+		if (focusedBrowserModel instanceof DefaultLiveEditBrowserModel)
+        {
+            final DefaultLiveEditBrowserModel liveBrowserModel = (DefaultLiveEditBrowserModel) focusedBrowserModel;
+            liveBrowserModel.onCmsPerpsectiveInitEvent();
+        }
+	}
+
+	protected void processCmsUrlChangeEvent(final CockpitEvent event) {
+		//exit when comes from another perspective!
+		if (!event.getSource().equals(getPerspective()))
+        {
+            return;
+        }
+		final AbstractContentBrowser abstractContentBrowser = getCorrespondingContentBrowser(getFocusedBrowser());
+		if (abstractContentBrowser != null)
+        {
+            final DefaultLiveEditContentBrowser liveEditContentBrowser = (DefaultLiveEditContentBrowser) abstractContentBrowser;
+            liveEditContentBrowser.updateAfterChangedUrl((CmsUrlChangeEvent) event);
+        }
+	}
+
+	protected void processItemChangedEvent(final ItemChangedEvent event) {
+		final AbstractContentBrowser abstractContentBrowser = getCorrespondingContentBrowser(getFocusedBrowser());
+		if (abstractContentBrowser != null)
+        { //update changed item
+            abstractContentBrowser.updateItem(event.getItem(), Collections.emptySet());
+        }
+	}
+
+	protected void processCmsLiveEditEvent(final CmsLiveEditEvent event) {
+		if (!event.getUrl().isEmpty())
+        {
+            if (getFocusedBrowser() instanceof DefaultLiveEditBrowserModel)
+            {
+                ((DefaultLiveEditBrowserModel) getFocusedBrowser()).setCurrentUrl(event.getUrl());
+            }
+            refreshContent(this.getCurrentSite());
+        }
 	}
 
 	@Required

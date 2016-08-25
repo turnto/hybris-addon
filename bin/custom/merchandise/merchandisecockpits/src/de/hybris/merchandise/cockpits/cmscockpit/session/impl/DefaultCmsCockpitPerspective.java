@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.cmscockpit.session.impl;
 
@@ -130,33 +130,37 @@ public class DefaultCmsCockpitPerspective extends CmsCockpitPerspective
 				if (browserArea instanceof CMSBrowserArea)
 				{
 					final CMSBrowserArea cmsBrowserArea = (CMSBrowserArea) browserArea;
-					final AdvancedBrowserModel welcomeBrowserModel = cmsBrowserArea.getWelcomeBrowserModel();
-					boolean containsWelcomeBrowser = false;
-					final List<BrowserModel> allBrowsers = new ArrayList<BrowserModel>(cmsBrowserArea.getBrowsers());
-					for (final BrowserModel browser : allBrowsers)
-					{
-						if (browser instanceof DefaultCmsPageBrowserModel || browser instanceof DefaultCmsPageBrowserModel)
-						{
-							cmsBrowserArea.close(browser);
-						}
-						if (browser.equals(welcomeBrowserModel))
-						{
-							containsWelcomeBrowser = true;
-						}
-					}
-
-					if (!containsWelcomeBrowser)
-					{
-						if (welcomeBrowserModel == null)
-						{
-							LOG.error("Current browser area needs to provide a welcome browser model.");
-						}
-						else
-						{
-							cmsBrowserArea.addVisibleBrowser(0, welcomeBrowserModel);
-						}
-					}
+					closeAllIncompatibleBrowsers(cmsBrowserArea);
 				}
+			}
+		}
+	}
+
+	protected void closeAllIncompatibleBrowsers(final CMSBrowserArea cmsBrowserArea) {
+		final AdvancedBrowserModel welcomeBrowserModel = cmsBrowserArea.getWelcomeBrowserModel();
+		boolean containsWelcomeBrowser = false;
+		final List<BrowserModel> allBrowsers = new ArrayList<BrowserModel>(cmsBrowserArea.getBrowsers());
+		for (final BrowserModel browser : allBrowsers)
+		{
+			if (browser instanceof DefaultCmsPageBrowserModel)
+			{
+				cmsBrowserArea.close(browser);
+			}
+			if (browser.equals(welcomeBrowserModel))
+			{
+				containsWelcomeBrowser = true;
+			}
+		}
+
+		if (!containsWelcomeBrowser)
+		{
+			if (welcomeBrowserModel == null)
+			{
+				LOG.error("Current browser area needs to provide a welcome browser model.");
+			}
+			else
+			{
+				cmsBrowserArea.addVisibleBrowser(0, welcomeBrowserModel);
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.cmscockpit.components.contentbrowser;
 
@@ -28,6 +28,7 @@ import de.hybris.merchandise.cockpits.components.liveedit.DefaultLiveEditView;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zul.Div;
 
 
@@ -58,52 +59,7 @@ public class DefaultCmsPageMainAreaPreviewComponentFactory extends CmsPageMainAr
 				@Override
 				protected void renderInternal()
 				{
-					final TypedObject page = getModel().getCurrentPageObject();
-					final CMSSiteModel site = getModel().getActiveSite();
-					if (page == null || site == null)
-					{
-						if (LOG.isDebugEnabled())
-						{
-							LOG.debug("Could not get Structure view configuration. Reason: No page or site set.");
-						}
-					}
-					else
-					{
-						final boolean openPreviewInNewTab = site.isOpenPreviewInNewTab();
-						final String previewUrl = renderPreview(openPreviewInNewTab, site, page);
-						if (StringUtils.isNotEmpty(previewUrl) && openPreviewInNewTab)
-						{
-							openPreviewInNewTab(previewUrl);
-						}
-					}
-				}
-
-				/**
-				 * Responsible for displaying a preview of particular page </p> Note: </p>
-				 */
-				protected String renderPreview(final boolean openPreviewInNewTab, final CMSSiteModel site, final TypedObject page)
-				{
-					if (page.getObject() instanceof AbstractPageModel)
-					{
-						final AbstractPageModel pageModel = (AbstractPageModel) page.getObject();
-
-						final DefaultLiveEditViewModel liveEditViewModel = newDefaultLiveEditViewModel();
-
-						liveEditViewModel.setSite(site);
-						liveEditViewModel.setPage(pageModel);
-						liveEditViewModel.setPagePreview(true);
-						liveEditViewModel.setWelcomePanelVisible(false);
-
-						if (!openPreviewInNewTab)
-						{
-							final DefaultLiveEditView liveEditView = newDefaultLiveEditView(liveEditViewModel);
-
-							liveEditView.getViewComponent().setParent(this.innerParent);
-							contentBrowser.setAttribute(PREVIEW_FRAME_KEY, liveEditView.getContentFrame());
-						}
-						return liveEditViewModel.computeFinalUrl();
-					}
-					return StringUtils.EMPTY;
+					doRenderInternal(this, this.innerParent);
 				}
 
 				@Override
@@ -121,6 +77,58 @@ public class DefaultCmsPageMainAreaPreviewComponentFactory extends CmsPageMainAr
 			};
 		}
 		return comp;
+	}
+
+	protected void doRenderInternal(final AbstractCmsPageMainAreaBrowserComponent component,
+								  final HtmlBasedComponent parent) {
+		final TypedObject page = component.getModel().getCurrentPageObject();
+		final CMSSiteModel site = component.getModel().getActiveSite();
+		if (page == null || site == null)
+		{
+			if (LOG.isDebugEnabled())
+			{
+				LOG.debug("Could not get Structure view configuration. Reason: No page or site set.");
+			}
+		}
+		else
+		{
+			final boolean openPreviewInNewTab = site.isOpenPreviewInNewTab();
+			final String previewUrl = renderPreview(component, parent, openPreviewInNewTab, site, page);
+			if (StringUtils.isNotEmpty(previewUrl) && openPreviewInNewTab)
+			{
+				openPreviewInNewTab(previewUrl);
+			}
+		}
+	}
+
+	/**
+	 * Responsible for displaying a preview of particular page </p> Note: </p>
+	 */
+	protected String renderPreview(final AbstractCmsPageMainAreaBrowserComponent component,
+								   final HtmlBasedComponent parent, final boolean openPreviewInNewTab,
+								   final CMSSiteModel site, final TypedObject page)
+	{
+		if (page.getObject() instanceof AbstractPageModel)
+		{
+			final AbstractPageModel pageModel = (AbstractPageModel) page.getObject();
+
+			final DefaultLiveEditViewModel liveEditViewModel = newDefaultLiveEditViewModel();
+
+			liveEditViewModel.setSite(site);
+			liveEditViewModel.setPage(pageModel);
+			liveEditViewModel.setPagePreview(true);
+			liveEditViewModel.setWelcomePanelVisible(false);
+
+			if (!openPreviewInNewTab)
+			{
+				final DefaultLiveEditView liveEditView = newDefaultLiveEditView(liveEditViewModel);
+
+				liveEditView.getViewComponent().setParent(parent);
+				component.getContentBrowser().setAttribute(PREVIEW_FRAME_KEY, liveEditView.getContentFrame());
+			}
+			return liveEditViewModel.computeFinalUrl();
+		}
+		return StringUtils.EMPTY;
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.cmscockpit.browser.filters;
 
@@ -18,11 +18,10 @@ import de.hybris.platform.cockpit.model.search.Query;
 import de.hybris.platform.cockpit.model.search.SearchParameterValue;
 import de.hybris.platform.cockpit.services.meta.TypeService;
 import de.hybris.platform.cockpit.session.BrowserFilter;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Required;
 
 
 public abstract class AbstractUiExperienceFilter implements BrowserFilter

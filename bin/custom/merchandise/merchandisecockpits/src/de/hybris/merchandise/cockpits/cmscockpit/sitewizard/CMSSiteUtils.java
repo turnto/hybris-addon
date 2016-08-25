@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.cmscockpit.sitewizard;
 
@@ -97,13 +97,13 @@ public class CMSSiteUtils
 		for (final CatalogVersionModel catVersion : targetCatalogVersions)
 		{
 			final List<PageTemplateModel> clonedTemplates = copyPageTemplatesDeep(sourceTemplates, catVersion, contentCatalog);
-			createHomepage(homepageName, homepageLabel, catVersion, contentCatalog, cmsSiteModel, clonedTemplates);
+			createHomepage(homepageName, homepageLabel, catVersion, cmsSiteModel, clonedTemplates);
 		}
 	}
 
 
 	public static void createHomepage(final String uid, final String label, final CatalogVersionModel catVersion,
-			final ContentCatalogModel contentCatalog, final CMSSiteModel cmsSiteModel, final List<PageTemplateModel> clonedTemplates)
+			final CMSSiteModel cmsSiteModel, final List<PageTemplateModel> clonedTemplates)
 	{
 		final PageTemplateModel firstTemplate = clonedTemplates.iterator().next();
 		final ModelService modelService = UISessionUtils.getCurrentSession().getModelService();
@@ -295,7 +295,7 @@ public class CMSSiteUtils
 		}
 		catch (final Exception e)
 		{
-			LOG.warn("\t" + job.getCode() + " - FAILED (Reason: " + e.getMessage() + ")");
+			LOG.warn("\t" + job.getCode() + " - FAILED", e);
 
 		}
 	}

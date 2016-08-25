@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.cmscockpit.sitewizard;
 
@@ -130,7 +130,7 @@ public class SummaryPage extends CmsSiteSummaryPage
 		final Vbox contextInformation = new Vbox();
 		contextInformation.setSclass(SUMMARY_PAGE_CNT_SCLASS);
 		contextInformation.setParent(pageContent);
-		final Map<String, Object> information = new HashMap<String, Object>(collectAllInformation());
+		final Map<String, Object> information = new HashMap<>(collectAllInformation());
 
 		createNameRow(information, contextInformation);
 		createSiteActiveRow(information, contextInformation);
@@ -146,7 +146,7 @@ public class SummaryPage extends CmsSiteSummaryPage
 		final Textbox nameBox = new Textbox();
 		nameBox.setReadonly(true);
 		nameBox.setValue((String) information.get(SITE_NAME_QUALIFIER));
-		if (UISessionUtils.getCurrentSession().isUsingTestIDs())
+		if (isCurrentSessionUsingTestIDs())
 		{
 			UITools.applyTestID(nameBox, COCKPIT_ID_CREATEWEBSITE_SUMMARY_NAME_INPUT);
 		}
@@ -169,7 +169,7 @@ public class SummaryPage extends CmsSiteSummaryPage
 		{
 			booleanImg.setSrc(BOOLEAN_NULL_IMG);
 		}
-		if (UISessionUtils.getCurrentSession().isUsingTestIDs())
+		if (isCurrentSessionUsingTestIDs())
 		{
 			UITools.applyTestID(booleanImg, COCKPIT_ID_CREATEWEBSITE_SUMMARY_ACTIVE_INPUT);
 		}
@@ -182,7 +182,7 @@ public class SummaryPage extends CmsSiteSummaryPage
 		final Listbox storesCombobox = new Listbox();
 		storesCombobox.setItemRenderer(listboxRenderer);
 		storesCombobox.setModel(new SimpleListModel((List) information.get(SITE_STORES_QUALIFIER)));
-		if (UISessionUtils.getCurrentSession().isUsingTestIDs())
+		if (isCurrentSessionUsingTestIDs())
 		{
 			UITools.applyTestID(storesCombobox, COCKPIT_ID_CREATEWEBSITE_SUMMARY_BASESTORES_INPUT);
 		}
@@ -195,7 +195,7 @@ public class SummaryPage extends CmsSiteSummaryPage
 		final Listbox templatesCombobox = new Listbox();
 		templatesCombobox.setItemRenderer(listboxRenderer);
 		templatesCombobox.setModel(new SimpleListModel((List) information.get(SITE_TEMPLATES_QUALIFIER)));
-		if (UISessionUtils.getCurrentSession().isUsingTestIDs())
+		if (isCurrentSessionUsingTestIDs())
 		{
 			UITools.applyTestID(templatesCombobox, COCKPIT_ID_CREATEWEBSITE_SUMMARY_PAGETEMPLATES_INPUT);
 		}
@@ -212,7 +212,7 @@ public class SummaryPage extends CmsSiteSummaryPage
 			final Textbox contentCatalogNameBox = new Textbox();
 			contentCatalogNameBox.setReadonly(true);
 			contentCatalogNameBox.setValue(contentCatalogName);
-			if (UISessionUtils.getCurrentSession().isUsingTestIDs())
+			if (isCurrentSessionUsingTestIDs())
 			{
 				UITools.applyTestID(contentCatalogNameBox, COCKPIT_ID_CREATEWEBSITE_SUMMARY_CONTENTCATALOGS_INPUT);
 			}
@@ -224,7 +224,7 @@ public class SummaryPage extends CmsSiteSummaryPage
 			final Listbox selectedContentCatalogs = new Listbox();
 			selectedContentCatalogs.setItemRenderer(listboxRenderer);
 			selectedContentCatalogs.setModel(new SimpleListModel((List) information.get("selectedcontentcatalogs")));
-			if (UISessionUtils.getCurrentSession().isUsingTestIDs())
+			if (isCurrentSessionUsingTestIDs())
 			{
 				UITools.applyTestID(selectedContentCatalogs, COCKPIT_ID_CREATEWEBSITE_SUMMARY_CONTENTCATALOGS_INPUT);
 			}
@@ -239,7 +239,7 @@ public class SummaryPage extends CmsSiteSummaryPage
 		final Textbox themeNameBox = new Textbox();
 		themeNameBox.setReadonly(true);
 		themeNameBox.setValue(themeName == null ? "" : themeName.getCode());
-		if (UISessionUtils.getCurrentSession().isUsingTestIDs())
+		if (isCurrentSessionUsingTestIDs())
 		{
 			UITools.applyTestID(themeNameBox, COCKPIT_ID_CREATEWEBSITE_SUMMARY_THEME_INPUT);
 		}
@@ -247,10 +247,15 @@ public class SummaryPage extends CmsSiteSummaryPage
 				Localization.getLocalizedString("wizard.summarypage.cmssite.theme.name"), themeNameBox));
 	}
 
+	protected boolean isCurrentSessionUsingTestIDs()
+	{
+		return UISessionUtils.getCurrentSession().isUsingTestIDs();
+	}
+
 	@Override
 	protected Map<String, Object> collectAllInformation()
 	{
-		final Map<String, Object> finalContextInformation = new HashMap<String, Object>();
+		final Map<String, Object> finalContextInformation = new HashMap<>();
 		PropertyDescriptor desc = UISessionUtils.getCurrentSession().getTypeService().getPropertyDescriptor("CMSSite.name");
 		finalContextInformation.put("siteName",
 				getWizard().getObjectValueContainer().getValue(desc, UISessionUtils.getCurrentSession().getGlobalDataLanguageIso())

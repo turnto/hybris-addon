@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.cmscockpit.services.impl;
 
@@ -29,6 +29,19 @@ public class UiExperienceCmsSearchProvider extends CmsSearchProvider
 {
 
 
+	private static final String UI_EXPERIENCE_LEVEL = "UiExperienceLevel ";
+	private static final String CMS_UI_EXPERIENCE_RESTRICTION = "CMSUiExperienceRestriction";
+	private static final String RESTRICTIONS_FOR_PAGES = "RestrictionsForPages";
+	private static final String UI_EXPERIENCE = "uiExperience";
+	private static final String NAME = "name";
+	private static final String ITEM = "item";
+	private static final String PK = "pk";
+	private static final String REST = "rest";
+	private static final String TARGET = "target";
+	private static final String SOURCE = "source";
+	private static final String LEVEL = "level";
+	private static final String REST2PAGE = "rest2page";
+
 	@Override
 	public List<GenericCondition> createConditions(final Query query, final GenericQuery genQuery)
 	{
@@ -46,17 +59,17 @@ public class UiExperienceCmsSearchProvider extends CmsSearchProvider
 		final UiExperienceLevel ret = (UiExperienceLevel) query.getContextParameter(AbstractUiExperienceFilter.UI_EXPERIENCE_PARAM);
 		if (ret != null)
 		{
-			final GenericCondition itemJoinCondition = GenericCondition.createJoinCondition(new GenericSearchField("item", "pk"),
-					new GenericSearchField("rest2page", "source"));
-			final GenericCondition restJoinCondition = GenericCondition.createJoinCondition(new GenericSearchField("rest", "pk"),
-					new GenericSearchField("rest2page", "target"));
-			final GenericCondition levelJoinCondition = GenericCondition.createJoinCondition(new GenericSearchField("level", "pk"),
-					new GenericSearchField("rest", "uiExperience"));
+			final GenericCondition itemJoinCondition = GenericCondition.createJoinCondition(new GenericSearchField(ITEM, PK),
+					new GenericSearchField(REST2PAGE, SOURCE));
+			final GenericCondition restJoinCondition = GenericCondition.createJoinCondition(new GenericSearchField(REST, PK),
+					new GenericSearchField(REST2PAGE, TARGET));
+			final GenericCondition levelJoinCondition = GenericCondition.createJoinCondition(new GenericSearchField(LEVEL, PK),
+					new GenericSearchField(REST, UI_EXPERIENCE));
 			final GenericCondition uiExpirenceCondition = GenericCondition.createConditionForValueComparison(new GenericSearchField(
-					"level", "name"), de.hybris.platform.core.Operator.EQUAL, ret.getCode());
-			genQuery.addInnerJoin("RestrictionsForPages", "rest2page", itemJoinCondition);
-			genQuery.addInnerJoin("CMSUiExperienceRestriction", "rest", restJoinCondition);
-			genQuery.addInnerJoin("UiExperienceLevel ", "level", levelJoinCondition);
+					LEVEL, NAME), de.hybris.platform.core.Operator.EQUAL, ret.getCode());
+			genQuery.addInnerJoin(RESTRICTIONS_FOR_PAGES, REST2PAGE, itemJoinCondition);
+			genQuery.addInnerJoin(CMS_UI_EXPERIENCE_RESTRICTION, REST, restJoinCondition);
+			genQuery.addInnerJoin(UI_EXPERIENCE_LEVEL, LEVEL, levelJoinCondition);
 			list.add(uiExpirenceCondition);
 		}
 		return list;

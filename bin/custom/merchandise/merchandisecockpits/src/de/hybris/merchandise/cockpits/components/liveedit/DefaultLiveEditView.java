@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.cockpits.components.liveedit;
 
@@ -71,8 +71,6 @@ public class DefaultLiveEditView extends LiveEditView<DefaultLiveEditPopupEditDi
 	protected void onUrlChangeEvent(final String[] attributes)
 	{
 		getContentFrame().setVisible(true);
-		//final String currentUrl = extractRequestPath(passedAttributes[1]);
-		//getModel().setCurrentUrl(currentUrl);
 		final UICockpitPerspective currentPerspective = UISessionUtils.getCurrentSession().getCurrentPerspective();
 		if (!getModel().isPreviewDataValid())
 		{
@@ -83,7 +81,7 @@ public class DefaultLiveEditView extends LiveEditView<DefaultLiveEditPopupEditDi
 			final UIBrowserArea currentBrowserArea = currentPerspective.getBrowserArea();
 			if (currentBrowserArea instanceof DefaultLiveEditBrowserArea)
 			{
-				final LiveEditBrowserArea liveEditBrowserArea = ((LiveEditBrowserArea) currentBrowserArea);
+				final LiveEditBrowserArea liveEditBrowserArea = (LiveEditBrowserArea) currentBrowserArea;
 				liveEditBrowserArea.fireModeChange(false);
 			}
 		}
@@ -117,31 +115,35 @@ public class DefaultLiveEditView extends LiveEditView<DefaultLiveEditPopupEditDi
 			}
 			else
 			{
-				getContentFrame().setSrc(generatedUrl);
-				if (getModel() != null)
-				{
-					final PreviewDataModel previewDataModel = getModel().getCurrentPreviewData();
-					if (previewDataModel != null && previewDataModel.getUiExperience() != null)
-					{
-						if (UiExperienceLevel.MOBILE.getCode().equalsIgnoreCase(previewDataModel.getUiExperience().getCode()))
-						{
-							getContentFrame().setWidth("320px");
-						}
-						else
-						{
-							getContentFrame().setWidth("100%");
-						}
-					}
-	
-				}
-	
-				Events.echoEvent(ON_INVALIDATE_LATER_EVENT, getContentFrame(), null);
-				if (LOG.isDebugEnabled())
-				{
-					LOG.debug("Current url : " + getModel().getCurrentUrl());
-				}
+				processContentFrame(generatedUrl);
 			}
 		}
+	}
+
+	protected void processContentFrame(final String generatedUrl) {
+		getContentFrame().setSrc(generatedUrl);
+		if (getModel() != null)
+        {
+            final PreviewDataModel previewDataModel = getModel().getCurrentPreviewData();
+            if (previewDataModel != null && previewDataModel.getUiExperience() != null)
+            {
+                if (UiExperienceLevel.MOBILE.getCode().equalsIgnoreCase(previewDataModel.getUiExperience().getCode()))
+                {
+                    getContentFrame().setWidth("320px");
+                }
+                else
+                {
+                    getContentFrame().setWidth("100%");
+                }
+            }
+
+        }
+
+		Events.echoEvent(ON_INVALIDATE_LATER_EVENT, getContentFrame(), null);
+		if (LOG.isDebugEnabled())
+        {
+            LOG.debug("Current url : " + getModel().getCurrentUrl());
+        }
 	}
 
 
