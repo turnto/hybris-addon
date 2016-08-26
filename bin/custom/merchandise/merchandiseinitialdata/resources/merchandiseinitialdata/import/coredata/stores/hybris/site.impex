@@ -41,6 +41,7 @@ INSERT_UPDATE SiteMapPage;&siteMapPage;code(code)[unique=true];frequency(code)[u
 ;Content;Content;monthly;0.4;;
 ;Custom;Custom;daily;1.0;;
 
+ 
 INSERT_UPDATE SiteMapConfig;&siteMapConfigId;configId[unique=true];siteMapLanguageCurrencies(&siteMapLanguageCurrency);siteMapPages(&siteMapPage);siteMapTemplate(&siteMapRenderer)[unique=true];customUrls;
 ;$storeUidSiteMapConfig;$storeUidSiteMapConfig;$siteMapLangCur;$siteMapPage;$siteUid-siteMapTemplate;$customSiteMapUrls;
 

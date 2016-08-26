@@ -6,5 +6,6 @@
 $lang=en
 $productCatalog=hybrisProductCatalog
 
+# Create Catalog
 UPDATE Catalog;id[unique=true];name[lang=$lang]
 ;$productCatalog;"hybris Product Catalog"

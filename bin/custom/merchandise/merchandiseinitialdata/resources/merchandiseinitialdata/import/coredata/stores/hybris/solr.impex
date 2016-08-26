@@ -23,7 +23,11 @@ $priceRangeUSD=$prefixPriceRangeUSD
 #
 # Create the solr server configuration
 INSERT_UPDATE SolrServerConfig;name[unique=true];mode(code);embeddedMaster
-;$serverConfigName;embedded;true
+;$serverConfigName;standalone;false;
+
+INSERT_UPDATE SolrEndpointUrl;solrServerConfig(name)[unique=true];url[unique=true];master[unique=true,default=false]
+;$serverConfigName;http://localhost:8983/solr;true
+
 # Create the solr indexer configuration
 INSERT_UPDATE SolrIndexConfig;name[unique=true];batchSize;numberOfThreads;indexMode(code);
 ;$indexConfigName;100;1;TWO_PHASE;

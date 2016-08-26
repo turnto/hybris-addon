@@ -1,5 +1,5 @@
 #
-# Import Sample CMS Cockpit User
+# Import CMS Cockpit Users
 #
 $passwordEncoding=md5
 $defaultPassword=1234

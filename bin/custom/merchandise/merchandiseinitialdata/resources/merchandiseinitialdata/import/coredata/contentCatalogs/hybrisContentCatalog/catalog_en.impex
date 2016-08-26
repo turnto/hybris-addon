@@ -1,8 +1,7 @@
 #
-# Import the Merchandise Content Catalog
+# Import the Content Catalog
 #
-# ENGLISH LOCALIZATION
-#
+
 # Language
 $lang=en
 $contentCatalog=hybrisContentCatalog
