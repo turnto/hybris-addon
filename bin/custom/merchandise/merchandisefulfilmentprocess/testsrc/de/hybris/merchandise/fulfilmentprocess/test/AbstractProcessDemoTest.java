@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,22 +9,9 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.test;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Currency;
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.junit.Before;
-import org.junit.Ignore;
 
 import de.hybris.platform.basecommerce.enums.InStockStatus;
 import de.hybris.platform.basecommerce.enums.StockLevelUpdateType;
@@ -45,7 +32,6 @@ import de.hybris.platform.europe1.model.PriceRowModel;
 import de.hybris.platform.order.CartService;
 import de.hybris.platform.order.InvalidCartException;
 import de.hybris.platform.order.OrderService;
-import de.hybris.platform.orderhistory.OrderHistoryService;
 import de.hybris.platform.orderprocessing.model.OrderProcessModel;
 import de.hybris.platform.ordersplitting.model.StockLevelModel;
 import de.hybris.platform.ordersplitting.model.VendorModel;
@@ -64,6 +50,19 @@ import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.user.UserService;
 import de.hybris.platform.stock.model.StockLevelHistoryEntryModel;
 import de.hybris.merchandise.fulfilmentprocess.constants.MerchandiseFulfilmentProcessConstants;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Currency;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.junit.Before;
+import org.junit.Ignore;
 
 
 @Ignore
@@ -84,8 +83,6 @@ public abstract class AbstractProcessDemoTest extends ServicelayerTest
 	protected UserService userService;
 	@Resource
 	protected ModelService modelService;
-	@Resource
-	protected OrderHistoryService orderHistoryService;
 	@Resource
 	protected I18NService i18nService;
 	@Resource

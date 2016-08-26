@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.actions.consignment;
 
@@ -23,11 +23,14 @@ import de.hybris.platform.warehouse.Process2WarehouseAdapter;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Required;
 
 
 public class AllowShipmentAction extends AbstractAction<ConsignmentProcessModel>
 {
+	private static final Logger LOG = Logger.getLogger(AllowShipmentAction.class);
+
 	private Process2WarehouseAdapter process2WarehouseAdapter;
 
 	public enum Transition
@@ -63,22 +66,30 @@ public class AllowShipmentAction extends AbstractAction<ConsignmentProcessModel>
 				else
 				{
 					getProcess2WarehouseAdapter().shipConsignment(process.getConsignment());
-					if (consignment.getDeliveryMode() instanceof PickUpDeliveryModeModel)
-					{
-						return Transition.PICKUP.toString();
-					}
-					else
-					{
-						return Transition.DELIVERY.toString();
-					}
+					return getTransitionForConsignment(consignment);
 				}
 			}
 			catch (final Exception e)
 			{
+				if (LOG.isDebugEnabled())
+				{
+					LOG.debug(e);
+				}
 				return Transition.ERROR.toString();
 			}
 		}
 		return Transition.ERROR.toString();
+	}
+
+	protected String getTransitionForConsignment(final ConsignmentModel consignment) {
+		if (consignment.getDeliveryMode() instanceof PickUpDeliveryModeModel)
+		{
+			return Transition.PICKUP.toString();
+		}
+		else
+		{
+			return Transition.DELIVERY.toString();
+		}
 	}
 
 	protected Process2WarehouseAdapter getProcess2WarehouseAdapter()

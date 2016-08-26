@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.actions.order;
 
@@ -44,18 +44,29 @@ public class CheckAuthorizeOrderPaymentAction extends AbstractSimpleDecisionActi
 			}
 			else
 			{
-				for (final PaymentTransactionModel transaction : order.getPaymentTransactions())
+				return assignStatusForOrder(order);
+			}
+		}
+		return Transition.NOK;
+	}
+
+	/**
+	 * Sets the status for given order in case on of its {@link PaymentTransactionEntryModel} matches proper
+	 * {@link PaymentTransactionType} and {@link TransactionStatus}.
+	 * @param order {@link OrderModel}
+	 * @return {@link Transition}
+	 */
+	protected Transition assignStatusForOrder(final OrderModel order) {
+		for (final PaymentTransactionModel transaction : order.getPaymentTransactions())
+		{
+			for (final PaymentTransactionEntryModel entry : transaction.getEntries())
+			{
+				if (entry.getType().equals(PaymentTransactionType.AUTHORIZATION)
+						&& TransactionStatus.ACCEPTED.name().equals(entry.getTransactionStatus()))
 				{
-					for (final PaymentTransactionEntryModel entry : transaction.getEntries())
-					{
-						if (entry.getType().equals(PaymentTransactionType.AUTHORIZATION)
-								&& TransactionStatus.ACCEPTED.name().equals(entry.getTransactionStatus()))
-						{
-							order.setStatus(OrderStatus.PAYMENT_AUTHORIZED);
-							modelService.save(order);
-							return Transition.OK;
-						}
-					}
+					order.setStatus(OrderStatus.PAYMENT_AUTHORIZED);
+					modelService.save(order);
+					return Transition.OK;
 				}
 			}
 		}

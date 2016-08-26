@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.test;
 
@@ -92,17 +92,17 @@ public class PaymentIntegrationTest extends ServicelayerTest
 	private static final Logger LOG = Logger.getLogger(PaymentIntegrationTest.class);
 
 	@Resource
-	protected CommerceCheckoutService commerceCheckoutService;
+	private CommerceCheckoutService commerceCheckoutService;
 	@Resource
-	protected CommonI18NService commonI18NService;
+	private CommonI18NService commonI18NService;
 	@Resource
-	protected PaymentService paymentService;
+	private PaymentService paymentService;
 	@Resource
-	protected CalculationService calculationService;
+	private CalculationService calculationService;
 	@Resource
-	protected BaseSiteService baseSiteService;
+	private BaseSiteService baseSiteService;
 	@Resource
-	protected DeliveryService deliveryService;
+	private DeliveryService deliveryService;
 
 	private static DefaultBusinessProcessService processService;
 	private static ProcessDefinitionFactory definitonFactory;
@@ -268,7 +268,7 @@ public class PaymentIntegrationTest extends ServicelayerTest
 		}
 	}
 
-	protected static int codeNo = 1;
+	private static int codeNo = 1;
 
 	protected OrderModel placeTestOrder(final boolean valid) throws InvalidCartException, CalculationException
 	{

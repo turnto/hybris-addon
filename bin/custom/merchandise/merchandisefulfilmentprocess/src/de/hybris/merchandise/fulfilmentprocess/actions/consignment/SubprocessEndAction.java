@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.actions.consignment;
 
@@ -29,6 +29,8 @@ public class SubprocessEndAction extends AbstractProceduralAction<ConsignmentPro
 {
 	private static final Logger LOG = Logger.getLogger(SubprocessEndAction.class);
 
+	private static final String PROCESS_MSG = "Process: ";
+
 	private BusinessProcessService businessProcessService;
 
 	protected BusinessProcessService getBusinessProcessService()
@@ -45,7 +47,7 @@ public class SubprocessEndAction extends AbstractProceduralAction<ConsignmentPro
 	@Override
 	public void executeAction(final ConsignmentProcessModel process)
 	{
-		LOG.info("Process: " + process.getCode() + " in step " + getClass());
+		LOG.info(PROCESS_MSG + process.getCode() + " in step " + getClass());
 
 		try
 		{
@@ -60,12 +62,12 @@ public class SubprocessEndAction extends AbstractProceduralAction<ConsignmentPro
 		process.setDone(true);
 
 		save(process);
-		LOG.info("Process: " + process.getCode() + " wrote DONE marker");
+		LOG.info(PROCESS_MSG + process.getCode() + " wrote DONE marker");
 
 		getBusinessProcessService().triggerEvent(
 				process.getParentProcess().getCode() + "_"
 						+ MerchandiseFulfilmentProcessConstants.CONSIGNMENT_SUBPROCESS_END_EVENT_NAME);
-		LOG.info("Process: " + process.getCode() + " fired event "
+		LOG.info(PROCESS_MSG + process.getCode() + " fired event "
 				+ MerchandiseFulfilmentProcessConstants.CONSIGNMENT_SUBPROCESS_END_EVENT_NAME);
 	}
 }

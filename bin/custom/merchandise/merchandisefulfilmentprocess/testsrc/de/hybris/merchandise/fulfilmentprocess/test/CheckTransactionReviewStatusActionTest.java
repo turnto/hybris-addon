@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.test;
 
@@ -31,8 +31,6 @@ import de.hybris.merchandise.fulfilmentprocess.actions.order.CheckTransactionRev
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.BDDMockito;
@@ -40,6 +38,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import junit.framework.Assert;
 
 
 @UnitTest
@@ -50,13 +50,13 @@ public class CheckTransactionReviewStatusActionTest
 	protected static final String NOK = "NOK";
 	protected static final String WAIT = "WAIT";
 
-	protected CheckTransactionReviewStatusAction action = new CheckTransactionReviewStatusAction();
-	protected PaymentTransactionEntryModel authorizationAccepted;
-	protected PaymentTransactionEntryModel authorizationReview;
-	protected PaymentTransactionEntryModel reviewAccepted;
-	protected PaymentTransactionEntryModel reviewRejected;
-	protected OrderProcessModel process = new OrderProcessModel();
-	protected List<PaymentTransactionEntryModel> paymentTransactionEntriesList = new ArrayList<PaymentTransactionEntryModel>();
+	private final CheckTransactionReviewStatusAction action = new CheckTransactionReviewStatusAction();
+	private PaymentTransactionEntryModel authorizationAccepted;
+	private PaymentTransactionEntryModel authorizationReview;
+	private PaymentTransactionEntryModel reviewAccepted;
+	private PaymentTransactionEntryModel reviewRejected;
+	private OrderProcessModel process = new OrderProcessModel();
+	private List<PaymentTransactionEntryModel> paymentTransactionEntriesList = new ArrayList<PaymentTransactionEntryModel>();
 
 	@Mock
 	private ModelService modelService;

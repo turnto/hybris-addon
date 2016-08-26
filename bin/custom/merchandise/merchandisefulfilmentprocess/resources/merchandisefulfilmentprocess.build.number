@@ -1,9 +1,11 @@
 #Ant properties
-#Thu Mar 12 02:49:43 CET 2015
-builddate=20150312 0249
+#Mon Mar 14 23:34:36 CET 2016
+builddate=20160314 2334
 description=merchandisefulfilmentprocess
+group.id=de.hybris.platform
+module.name=platform-module
 name=merchandisefulfilmentprocess
-releasedate=20150311 1421
+releasedate=20160304 1912
 vendor=hybris
-version=5.5.1.0
-version.api=5.5.1
+version=6.0.0.0-SNAPSHOT
+version.api=6.0.0

@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.strategy.impl;
 
@@ -53,39 +53,8 @@ public class SplitByWarehouse implements SplittingStrategy
 			final OrderEntryGroup tmpOrderEntryResult = orderEntryList.getEmpty();
 
 
-			for (final AbstractOrderEntryModel orderEntry : workingOrderEntryList)
-			{
-				final List<WarehouseModel> currentPossibleWarehouses = getPossibleWarehouses(orderEntry);
-
-				// no warehouse can solve order entry
-				if (currentPossibleWarehouses.isEmpty())
-				{
-					emptyOrderEntryList.add(orderEntry);
-				}
-				else
-				{
-					//first time we wish to store all warehouses
-					if (tmpWarehouseResult != null)
-					{
-						//if not first time we take retainAll 
-						currentPossibleWarehouses.retainAll(tmpWarehouseResult);
-					}
-
-					// if this orderEntry can't be realized whit previous set
-					if (currentPossibleWarehouses.isEmpty())
-					{
-						// add entry to todoList
-						todoEntryList.add(orderEntry);
-					}
-					else
-					{
-						//we store list after retainAll and add orderEntry to tmpResult
-						tmpWarehouseResult = currentPossibleWarehouses;
-						tmpOrderEntryResult.add(orderEntry);
-					}
-
-				}
-			}
+			tmpWarehouseResult = prepareWarehouses(todoEntryList, workingOrderEntryList, emptyOrderEntryList,
+					tmpWarehouseResult, tmpOrderEntryResult);
 
 			if (!tmpOrderEntryResult.isEmpty())
 			{
@@ -108,6 +77,47 @@ public class SplitByWarehouse implements SplittingStrategy
 		}
 
 		return result;
+	}
+
+	protected List<WarehouseModel> prepareWarehouses(final OrderEntryGroup todoEntryList,
+			OrderEntryGroup workingOrderEntryList, final OrderEntryGroup emptyOrderEntryList,
+			List<WarehouseModel> tmpWarehouseResult, final OrderEntryGroup tmpOrderEntryResult) {
+		
+		List<WarehouseModel> results = tmpWarehouseResult;
+		for (final AbstractOrderEntryModel orderEntry : workingOrderEntryList)
+		{
+			final List<WarehouseModel> currentPossibleWarehouses = getPossibleWarehouses(orderEntry);
+
+			// no warehouse can solve order entry
+			if (currentPossibleWarehouses.isEmpty())
+			{
+				emptyOrderEntryList.add(orderEntry);
+			}
+			else
+			{
+				//first time we wish to store all warehouses
+				if (results != null)
+				{
+					//if not first time we take retainAll 
+					currentPossibleWarehouses.retainAll(results);
+				}
+
+				// if this orderEntry can't be realized whit previous set
+				if (currentPossibleWarehouses.isEmpty())
+				{
+					// add entry to todoList
+					todoEntryList.add(orderEntry);
+				}
+				else
+				{
+					//we store list after retainAll and add orderEntry to tmpResult
+					results = currentPossibleWarehouses;
+					tmpOrderEntryResult.add(orderEntry);
+				}
+
+			}
+		}
+		return results;
 	}
 
 	protected List<WarehouseModel> getPossibleWarehouses(final AbstractOrderEntryModel orderEntry)
@@ -135,7 +145,7 @@ public class SplitByWarehouse implements SplittingStrategy
 	protected WarehouseModel chooseBestWarehouse(final OrderEntryGroup orderEntries)
 	{
 		final List<WarehouseModel> warehouses = (List<WarehouseModel>) orderEntries.getParameter(WAREHOUSE_LIST_NAME);
-		if ((warehouses == null) || (warehouses.isEmpty()))
+		if (warehouses == null || warehouses.isEmpty())
 		{
 			return null;
 		}

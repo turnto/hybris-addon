@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.test;
 
@@ -59,7 +59,6 @@ import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.search.SearchResult;
-import de.hybris.platform.servicelayer.type.TypeService;
 import de.hybris.platform.servicelayer.user.UserService;
 import de.hybris.platform.site.BaseSiteService;
 import de.hybris.platform.spring.ctx.ScopeTenantIgnoreDocReader;
@@ -80,9 +79,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -97,6 +93,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
+import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
+
 
 /**
  * Integration test which test flow of order-process process when fraudCheck node return FRAUD
@@ -107,42 +106,40 @@ import org.springframework.core.io.ClassPathResource;
 public class FraudCheckIntegrationTest extends ServicelayerTest
 {
 	@Resource
-	protected BaseSiteService baseSiteService;
+	private BaseSiteService baseSiteService;
 	@Resource
-	protected CommerceCheckoutService commerceCheckoutService;
+	private CommerceCheckoutService commerceCheckoutService;
 	@Resource
-	protected ModelService modelService;
+	private ModelService modelService;
 	@Resource
-	protected UserService userService;
+	private UserService userService;
 	@Resource
-	protected ProductService productService;
+	private ProductService productService;
 	@Resource
-	protected CartService cartService;
+	private CartService cartService;
 	@Resource
-	protected PaymentService paymentService;
+	private PaymentService paymentService;
 	@Resource
-	protected CalculationService calculationService;
+	private CalculationService calculationService;
 	@Resource
-	protected EventService eventService;
+	private EventService eventService;
 	@Resource
-	protected CronJobService cronJobService;
+	private CronJobService cronJobService;
 	@Resource
-	protected BusinessProcessService businessProcessService;
+	private BusinessProcessService businessProcessService;
 	@Resource
-	protected FlexibleSearchService flexibleSearchService;
+	private FlexibleSearchService flexibleSearchService;
 	@Resource
-	protected TypeService typeService;
+	private CommonI18NService commonI18NService;
 	@Resource
-	protected CommonI18NService commonI18NService;
+	private OrderFraudCustomerEventListener listenerOrderFraudCustomerNotificationEvent;
 	@Resource
-	protected OrderFraudCustomerEventListener listenerOrderFraudCustomerNotificationEvent;
+	private OrderPlacedEventListener listenerOrderPlacedEvent;
 	@Resource
-	protected OrderPlacedEventListener listenerOrderPlacedEvent;
-	@Resource
-	protected OrderFraudEmployeeEventListener listenerOrderFraudEmployeeNotificationEvent;
+	private OrderFraudEmployeeEventListener listenerOrderFraudEmployeeNotificationEvent;
 
-	public static class OrderFraudCustomerEventListener extends
-			TestEventListenerCountingEvents<OrderFraudCustomerNotificationEvent>
+	public static class OrderFraudCustomerEventListener
+			extends TestEventListenerCountingEvents<OrderFraudCustomerNotificationEvent>
 	{
 		//EMPTY
 	}
@@ -160,8 +157,8 @@ public class FraudCheckIntegrationTest extends ServicelayerTest
 
 	private static final Logger LOG = Logger.getLogger(FraudCheckIntegrationTest.class);
 
-	protected OrderModel order = null;
-	protected CronJobModel cronJob = null;
+	private OrderModel order = null;
+	private CronJobModel cronJob = null;
 
 	protected static final long MAX_WAITING_TIME = 60;
 
@@ -283,7 +280,7 @@ public class FraudCheckIntegrationTest extends ServicelayerTest
 		Config.setParameter(PARAM_NAME_MIN_PERIOD_WAITING_FOR_CLEANUP_IN_SECONDS, Integer.toString(numberOfSeconds));
 	}
 
-	protected static int codeNo = 1;
+	private static int codeNo = 1;
 
 	protected void placeTestOrder() throws InvalidCartException, CalculationException
 	{
@@ -387,7 +384,7 @@ public class FraudCheckIntegrationTest extends ServicelayerTest
 
 	/**
 	 * Create core data, add default users, register events, create cron jobs
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Before
@@ -520,7 +517,7 @@ public class FraudCheckIntegrationTest extends ServicelayerTest
 
 	/**
 	 * Test scenario: fraudCheckNode return FRAUD, but customer intervene and csAgent mark order as no fraudulent
-	 * 
+	 *
 	 * @throws CalculationException
 	 * @throws InvalidCartException
 	 */
@@ -569,7 +566,7 @@ public class FraudCheckIntegrationTest extends ServicelayerTest
 
 	/**
 	 * Test scenario: fraudCheck node return FRAUD, and after specific period of time order should have status CANCELLED
-	 * 
+	 *
 	 * @throws InvalidCartException
 	 * @throws CalculationException
 	 * @throws InterruptedException
@@ -677,7 +674,7 @@ public class FraudCheckIntegrationTest extends ServicelayerTest
 
 	/**
 	 * Test scenario: TODO
-	 * 
+	 *
 	 * @throws CalculationException
 	 * @throws InvalidCartException
 	 **/
@@ -760,7 +757,7 @@ public class FraudCheckIntegrationTest extends ServicelayerTest
 
 	/**
 	 * Auxiliary class which provide waiting till condition is fulfilled functionality. User have to implement
-	 * {@link #checkCondition} method 
+	 * {@link #checkCondition} method
 	 */
 	protected static abstract class AbstractAssertionLooper
 	{
@@ -776,9 +773,9 @@ public class FraudCheckIntegrationTest extends ServicelayerTest
 		/**
 		 * Wait until condition defined in {@link #checkCondition()} is fulfilled, but no more than maxTimeInSeconds. If
 		 * condition is not fulfilled, AssertionFailedError will be thrown.
-		 * 
+		 *
 		 * @param maxTimeInSeconds
-		 * 
+		 *
 		 */
 		public void waitUntilConditionIsTrue(final long maxTimeInSeconds)
 		{

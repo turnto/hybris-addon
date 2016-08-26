@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.test;
 
@@ -18,6 +18,7 @@ import de.hybris.platform.processengine.model.ProcessTaskModel;
 import de.hybris.platform.task.RetryLaterException;
 import de.hybris.platform.task.TaskConditionModel;
 import de.hybris.platform.task.TaskEngine;
+import de.hybris.platform.task.TaskEvent;
 import de.hybris.platform.task.TaskModel;
 import de.hybris.platform.task.TaskRunner;
 import de.hybris.platform.task.TaskService;
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TaskServiceStub implements TaskService
 {
-	private static Logger LOG = LoggerFactory.getLogger(TaskServiceStub.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TaskServiceStub.class);
 	private List<TaskModel> tasks = new ArrayList<TaskModel>();
 
 	public void runTasks() throws RetryLaterException
@@ -119,6 +120,14 @@ public class TaskServiceStub implements TaskService
 	}
 
 	@Override
+	public boolean triggerEvent(final TaskEvent event)
+	{
+		triggerEvent(event.getId());
+		return true;
+	}
+
+
+	@Override
 	public void scheduleTask(final TaskModel task)
 	{
 		synchronized (tasks)
@@ -139,11 +148,12 @@ public class TaskServiceStub implements TaskService
 		return tasks;
 	}
 
+
 	@Override
 	public void triggerEvent(final String event, final Date expirationDate)
 	{
-		throw new RuntimeException("Not implemented");
-
+		throw new IllegalStateException("Not implemented");
 	}
+
 
 }

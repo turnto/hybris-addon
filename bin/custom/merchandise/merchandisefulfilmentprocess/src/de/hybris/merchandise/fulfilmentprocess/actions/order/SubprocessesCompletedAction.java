@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.actions.order;
 
@@ -27,23 +27,25 @@ public class SubprocessesCompletedAction extends AbstractSimpleDecisionAction<Or
 {
 	private static final Logger LOG = Logger.getLogger(SubprocessesCompletedAction.class);
 
+	private static final String PROCESS_MSG = "Process: ";
+
 	@Override
 	public Transition executeAction(final OrderProcessModel process)
 	{
-		LOG.info("Process: " + process.getCode() + " in step " + getClass());
+		LOG.info(PROCESS_MSG + process.getCode() + " in step " + getClass());
 
-		LOG.info("Process: " + process.getCode() + " is checking for  " + process.getConsignmentProcesses().size() + " subprocess results");
+		LOG.info(PROCESS_MSG + process.getCode() + " is checking for  " + process.getConsignmentProcesses().size() + " subprocess results");
 
 		for (final ConsignmentProcessModel subProcess : process.getConsignmentProcesses())
 		{
 			if (!subProcess.isDone())
 			{
-				LOG.info("Process: " + process.getCode() + " found subprocess " + subProcess.getCode() + " incomplete -> wait again!");
+				LOG.info(PROCESS_MSG + process.getCode() + " found subprocess " + subProcess.getCode() + " incomplete -> wait again!");
 				return Transition.NOK;
 			}
-			LOG.info("Process: " + process.getCode() + " found subprocess " + subProcess.getCode() + " complete ...");
+			LOG.info(PROCESS_MSG + process.getCode() + " found subprocess " + subProcess.getCode() + " complete ...");
 		}
-		LOG.info("Process: " + process.getCode() + " found all subprocesses complete");
+		LOG.info(PROCESS_MSG + process.getCode() + " found all subprocesses complete");
 		return Transition.OK;
 	}
 }

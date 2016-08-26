@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.test.actions;
 
@@ -50,17 +50,9 @@ public class TestActionTemp<T extends BusinessProcessModel> extends AbstractActi
 	public String execute(final T process) throws Exception //NOPMD
 	{
 		// This call actually puts -this- into a queue.
-		try
+		if (throwException)
 		{
-			if (throwException)
-			{
-				throw new RuntimeException("Error");
-			}
-		}
-		finally
-		{
-			//getQueueService().actionExecuted(getProcess(process), this);
-
+			throw new IllegalStateException("Error");
 		}
 
 		LOG.info(result);

@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.fulfilmentprocess.actions.order;
 
@@ -19,7 +19,6 @@ import de.hybris.platform.orderprocessing.model.OrderProcessModel;
 import de.hybris.platform.processengine.action.AbstractAction;
 import de.hybris.platform.servicelayer.time.TimeService;
 
-
 import org.springframework.beans.factory.annotation.Required;
 
 
@@ -28,12 +27,12 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public abstract class AbstractOrderAction<T extends OrderProcessModel> extends AbstractAction<T>
 {
-	protected TimeService timeService;
+	protected TimeService timeService; // NOPMD
 
 	/**
 	 * Prepares order history entry {@link OrderHistoryEntryModel} for the given order and description and with the
 	 * current timestamp. The {@link OrderHistoryEntryModel} is not saved!.
-	 * 
+	 *
 	 * @param description
 	 * @param order
 	 * @return {@link OrderHistoryEntryModel}
@@ -53,7 +52,8 @@ public abstract class AbstractOrderAction<T extends OrderProcessModel> extends A
 	}
 
 	@Required
-	public void setTimeService(final TimeService timeService) {
+	public void setTimeService(final TimeService timeService)
+	{
 		this.timeService = timeService;
 	}
 }
