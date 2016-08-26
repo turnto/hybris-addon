@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,10 +9,12 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.test.setup;
 
+import de.hybris.merchandise.test.constants.MerchandiseTestConstants;
+import de.hybris.merchandise.test.orders.AcceleratorTestOrderData;
 import de.hybris.platform.commerceservices.setup.AbstractSystemSetup;
 import de.hybris.platform.core.initialization.SystemSetup;
 import de.hybris.platform.core.initialization.SystemSetup.Process;
@@ -20,14 +22,11 @@ import de.hybris.platform.core.initialization.SystemSetup.Type;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import de.hybris.platform.core.initialization.SystemSetupParameter;
 import de.hybris.platform.core.initialization.SystemSetupParameterMethod;
-import de.hybris.merchandise.test.constants.MerchandiseTestConstants;
-import de.hybris.merchandise.test.orders.AcceleratorTestOrderData;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Required;
 
 
 /**

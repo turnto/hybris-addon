@@ -4,9 +4,8 @@
 $regulargroup=regulargroup
 $customergroup=customergroup
 
-$passwordEncoding=md5
+
 $defaultPassword=12341234
-$setPassword=@password[translator=de.hybris.platform.impex.jalo.translators.ConvertPlaintextToEncodedUserPasswordTranslator][default='$passwordEncoding:$defaultPassword']
 
 
 # Create Customer Group
@@ -41,7 +40,7 @@ INSERT_UPDATE DeliveryMode;code[unique=true];active;net;supportedpaymentmodes(co
 ;;
 
 # Sample customers
-INSERT_UPDATE Customer;originalUid[unique=true];uid[unique=true];title(code);name;description;sessionLanguage(isocode);sessionCurrency(isocode);groups(uid);$setPassword;&userId
+INSERT_UPDATE Customer;originalUid[unique=true];uid[unique=true];title(code);name;description;sessionLanguage(isocode);sessionCurrency(isocode);groups(uid);password[default=$defaultPassword];&userId
 ;PromotionUser@test.com;promotionuser@test.com;mr;promotions test user;a test user for order threshold promotions etc;en;GBP;$regulargroup;;user1
 ;PaymentUser@test.com;paymentuser@test.com;mr;payments test user;a test user for payments;en;GBP;$customergroup;;user2
 ;OrderHistoryUser@test.com;orderhistoryuser@test.com;mr;orders test user;a test user for orders;en;GBP;$customergroup;;user3
@@ -70,7 +69,7 @@ UPDATE Customer;uid[unique=true];defaultPaymentAddress(&addId);defaultShipmentAd
 ;testuser3@test.com;addr6;addr6
 ;enterpriseuser@test.com;addr7;addr7
 
-INSERT_UPDATE Customer;uid[unique=true];originalUid;name;sessionLanguage(isocode);sessionCurrency(isocode);groups(uid);$setPassword;
+INSERT_UPDATE Customer;uid[unique=true];originalUid;name;sessionLanguage(isocode);sessionCurrency(isocode);groups(uid);password[default=$defaultPassword];
 ;acceptanceuser@test.com;AcceptanceUser@test.com;John Acceptance;en;USD;$customergroup;;
 
 INSERT_UPDATE Address;owner(Customer.uid)[unique=true];streetname[unique=true];streetnumber[unique=true];postalcode[unique=true];duplicate[unique=true];town;country(isocode);billingAddress;contactAddress;shippingAddress;unloadingAddress;lastname;firstname;email;gender(code);&addressID

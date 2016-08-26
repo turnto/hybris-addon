@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.test.orders;
 
@@ -61,6 +61,9 @@ import org.springframework.beans.factory.annotation.Required;
 public class AcceleratorTestOrderData
 {
 	private static final Logger LOG = Logger.getLogger(AcceleratorTestOrderData.class);
+	
+	private static final String ELECTRONICS_SITE_ID = "electronics";
+	private static final String CUSTOMER_UID = "OrderHistoryUser@test.com";
 
 	private CMSAdminSiteService cmsAdminSiteService;
 	private UserService userService;
@@ -211,7 +214,7 @@ public class AcceleratorTestOrderData
 			final BillingInfo billingInfo)
 	{
 		// Lookup the site
-		final CMSSiteModel cmsSite = getCmsAdminSiteService().getSiteForId("electronics");
+		final CMSSiteModel cmsSite = getCmsAdminSiteService().getSiteForId(ELECTRONICS_SITE_ID);
 		// Lookup the customer
 		final CustomerModel customer = getUserService().getUserForUID(customerUid.toLowerCase(), CustomerModel.class);
 
@@ -220,31 +223,23 @@ public class AcceleratorTestOrderData
 		ctx.setSite(cmsSite);
 		ctx.setUser(customer);
 		ctx.setCurrency(i18nService.getCurrency(currencyIso));
-		getImpersonationService().executeInContext(ctx, new ImpersonationService.Executor<Object, ImpersonationService.Nothing>()
-		{
-			@Override
-			public Object execute() throws ImpersonationService.Nothing
-			{
-				// Check if the card info already exists
-				final List<CreditCardPaymentInfoModel> storedCards = getCustomerAccountService().getCreditCardPaymentInfos(customer,
-						true);
-				if (!containsCardInfo(storedCards, cardInfo))
-				{
-					LOG.info("Creating stored card subscription for [" + customerUid + "] card type [" + cardInfo.getCardType() + "]");
+		getImpersonationService().executeInContext(ctx, () -> {
+            // Check if the card info already exists
+            final List<CreditCardPaymentInfoModel> storedCards = getCustomerAccountService().getCreditCardPaymentInfos(customer, true);
+            if (!containsCardInfo(storedCards, cardInfo))
+            {
+                LOG.info("Creating stored card subscription for [" + customerUid + "] card type [" + cardInfo.getCardType() + "]");
 
-					// Create payment subscription
-					final String customerTitleCode = (customer == null || customer.getTitle() == null) ? null : customer.getTitle()
-							.getCode();
-					final CreditCardPaymentInfoModel creditCardPaymentInfoModel = getCustomerAccountService()
-							.createPaymentSubscription(customer, cardInfo, billingInfo, customerTitleCode, getPaymentProvider(), true);
+                // Create payment subscription
+                final String customerTitleCode = customer == null || customer.getTitle() == null ? null : customer.getTitle().getCode();
+                final CreditCardPaymentInfoModel creditCardPaymentInfoModel = getCustomerAccountService()
+                        .createPaymentSubscription(customer, cardInfo, billingInfo, customerTitleCode, getPaymentProvider(), true);
 
-					// Make this the default payment option
-					getCustomerAccountService().setDefaultPaymentInfo(customer, creditCardPaymentInfoModel);
-				}
-
-				return null;
-			}
-		});
+                // Make this the default payment option
+                getCustomerAccountService().setDefaultPaymentInfo(customer, creditCardPaymentInfoModel);
+            }
+            return null;
+        });
 	}
 
 	protected boolean containsCardInfo(final List<CreditCardPaymentInfoModel> storedCards, final CardInfo cardInfo)
@@ -264,8 +259,8 @@ public class AcceleratorTestOrderData
 
 	protected boolean matchesCardInfo(final CreditCardPaymentInfoModel storedCard, final CardInfo cardInfo)
 	{
-		return (storedCard.getType().equals(cardInfo.getCardType()) && StringUtils.equals(storedCard.getCcOwner(),
-				cardInfo.getCardHolderFullName()));
+		return storedCard.getType().equals(cardInfo.getCardType()) && StringUtils.equals(storedCard.getCcOwner(),
+				cardInfo.getCardHolderFullName());
 	}
 
 	protected String getPaymentProvider()
@@ -328,49 +323,40 @@ public class AcceleratorTestOrderData
 	 */
 	public void createSampleOrders()
 	{
+		Map<String, Long> products = null;
 		// Create sample order in the electronics site
-		{
-			final Map<String, Long> products = new HashMap<String, Long>();
-			products.put("872912", Long.valueOf(1)); // Secure Digital Card 2GB
-			products.put("479956", Long.valueOf(1)); // 4GB Memory Stick Pro Duo + adapter
-			createSampleOrder("electronics", "OrderHistoryUser@test.com", "USD", products, createUkAddressData(), null);
-		}
+		products = new HashMap<String, Long>();
+		products.put("872912", Long.valueOf(1)); // Secure Digital Card 2GB
+		products.put("479956", Long.valueOf(1)); // 4GB Memory Stick Pro Duo + adapter
+		createSampleOrder(ELECTRONICS_SITE_ID, CUSTOMER_UID, "USD", products, createUkAddressData(), null);
 
 		// Create sample order in the apparel-uk site
-		{
-			final Map<String, Long> products = new HashMap<String, Long>();
-			products.put("300310086", Long.valueOf(1)); // Bag Dakine Factor Pack bomber
-			products.put("300147511", Long.valueOf(1)); // T-Shirt Men Playboard Logo Tee irish green M
-			createSampleOrder("apparel-uk", "OrderHistoryUser@test.com", "GBP", products, createUkAddressData(), null);
-		}
+		products = new HashMap<String, Long>();
+		products.put("300310086", Long.valueOf(1)); // Bag Dakine Factor Pack bomber
+		products.put("300147511", Long.valueOf(1)); // T-Shirt Men Playboard Logo Tee irish green M
+		createSampleOrder("apparel-uk", CUSTOMER_UID, "GBP", products, createUkAddressData(), null);
 
 		// Create sample order in the apparel-de site
-		{
-			final Map<String, Long> products = new HashMap<String, Long>();
-			products.put("300020465", Long.valueOf(1)); // Protector Dainese Waistcoat S7 black/silver M
-			products.put("300044623", Long.valueOf(1)); // Shades Anon Legion crystal & black gray
-			createSampleOrder("apparel-de", "OrderHistoryUser@test.com", "EUR", products, createGermanAddressData(), null);
-		}
+		products = new HashMap<String, Long>();
+		products.put("300020465", Long.valueOf(1)); // Protector Dainese Waistcoat S7 black/silver M
+		products.put("300044623", Long.valueOf(1)); // Shades Anon Legion crystal & black gray
+		createSampleOrder("apparel-de", CUSTOMER_UID, "EUR", products, createGermanAddressData(), null);
 	}
 
 	public void createSampleBOPiSOrders()
 	{
+		Map<String, Long> products = null;
 		// Create sample order in the electronics site
-		{
-			final Map<String, Long> products = new HashMap<String, Long>();
-			products.put("300938", Long.valueOf(1)); // Photosmart E317 Digital Camera
-			products.put("1981415", Long.valueOf(1)); // PL60 Silver
-			createSampleOrder("electronics", "OrderHistoryUser@test.com", "USD", products, createUkAddressData(), "Yokosuka");
-		}
+		products = new HashMap<String, Long>();
+		products.put("300938", Long.valueOf(1)); // Photosmart E317 Digital Camera
+		products.put("1981415", Long.valueOf(1)); // PL60 Silver
+		createSampleOrder(ELECTRONICS_SITE_ID, CUSTOMER_UID, "USD", products, createUkAddressData(), "Yokosuka");
 
 		// Create sample order in the apparel-uk site
-		{
-			final Map<String, Long> products = new HashMap<String, Long>();
-			products.put("300737290", Long.valueOf(1)); // System Tee SS dirty plum S
-			products.put("300737281", Long.valueOf(1)); // System Tee SS lime M
-			createSampleOrder("apparel-uk", "OrderHistoryUser@test.com", "GBP", products, createUkAddressData(),
-					"Newcastle upon Tyne College");
-		}
+		products = new HashMap<String, Long>();
+		products.put("300737290", Long.valueOf(1)); // System Tee SS dirty plum S
+		products.put("300737281", Long.valueOf(1)); // System Tee SS lime M
+		createSampleOrder("apparel-uk", CUSTOMER_UID, "GBP", products, createUkAddressData(), "Newcastle upon Tyne College");
 	}
 
 	public void createSampleOrder(final String siteUid, final String customerUid, final String currencyIso,
@@ -386,7 +372,7 @@ public class AcceleratorTestOrderData
 		ctx.setSite(cmsSite);
 		ctx.setUser(customer);
 		ctx.setCurrency(i18nService.getCurrency(currencyIso));
-		getImpersonationService().executeInContext(ctx, new ImpersonationService.Executor<Object, ImpersonationService.Nothing>()
+		getImpersonationService().executeInContext(ctx, new ImpersonationService.Executor<Object, ImpersonationService.Nothing>() // NOSONAR
 		{
 			@Override
 			public Object execute() throws ImpersonationService.Nothing
@@ -411,17 +397,7 @@ public class AcceleratorTestOrderData
 						getCartService().removeSessionCart();
 
 						// Populate cart
-						for (final Map.Entry<String, Long> productEntry : products.entrySet())
-						{
-							try
-							{
-								getCartFacade().addToCart(productEntry.getKey(), productEntry.getValue().longValue(), storeId);
-							}
-							catch (final CommerceCartModificationException e)
-							{
-								LOG.error("Exception...", e);
-							}
-						}
+						populateCart(products, storeId);
 
 						// Begin checkout
 
@@ -436,15 +412,7 @@ public class AcceleratorTestOrderData
 						parameter.setAddress(addressModel);
 						parameter.setIsDeliveryAddress(false);
 
-						if (!getCommerceCheckoutService().setDeliveryAddress(parameter))
-						{
-							LOG.error("Failed to set delivery address on cart");
-						}
-
-						if (sessionCart.getDeliveryAddress() == null)
-						{
-							LOG.error("Failed to set delivery address");
-						}
+						checkAddressErrors(sessionCart, parameter);
 
 						// Set delivery mode
 						getCheckoutFacade().setDeliveryModeIfAvailable();
@@ -455,36 +423,8 @@ public class AcceleratorTestOrderData
 						// Checkout
 						getCheckoutFacade().authorizePayment("123");
 
-						try
-						{
-							final OrderData orderData = getCheckoutFacade().placeOrder();
-							if (orderData == null)
-							{
-								LOG.error("Failed to placeOrder");
-							}
-							else
-							{
-								LOG.info("Created order [" + orderData.getCode() + "]");
-
-								// Sleep for 5s to allow the fulfilment processes to run for this order
-								// Only have to worry about this here if we are running initialize from ant
-								// as the process will exit immediately that we finish initialising.
-								try
-								{
-									Thread.sleep(10000);
-								}
-								catch (final InterruptedException e)
-								{
-									LOG.error("Exception...", e);
-								}
-							}
-						}
-						catch (final InvalidCartException e)
-						{
-							LOG.error("Exception...", e);
-						}
+						placeOrder();
 					}
-
 				}
 				catch (final Exception e)
 				{
@@ -499,6 +439,70 @@ public class AcceleratorTestOrderData
 				return null;
 			}
 		});
+	}
+
+	protected void checkOrderData(final OrderData orderData, final String message)
+	{
+		if (orderData == null)
+		{
+			LOG.error("Failed to placeOrder");
+		}
+		else
+		{
+			LOG.info("Created order [" + orderData.getCode() + "]");
+
+			// Sleep for 5s to allow the fulfilment processes to run for this order
+			// Only have to worry about this here if we are running initialize from ant
+			// as the process will exit immediately that we finish initialising.
+			try
+			{
+				Thread.sleep(10000);
+			}
+			catch (final InterruptedException e)
+			{
+				LOG.error(message, e);
+			}
+		}
+	}
+
+	protected void checkAddressErrors(final CartModel sessionCart, final CommerceCheckoutParameter parameter) {
+		if (!getCommerceCheckoutService().setDeliveryAddress(parameter))
+        {
+            LOG.error("Failed to set delivery address on cart");
+        }
+
+		if (sessionCart.getDeliveryAddress() == null)
+        {
+            LOG.error("Failed to set delivery address");
+        }
+	}
+	
+	protected void placeOrder()
+	{
+		try
+		{
+			final OrderData orderData = getCheckoutFacade().placeOrder();
+			checkOrderData(orderData, "Exception during sleep in order to allow the fulfilment processes to run for this order");
+		}
+		catch (final InvalidCartException e)
+		{
+			LOG.error("Exception during placing order", e);
+		}
+	}
+
+	protected void populateCart(final Map<String, Long> products, final String storeId)
+	{
+		for (final Map.Entry<String, Long> productEntry : products.entrySet())
+		{
+			try
+			{
+				getCartFacade().addToCart(productEntry.getKey(), productEntry.getValue().longValue(), storeId);
+			}
+			catch (final CommerceCartModificationException e)
+			{
+				LOG.error("Exception during adding product with code " + productEntry.getKey() + " to cart", e);
+			}
+		}
 	}
 
 	protected AddressData createUkAddressData()
