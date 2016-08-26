@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,13 +9,13 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.core.event;
 
+import de.hybris.platform.acceleratorservices.site.AbstractAcceleratorSiteEventListener;
 import de.hybris.platform.basecommerce.model.site.BaseSiteModel;
 import de.hybris.platform.commerceservices.enums.SiteChannel;
-import de.hybris.platform.commerceservices.event.AbstractSiteEventListener;
 import de.hybris.platform.core.model.order.OrderModel;
 import de.hybris.platform.order.events.SubmitOrderEvent;
 import de.hybris.platform.orderprocessing.model.OrderProcessModel;
@@ -24,6 +24,7 @@ import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.util.ServicesUtil;
 import de.hybris.platform.store.BaseStoreModel;
 import de.hybris.platform.store.services.BaseStoreService;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -31,7 +32,7 @@ import org.springframework.beans.factory.annotation.Required;
 /**
  * Listener for order submits.
  */
-public class SubmitOrderEventListener extends AbstractSiteEventListener<SubmitOrderEvent>
+public class SubmitOrderEventListener extends AbstractAcceleratorSiteEventListener<SubmitOrderEvent>
 {
 	private static final Logger LOG = Logger.getLogger(SubmitOrderEventListener.class);
 
@@ -122,8 +123,8 @@ public class SubmitOrderEventListener extends AbstractSiteEventListener<SubmitOr
 			else
 			{
 				final String processCode = fulfilmentProcessDefinitionName + "-" + order.getCode() + "-" + System.currentTimeMillis();
-				final OrderProcessModel businessProcessModel = getBusinessProcessService().createProcess(
-						processCode, fulfilmentProcessDefinitionName);
+				final OrderProcessModel businessProcessModel = getBusinessProcessService().createProcess(processCode,
+						fulfilmentProcessDefinitionName);
 				businessProcessModel.setOrder(order);
 				getModelService().save(businessProcessModel);
 				getBusinessProcessService().startProcess(businessProcessModel);
@@ -136,12 +137,12 @@ public class SubmitOrderEventListener extends AbstractSiteEventListener<SubmitOr
 	}
 
 	@Override
-	protected boolean shouldHandleEvent(final SubmitOrderEvent event)
+	protected SiteChannel getSiteChannelForEvent(final SubmitOrderEvent event)
 	{
 		final OrderModel order = event.getOrder();
 		ServicesUtil.validateParameterNotNullStandardMessage("event.order", order);
 		final BaseSiteModel site = order.getSite();
 		ServicesUtil.validateParameterNotNullStandardMessage("event.order.site", site);
-		return SiteChannel.B2C.equals(site.getChannel());
+		return site.getChannel();
 	}
 }

@@ -86,6 +86,26 @@ public class GeneratedTypeInitializer extends AbstractTypeInitializer
 			false
 		);
 	
+		createItemType(
+			"TurnToStaticContents",
+			"GenericItem",
+			de.hybris.merchandise.core.jalo.TurnToStaticContents.class,
+			"de.hybris.platform.persistence.merchandisecore_TurnToStaticContents",
+			false,
+			null,
+			false
+		);
+	
+		createItemType(
+			"TurnToColorVariantProduct",
+			"VariantProduct",
+			de.hybris.merchandise.core.jalo.TurnToColorVariantProduct.class,
+			null,
+			false,
+			null,
+			false
+		);
+	
 		createEnumerationType(
 			"SwatchColorEnum",
 			null
@@ -129,6 +149,16 @@ public class GeneratedTypeInitializer extends AbstractTypeInitializer
 				single_createattr_Product_internalOnly();
 			
 				single_createattr_Customer_isInternal();
+			
+				single_createattr_TurnToStaticContents_productId();
+			
+				single_createattr_TurnToStaticContents_timestamp();
+			
+				single_createattr_TurnToStaticContents_qaContent();
+			
+				single_createattr_TurnToStaticContents_reviewsContent();
+			
+				single_createattr_TurnToColorVariantProduct_color();
 			
 
 	}
@@ -249,6 +279,101 @@ public class GeneratedTypeInitializer extends AbstractTypeInitializer
 			
 	}
 	
+	public void single_createattr_TurnToStaticContents_productId() throws JaloBusinessException
+	{
+		
+						Map sqlColumnDefinitions = null;
+					
+				createPropertyAttribute(
+					"TurnToStaticContents", 
+					"productId",  
+					null,
+					"java.lang.String",
+					de.hybris.platform.jalo.type.AttributeDescriptor.READ_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.WRITE_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.REMOVE_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.SEARCH_FLAG,
+					null,
+					sqlColumnDefinitions
+				);
+			
+	}
+	
+	public void single_createattr_TurnToStaticContents_timestamp() throws JaloBusinessException
+	{
+		
+						Map sqlColumnDefinitions = null;
+					
+				createPropertyAttribute(
+					"TurnToStaticContents", 
+					"timestamp",  
+					null,
+					"java.lang.Long",
+					de.hybris.platform.jalo.type.AttributeDescriptor.READ_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.WRITE_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.REMOVE_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.SEARCH_FLAG,
+					null,
+					sqlColumnDefinitions
+				);
+			
+	}
+	
+	public void single_createattr_TurnToStaticContents_qaContent() throws JaloBusinessException
+	{
+		
+						Map sqlColumnDefinitions = new HashMap();
+						
+							sqlColumnDefinitions.put(
+								"mysql",
+								"LONGTEXT"
+							);
+						
+				createPropertyAttribute(
+					"TurnToStaticContents", 
+					"qaContent",  
+					null,
+					"java.lang.String",
+					de.hybris.platform.jalo.type.AttributeDescriptor.READ_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.WRITE_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.REMOVE_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.SEARCH_FLAG,
+					null,
+					sqlColumnDefinitions
+				);
+			
+	}
+	
+	public void single_createattr_TurnToStaticContents_reviewsContent() throws JaloBusinessException
+	{
+		
+						Map sqlColumnDefinitions = new HashMap();
+						
+							sqlColumnDefinitions.put(
+								"mysql",
+								"LONGTEXT"
+							);
+						
+				createPropertyAttribute(
+					"TurnToStaticContents", 
+					"reviewsContent",  
+					null,
+					"java.lang.String",
+					de.hybris.platform.jalo.type.AttributeDescriptor.READ_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.WRITE_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.REMOVE_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.SEARCH_FLAG,
+					null,
+					sqlColumnDefinitions
+				);
+			
+	}
+	
+	public void single_createattr_TurnToColorVariantProduct_color() throws JaloBusinessException
+	{
+		
+						Map sqlColumnDefinitions = null;
+					
+				createPropertyAttribute(
+					"TurnToColorVariantProduct", 
+					"color",  
+					null,
+					"localized:java.lang.String",
+					de.hybris.platform.jalo.type.AttributeDescriptor.READ_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.WRITE_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.OPTIONAL_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.REMOVE_FLAG|de.hybris.platform.jalo.type.AttributeDescriptor.SEARCH_FLAG,
+					"VariantAttributeDescriptor",
+					sqlColumnDefinitions
+				);
+			
+	}
+	
 
 
 	/**
@@ -365,6 +490,42 @@ public class GeneratedTypeInitializer extends AbstractTypeInitializer
 				}
 			
 			single_setAttributeProperties_Customer_isInternal();
+		
+				{
+				Map customPropsMap = new HashMap();
+				
+				setItemTypeProperties(
+					"TurnToStaticContents",
+					false,
+					true,
+					true,
+					null,
+					customPropsMap
+				);
+				}
+			
+			single_setAttributeProperties_TurnToStaticContents_productId();
+		
+			single_setAttributeProperties_TurnToStaticContents_timestamp();
+		
+			single_setAttributeProperties_TurnToStaticContents_qaContent();
+		
+			single_setAttributeProperties_TurnToStaticContents_reviewsContent();
+		
+				{
+				Map customPropsMap = new HashMap();
+				
+				setItemTypeProperties(
+					"TurnToColorVariantProduct",
+					false,
+					true,
+					true,
+					null,
+					customPropsMap
+				);
+				}
+			
+			single_setAttributeProperties_TurnToColorVariantProduct_color();
 		
 				setDefaultProperties(
 					"GenderList",
@@ -542,6 +703,116 @@ public class GeneratedTypeInitializer extends AbstractTypeInitializer
 								null,
 								customPropsMap,
 								"dynamicHybrisCustomerAttributeBean"
+							);
+						}
+					
+						public void single_setAttributeProperties_TurnToStaticContents_productId() throws JaloBusinessException
+						{
+							
+							
+							
+							Map customPropsMap = new HashMap();
+							
+							setAttributeProperties(
+								"TurnToStaticContents", 
+								"productId",
+								true, 
+								null,
+								null,
+								null,
+								true,
+								true,
+								null,
+								customPropsMap,
+								null
+							);
+						}
+					
+						public void single_setAttributeProperties_TurnToStaticContents_timestamp() throws JaloBusinessException
+						{
+							
+							
+							
+							Map customPropsMap = new HashMap();
+							
+							setAttributeProperties(
+								"TurnToStaticContents", 
+								"timestamp",
+								false, 
+								null,
+								null,
+								null,
+								true,
+								true,
+								null,
+								customPropsMap,
+								null
+							);
+						}
+					
+						public void single_setAttributeProperties_TurnToStaticContents_qaContent() throws JaloBusinessException
+						{
+							
+							
+							
+							Map customPropsMap = new HashMap();
+							
+							setAttributeProperties(
+								"TurnToStaticContents", 
+								"qaContent",
+								false, 
+								null,
+								null,
+								null,
+								true,
+								true,
+								null,
+								customPropsMap,
+								null
+							);
+						}
+					
+						public void single_setAttributeProperties_TurnToStaticContents_reviewsContent() throws JaloBusinessException
+						{
+							
+							
+							
+							Map customPropsMap = new HashMap();
+							
+							setAttributeProperties(
+								"TurnToStaticContents", 
+								"reviewsContent",
+								false, 
+								null,
+								null,
+								null,
+								true,
+								true,
+								null,
+								customPropsMap,
+								null
+							);
+						}
+					
+						public void single_setAttributeProperties_TurnToColorVariantProduct_color() throws JaloBusinessException
+						{
+							
+							
+							
+							Map customPropsMap = new HashMap();
+							
+							setAttributeProperties(
+								"TurnToColorVariantProduct", 
+								"color",
+								false, 
+								null,
+								null,
+								null,
+								true,
+								true,
+								"VariantAttributeDescriptor",
+								customPropsMap,
+								null
 							);
 						}
 					

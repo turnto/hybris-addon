@@ -1,18 +1,18 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Oct 30, 2015 1:28:28 PM                     ---
+ * --- Generated at Aug 26, 2016 10:04:28 AM                    ---
  * ----------------------------------------------------------------
  *  
  * [y] hybris Platform
  *  
- * Copyright (c) 2000-2014 hybris AG
+ * Copyright (c) 2000-2016 SAP SE
  * All rights reserved.
  *  
- * This software is the confidential and proprietary information of hybris
- * ("Confidential Information"). You shall not disclose such Confidential
- * Information and shall use it only in accordance with the terms of the
- * license agreement you entered into with hybris.
+ * This software is the confidential and proprietary information of SAP
+ * Hybris ("Confidential Information"). You shall not disclose such
+ * Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with SAP Hybris.
  *  
  */
 package de.hybris.merchandise.core.jalo;

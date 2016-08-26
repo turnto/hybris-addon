@@ -1,18 +1,18 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Oct 30, 2015 1:28:28 PM                     ---
+ * --- Generated at Aug 26, 2016 10:04:28 AM                    ---
  * ----------------------------------------------------------------
  *  
  * [y] hybris Platform
  *  
- * Copyright (c) 2000-2014 hybris AG
+ * Copyright (c) 2000-2016 SAP SE
  * All rights reserved.
  *  
- * This software is the confidential and proprietary information of hybris
- * ("Confidential Information"). You shall not disclose such Confidential
- * Information and shall use it only in accordance with the terms of the
- * license agreement you entered into with hybris.
+ * This software is the confidential and proprietary information of SAP
+ * Hybris ("Confidential Information"). You shall not disclose such
+ * Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with SAP Hybris.
  *  
  */
 package de.hybris.merchandise.core.jalo;
@@ -22,6 +22,8 @@ import de.hybris.merchandise.core.jalo.ApparelProduct;
 import de.hybris.merchandise.core.jalo.ApparelSizeVariantProduct;
 import de.hybris.merchandise.core.jalo.ApparelStyleVariantProduct;
 import de.hybris.merchandise.core.jalo.ElectronicsColorVariantProduct;
+import de.hybris.merchandise.core.jalo.TurnToColorVariantProduct;
+import de.hybris.merchandise.core.jalo.TurnToStaticContents;
 import de.hybris.platform.jalo.GenericItem;
 import de.hybris.platform.jalo.Item;
 import de.hybris.platform.jalo.Item.AttributeMode;
@@ -166,6 +168,58 @@ public abstract class GeneratedMerchandiseCoreManager extends Extension
 	public ElectronicsColorVariantProduct createElectronicsColorVariantProduct(final Map attributeValues)
 	{
 		return createElectronicsColorVariantProduct( getSession().getSessionContext(), attributeValues );
+	}
+	
+	public TurnToColorVariantProduct createTurnToColorVariantProduct(final SessionContext ctx, final Map attributeValues)
+	{
+		try
+		{
+			ComposedType type = getTenant().getJaloConnection().getTypeManager().getComposedType( MerchandiseCoreConstants.TC.TURNTOCOLORVARIANTPRODUCT );
+			return (TurnToColorVariantProduct)type.newInstance( ctx, attributeValues );
+		}
+		catch( JaloGenericCreationException e)
+		{
+			final Throwable cause = e.getCause();
+			throw (cause instanceof RuntimeException ?
+			(RuntimeException)cause
+			:
+			new JaloSystemException( cause, cause.getMessage(), e.getErrorCode() ) );
+		}
+		catch( JaloBusinessException e )
+		{
+			throw new JaloSystemException( e ,"error creating TurnToColorVariantProduct : "+e.getMessage(), 0 );
+		}
+	}
+	
+	public TurnToColorVariantProduct createTurnToColorVariantProduct(final Map attributeValues)
+	{
+		return createTurnToColorVariantProduct( getSession().getSessionContext(), attributeValues );
+	}
+	
+	public TurnToStaticContents createTurnToStaticContents(final SessionContext ctx, final Map attributeValues)
+	{
+		try
+		{
+			ComposedType type = getTenant().getJaloConnection().getTypeManager().getComposedType( MerchandiseCoreConstants.TC.TURNTOSTATICCONTENTS );
+			return (TurnToStaticContents)type.newInstance( ctx, attributeValues );
+		}
+		catch( JaloGenericCreationException e)
+		{
+			final Throwable cause = e.getCause();
+			throw (cause instanceof RuntimeException ?
+			(RuntimeException)cause
+			:
+			new JaloSystemException( cause, cause.getMessage(), e.getErrorCode() ) );
+		}
+		catch( JaloBusinessException e )
+		{
+			throw new JaloSystemException( e ,"error creating TurnToStaticContents : "+e.getMessage(), 0 );
+		}
+	}
+	
+	public TurnToStaticContents createTurnToStaticContents(final Map attributeValues)
+	{
+		return createTurnToStaticContents( getSession().getSessionContext(), attributeValues );
 	}
 	
 	@Override

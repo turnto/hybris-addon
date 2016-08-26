@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,26 +9,25 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.core.strategies.impl;
 
+import de.hybris.merchandise.core.model.ApparelSizeVariantProductModel;
+import de.hybris.merchandise.core.model.ApparelStyleVariantProductModel;
 import de.hybris.platform.catalog.model.ProductReferenceModel;
 import de.hybris.platform.category.model.CategoryModel;
 import de.hybris.platform.commerceservices.category.CommerceCategoryService;
 import de.hybris.platform.commerceservices.strategies.ProductReferenceTargetStrategy;
 import de.hybris.platform.core.model.product.ProductModel;
 import de.hybris.platform.variants.model.VariantProductModel;
-import de.hybris.merchandise.core.model.ApparelSizeVariantProductModel;
-import de.hybris.merchandise.core.model.ApparelStyleVariantProductModel;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Required;
 
 
 /**
@@ -65,6 +64,7 @@ public class ApparelSizeProductReferenceTargetStrategy implements ProductReferen
 	@Override
 	public ProductModel getTarget(final ProductModel sourceProduct, final ProductReferenceModel reference)
 	{
+		VariantProductModel variant = null;
 		if (sourceProduct instanceof ApparelSizeVariantProductModel
 				&& reference.getTarget() instanceof ApparelStyleVariantProductModel)
 		{
@@ -74,19 +74,24 @@ public class ApparelSizeProductReferenceTargetStrategy implements ProductReferen
 			{
 				// matching taxonomy categories so try a size map
 				final String size = ((ApparelSizeVariantProductModel) sourceProduct).getSize();
-				for (final VariantProductModel variant : reference.getTarget().getVariants())
-				{
-					if (variant instanceof ApparelSizeVariantProductModel
-							&& size.equals(((ApparelSizeVariantProductModel) variant).getSize()))
-					{
-						return variant;
-					}
-				}
+				variant = getVariantWithSameSize(reference, size);
+			}
+		}
+		return variant;
+	}
+
+	protected VariantProductModel getVariantWithSameSize(final ProductReferenceModel reference, final String size) {
+		for (final VariantProductModel variant : reference.getTarget().getVariants())
+		{
+			if (variant instanceof ApparelSizeVariantProductModel
+					&& size.equals(((ApparelSizeVariantProductModel) variant).getSize()))
+			{
+				return variant;
 			}
 		}
 		return null;
 	}
-
+	
 	protected List<CategoryModel> getSuperCategoriesOfType(final ProductModel productModel)
 	{
 		final List<CategoryModel> superCategories = new LinkedList<CategoryModel>();

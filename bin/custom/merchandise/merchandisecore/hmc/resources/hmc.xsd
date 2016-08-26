@@ -7,7 +7,7 @@
 	<xsd:annotation>
 		<xsd:documentation>
 			 Generic editor configuration schema.
-			 Copyright (c) 2000-2013 hybris AG. All rights reserved.
+			 Copyright (c) 2000-2016 SAP SE. All rights reserved.
 		</xsd:documentation>
 	</xsd:annotation>
 

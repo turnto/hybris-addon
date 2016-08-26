@@ -2,7 +2,7 @@
 <!--
  [y] hybris Platform
 
- Copyright (c) 2000-2015 hybris AG
+ Copyright (c) 2000-2016 hybris AG
  All rights reserved.
 
  This software is the confidential and proprietary information of hybris
@@ -16,16 +16,17 @@
 
 		<!-- you should add all required extensions to this list, except platform 
 			extensions which are automatically required -->
-		<requires-extension name="acceleratorservices"/>
 		<requires-extension name="acceleratorcms"/>
-		<requires-extension name="merchandisefulfilmentprocess"/>
 		<requires-extension name="hmc"/>
+		<requires-extension name="solrserver"/>
 
 		<coremodule generated="true" manager="de.hybris.merchandise.core.jalo.MerchandiseCoreManager" packageroot="de.hybris.merchandise.core"/>
 
 		<hmcmodule extensionclassname="de.hybris.merchandise.core.hmc.MerchandiseCoreHMCExtension"/>
 
 		
+		
+		<meta key="backoffice-module" value="true"/>
 	</extension>
 
 </extensioninfo>

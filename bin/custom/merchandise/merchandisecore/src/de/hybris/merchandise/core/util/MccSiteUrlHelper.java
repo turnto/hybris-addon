@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,21 +9,20 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.core.util;
 
+import de.hybris.platform.acceleratorservices.site.strategies.SiteChannelValidationStrategy;
 import de.hybris.platform.acceleratorservices.urlresolver.SiteBaseUrlResolutionService;
 import de.hybris.platform.cms2.model.site.CMSSiteModel;
 import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
-import de.hybris.platform.commerceservices.enums.SiteChannel;
 import de.hybris.platform.core.Registry;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Required;
 
 
 /**
@@ -34,6 +33,10 @@ public class MccSiteUrlHelper
 	@SuppressWarnings("unused")
 	private static final Logger LOG = Logger.getLogger(MccSiteUrlHelper.class);
 
+	private CMSSiteService cmsSiteService;
+	private SiteBaseUrlResolutionService siteBaseUrlResolutionService;
+	private SiteChannelValidationStrategy siteChannelValidationStrategy;
+
 	// Called from BeanShell by MCC
 	public static Map<String, String> getAllSitesAndUrls()
 	{
@@ -42,8 +45,26 @@ public class MccSiteUrlHelper
 		return mccSiteUrlHelper.getSitesAndUrls();
 	}
 
-	private CMSSiteService cmsSiteService;
-	private SiteBaseUrlResolutionService siteBaseUrlResolutionService;
+	public Map<String, String> getSitesAndUrls()
+	{
+		final Map<String, String> siteToUrl = new TreeMap<String, String>();
+
+		for (final CMSSiteModel cmsSiteModel : getCmsSiteService().getSites())
+		{
+			final String url = getSiteUrl(cmsSiteModel);
+			if (url != null && !url.isEmpty() && getSiteChannelValidationStrategy().validateSiteChannel(cmsSiteModel.getChannel()))
+			{
+				siteToUrl.put(cmsSiteModel.getName(), url);
+			}
+		}
+
+		return siteToUrl;
+	}
+
+	protected String getSiteUrl(final CMSSiteModel cmsSiteModel)
+	{
+		return getSiteBaseUrlResolutionService().getWebsiteUrlForSite(cmsSiteModel, false, "/");
+	}
 
 	protected CMSSiteService getCmsSiteService()
 	{
@@ -67,24 +88,14 @@ public class MccSiteUrlHelper
 		this.siteBaseUrlResolutionService = siteBaseUrlResolutionService;
 	}
 
-	public Map<String, String> getSitesAndUrls()
+	protected SiteChannelValidationStrategy getSiteChannelValidationStrategy()
 	{
-		final Map<String, String> siteToUrl = new TreeMap<String, String>();
-
-		for (final CMSSiteModel cmsSiteModel : getCmsSiteService().getSites())
-		{
-			final String url = getSiteUrl(cmsSiteModel);
-			if (url != null && !url.isEmpty() && SiteChannel.B2C.equals(cmsSiteModel.getChannel()))
-			{
-				siteToUrl.put(cmsSiteModel.getName(), url);
-			}
-		}
-
-		return siteToUrl;
+		return siteChannelValidationStrategy;
 	}
 
-	protected String getSiteUrl(final CMSSiteModel cmsSiteModel)
+	@Required
+	public void setSiteChannelValidationStrategy(final SiteChannelValidationStrategy siteChannelValidationStrategy)
 	{
-		return getSiteBaseUrlResolutionService().getWebsiteUrlForSite(cmsSiteModel, false, "/");
+		this.siteChannelValidationStrategy = siteChannelValidationStrategy;
 	}
 }
