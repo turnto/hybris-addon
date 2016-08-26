@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,15 +9,17 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
 import de.hybris.platform.acceleratorstorefrontcommons.breadcrumb.impl.StoreBreadcrumbBuilder;
 import de.hybris.platform.acceleratorstorefrontcommons.constants.WebConstants;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractPageController;
+import de.hybris.platform.acceleratorstorefrontcommons.controllers.util.GlobalMessages;
 import de.hybris.platform.acceleratorstorefrontcommons.forms.StoreFinderForm;
 import de.hybris.platform.acceleratorstorefrontcommons.forms.StorePositionForm;
+import de.hybris.platform.acceleratorstorefrontcommons.util.MetaSanitizerUtil;
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.cms2.model.pages.AbstractPageModel;
 import de.hybris.platform.commercefacades.storefinder.StoreFinderFacade;
@@ -26,11 +28,9 @@ import de.hybris.platform.commercefacades.user.data.AddressData;
 import de.hybris.platform.commerceservices.store.data.GeoPoint;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 import de.hybris.platform.servicelayer.exceptions.ModelNotFoundException;
-import de.hybris.platform.storelocator.exception.GeoLocatorException;
-import de.hybris.platform.storelocator.exception.MapServiceException;
 import de.hybris.merchandise.storefront.controllers.ControllerConstants;
-import de.hybris.platform.acceleratorstorefrontcommons.controllers.util.GlobalMessages;
-import de.hybris.platform.acceleratorstorefrontcommons.util.MetaSanitizerUtil;
+
+import java.io.UnsupportedEncodingException;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.sap.security.core.server.csi.XSSEncoder;
 
 /**
  */
@@ -56,7 +57,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping(value = "/**/store")
 public class StorePageController extends AbstractPageController
 {
-	protected static final Logger LOG = Logger.getLogger(StorePageController.class);
+	private static final Logger LOG = Logger.getLogger(StorePageController.class);
 	/**
 	 * We use this suffix pattern because of an issue with Spring 3.1 where a Uri value is incorrectly extracted if it
 	 * contains on or more '.' characters. Please see https://jira.springsource.org/browse/SPR-6164 for a discussion on
@@ -64,6 +65,9 @@ public class StorePageController extends AbstractPageController
 	 */
 	private static final String STORE_CODE_PATH_VARIABLE_PATTERN = "/{storeCode:.*}";
 	private static final String REDIRECT_STORE_FINDER = REDIRECT_PREFIX + "/store-finder";
+	
+	private static final String STORE_URL = "/store/";
+	private static final String STORE_ATTR = "store";
 
 	private static final String STORE_FINDER_CMS_PAGE_LABEL = "storefinder";
 	private static final String GOOGLE_API_KEY_ID = "googleApiKey";
@@ -122,32 +126,20 @@ public class StorePageController extends AbstractPageController
 				{
 					return handleStoreNotFoundCase(redirectModel);
 				}
-				pointOfServiceData.setUrl("/store/" + pointOfServiceData.getName());
-				model.addAttribute("store", pointOfServiceData);
+				pointOfServiceData.setUrl(STORE_URL + pointOfServiceData.getName());
+				model.addAttribute(STORE_ATTR, pointOfServiceData);
 
-				if (locationQuery != null && !locationQuery.isEmpty())
-				{
-					model.addAttribute("locationQuery", locationQuery);
+				processLocation(sourceLatitude, sourceLongitude, locationQuery, model, pointOfServiceData);
 
-					// Build URL to location query
-					final String storeFinderSearchUrl = UriComponentsBuilder.fromPath("/store-finder").queryParam("q", locationQuery)
-							.build().toString();
-					model.addAttribute(WebConstants.BREADCRUMBS_KEY,
-							storeBreadcrumbBuilder.getBreadcrumbs(pointOfServiceData, storeFinderSearchUrl));
-				}
-				else
-				{
-					// Build URL to position query
-					final String storeFinderSearchUrl = UriComponentsBuilder.fromPath("/store-finder/position")
-							.queryParam("lat", sourceLatitude).queryParam("long", sourceLongitude).build().toString();
-					model.addAttribute(WebConstants.BREADCRUMBS_KEY,
-							storeBreadcrumbBuilder.getBreadcrumbs(pointOfServiceData, storeFinderSearchUrl));
-				}
 				setUpMetaData(model, pointOfServiceData);
 			}
 			catch (final ModelNotFoundException e)
 			{
 				return handleStoreNotFoundCase(redirectModel);
+			}
+			catch (final UnsupportedEncodingException e)
+			{
+				logDebugInfo(e);
 			}
 		}
 		else
@@ -156,8 +148,8 @@ public class StorePageController extends AbstractPageController
 			try
 			{
 				final PointOfServiceData pointOfServiceData = storeFinderFacade.getPointOfServiceForName(storeCode);
-				pointOfServiceData.setUrl("/store/" + pointOfServiceData.getName());
-				model.addAttribute("store", pointOfServiceData);
+				pointOfServiceData.setUrl(STORE_URL + pointOfServiceData.getName());
+				model.addAttribute(STORE_ATTR, pointOfServiceData);
 				model.addAttribute(WebConstants.BREADCRUMBS_KEY, storeBreadcrumbBuilder.getBreadcrumbs(pointOfServiceData));
 				setUpMetaData(model, pointOfServiceData);
 			}
@@ -171,6 +163,38 @@ public class StorePageController extends AbstractPageController
 		return ControllerConstants.Views.Pages.StoreFinder.StoreFinderDetailsPage;
 	}
 
+	protected void logDebugInfo(final UnsupportedEncodingException e) {
+		if (LOG.isDebugEnabled())
+        {
+            LOG.debug("Error occured during Encoding the Store Page data values", e);
+        }
+	}
+
+	protected void processLocation(@RequestParam(value = "lat", required = false) final Double sourceLatitude,
+								 @RequestParam(value = "long", required = false) final Double sourceLongitude,
+								 @RequestParam(value = "q", required = false) final String locationQuery,
+								 final Model model, final PointOfServiceData pointOfServiceData)
+			throws UnsupportedEncodingException {
+		if (locationQuery != null && !locationQuery.isEmpty())
+        {
+            model.addAttribute("locationQuery", locationQuery);
+
+            // Build URL to location query
+            final String storeFinderSearchUrl = UriComponentsBuilder.fromPath("/store-finder").queryParam("q", locationQuery)
+                    .build().toString();
+            model.addAttribute(WebConstants.BREADCRUMBS_KEY,
+                    storeBreadcrumbBuilder.getBreadcrumbs(pointOfServiceData,  XSSEncoder.encodeURL(storeFinderSearchUrl)));
+        }
+        else
+        {
+            // Build URL to position query
+            final String storeFinderSearchUrl = UriComponentsBuilder.fromPath("/store-finder/position")
+                    .queryParam("lat", sourceLatitude).queryParam("long", sourceLongitude).build().toString();
+            model.addAttribute(WebConstants.BREADCRUMBS_KEY,
+                    storeBreadcrumbBuilder.getBreadcrumbs(pointOfServiceData,  XSSEncoder.encodeURL(storeFinderSearchUrl)));
+        }
+	}
+
 	protected void setUpMetaData(final Model model, final PointOfServiceData pointOfServiceData)
 	{
 		final String metaKeywords = createMetaKeywords(pointOfServiceData);
@@ -180,7 +204,7 @@ public class StorePageController extends AbstractPageController
 
 	@RequestMapping(value = STORE_CODE_PATH_VARIABLE_PATTERN + "/map", method = RequestMethod.GET)
 	public String viewMap(@PathVariable("storeCode") final String storeCode, final Model model,
-			final RedirectAttributes redirectModel) throws GeoLocatorException, MapServiceException, CMSItemNotFoundException
+			final RedirectAttributes redirectModel) throws CMSItemNotFoundException
 	{
 		final StoreFinderForm storeFinderForm = new StoreFinderForm();
 		model.addAttribute("storeFinderForm", storeFinderForm);
@@ -190,8 +214,8 @@ public class StorePageController extends AbstractPageController
 		try
 		{
 			final PointOfServiceData pointOfServiceData = storeFinderFacade.getPointOfServiceForName(storeCode);
-			pointOfServiceData.setUrl("/store/" + pointOfServiceData.getName());
-			model.addAttribute("store", pointOfServiceData);
+			pointOfServiceData.setUrl(STORE_URL + pointOfServiceData.getName());
+			model.addAttribute(STORE_ATTR, pointOfServiceData);
 
 			storeCmsPageInModel(model, getStoreFinderPage());
 			model.addAttribute(WebConstants.BREADCRUMBS_KEY,

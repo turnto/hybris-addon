@@ -17,13 +17,12 @@
 
 <template:errorSpanField path="${path}" errorPath="${errorPath}">
 	<ycommerce:testId code="LoginPage_Item_${idKey}">
-	
-			<label class="control-label ${labelCSS}" for="${idKey}"> <spring:theme
-					code="${labelKey}" /> <c:if
-					test="${mandatory != null && mandatory == false}">
-					<spring:theme code="login.optional" />
-				</c:if>
-			</label>
-			<form:password cssClass="${inputCSS}" id="${idKey}" path="${path}" />
+		<label class="control-label ${labelCSS}" for="${idKey}">
+			<spring:theme code="${labelKey}" />
+			<c:if test="${mandatory != null && mandatory == false}">
+				<spring:theme code="login.optional" />
+			</c:if>
+		</label>
+		<form:password cssClass="${inputCSS}" id="${idKey}" path="${path}" autocomplete="off"/>
 	</ycommerce:testId>
 </template:errorSpanField>

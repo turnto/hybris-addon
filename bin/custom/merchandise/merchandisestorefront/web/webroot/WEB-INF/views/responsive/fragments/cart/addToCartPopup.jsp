@@ -6,8 +6,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="theme" tagdir="/WEB-INF/tags/shared/theme" %>
 <%@ taglib prefix="format" tagdir="/WEB-INF/tags/shared/format" %>
-<%@ taglib prefix="product" tagdir="/WEB-INF/tags/desktop/product" %>
+<%@ taglib prefix="product" tagdir="/WEB-INF/tags/responsive/product" %>
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags"%>
+<%@ taglib prefix="cart" tagdir="/WEB-INF/tags/responsive/cart" %>
 
 {"cartData": {
 "total": "${cartData.totalPrice.value}",
@@ -27,58 +28,54 @@
 </c:forEach>
 ]
 },
+
+"cartAnalyticsData":{"cartCode" : "${cartCode}","productPostPrice":"${entry.basePrice.value}","productName":"<c:out value='${product.name}' />"}
+,
 "addToCartLayer":"<spring:escapeBody javaScriptEscape="true">
 	<spring:theme code="text.addToCart" var="addToCartText"/>
 	<c:url value="/cart" var="cartUrl"/>
 	<c:url value="/cart/checkout" var="checkoutUrl"/>
 	<ycommerce:testId code="addToCartPopup">
 		<div id="addToCartLayer" class="add-to-cart">
+            <div class="cart_popup_error_msg">
+                <c:choose>
+                    <c:when test="${multidErrorMsgs ne null and not empty multidErrorMsgs}">
+                        <c:forEach items="${multidErrorMsgs}" var="multidErrorMsg">
+                            <spring:theme code="${multidErrorMsg}" />
+                        </br>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <spring:theme code="${errorMsg}" />
+                    </c:otherwise>
+                </c:choose>
+            </div>
 
-			<div class="add-to-cart-item">
+            <c:choose>
+                <c:when test="${modifications ne null}">
+                    <c:forEach items="${modifications}" var="modification">
+                        <c:set var="product" value="${modification.entry.product}" />
+                        <c:set var="entry" value="${modification.entry}" />
+                        <c:set var="quantity" value="${modification.quantityAdded}" />
+                        <cart:popupCartItems entry="${entry}" product="${product}" quantity="${quantity}"/>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
 
-				<div class="thumb">
-					<a href="${entryProductUrl}">
-						<product:productPrimaryImage product="${entry.product}" format="cartIcon"/>
-					</a>
-				</div>
-				<div class="details">
-					<div class="cart_popup_error_msg"><spring:theme code="${errorMsg}" /></div>
-					<a class="name" href="${entryProductUrl}">${entry.product.name}</a>
-					<div class="qty"><span><spring:theme code="popup.cart.quantity.added"/></span>&nbsp;${quantity}</div>
-					<c:forEach items="${product.baseOptions}" var="baseOptions">
-						<c:forEach items="${baseOptions.selected.variantOptionQualifiers}" var="baseOptionQualifier">
-							<c:if test="${baseOptionQualifier.qualifier eq 'style' and not empty baseOptionQualifier.image.url}">
-								<div class="itemColor">
-									<span class="label"><spring:theme code="product.variants.colour"/></span>
-									<img src="${baseOptionQualifier.image.url}"  alt="${baseOptionQualifier.value}" title="${baseOptionQualifier.value}"/>
-								</div>
-							</c:if>
-							<c:if test="${baseOptionQualifier.qualifier eq 'size'}">
-								<div class="itemSize">
-									<span class="label"><spring:theme code="product.variants.size"/></span>
-										${baseOptionQualifier.value}
-								</div>
-							</c:if>
-						</c:forEach>
-					</c:forEach>
-					<c:if test="${not empty entry.deliveryPointOfService.name}">
-						<div class="itemPickup"><span class="itemPickupLabel"><spring:theme code="popup.cart.pickup"/></span>&nbsp;${entry.deliveryPointOfService.name}</div>
-					</c:if>
-					<div class="price"><format:price priceData="${entry.basePrice}"/></div>
-				</div>
-			</div>
+                    <cart:popupCartItems entry="${entry}" product="${product}" quantity="${quantity}"/>
+                </c:otherwise>
+            </c:choose>
 
-			<ycommerce:testId code="checkoutLinkInPopup">
-				<a href="${cartUrl}" class="btn btn-primary btn-block add-to-cart-button">
-					<spring:theme code="checkout.checkout" />
-				</a>
-			</ycommerce:testId>
+            <ycommerce:testId code="checkoutLinkInPopup">
+                <a href="${cartUrl}" class="btn btn-primary btn-block add-to-cart-button">
+                    <spring:theme code="checkout.checkout" />
+                </a>
+            </ycommerce:testId>
 
 
-			<a href="" class="btn btn-default btn-block js-mini-cart-close-button">
-				<spring:theme text="Continue Shopping" code="cart.page.continue"/>
-			</a>
-
+            <a href="" class="btn btn-default btn-block js-mini-cart-close-button">
+                <spring:theme code="cart.page.continue"/>
+            </a>
 		</div>
 	</ycommerce:testId>
 </spring:escapeBody>"

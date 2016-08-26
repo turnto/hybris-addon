@@ -33,6 +33,11 @@
 
 
 .simple-banner-component{
+
+  @media (max-width: @screen-xs-max) {
+    .row();
+  }
+
 	a{
 		display: block;
 	}
@@ -60,23 +65,47 @@
 
  
 .tabs{
-	margin: (@grid-gutter-width) 0;
-	border-bottom:1px solid #cccccc;
+	margin: (@grid-gutter-width*3) 0;
+	@media (max-width: @screen-sm-max) {
+		border-top: 1px solid @border-color-3;
+	}
+
 	.tabs-list{
 		.nav;
 		.nav-tabs;
 
-		border-bottom:1px solid #cccccc;
+		display: table;
+		margin: 0 auto;
+		border: 0;
 	
 		.current-info{
 			.sr-only; 
 		}
 
 		li{
+			padding: 0 @grid-gutter-width;
+
 			a{
 				text-transform: uppercase;
-				font-weight: bold;
-				color: @text-color;
+				color: @link-color;
+				padding: 0 0 5px 0;
+				border: 0;
+				border-bottom: 4px solid transparent;
+
+				&:focus,
+				&:hover {
+					cursor: pointer;
+					background-color: transparent;
+				}
+			}
+
+			+ li:before {
+				content: "";
+				position: absolute;
+				height: 15px;
+				left: 0;
+				top: 2px;
+				border-left: 1px solid @border-color-3;
 			}
 		}
 
@@ -84,21 +113,17 @@
 			a,
 			a:hover,
 			a:focus{
-				
-				border:0;
-				background: #354153;
-				color: #fff;
-				border-bottom: 1px solid transparent;				
+				color: @text-color;
+				font-weight: bold;
+				border: 0;
+				border-bottom: 4px solid @brand-primary;
 			}
 		}
 	}
 	.tabhead{
 		.hidden-xs;
 		.hidden-sm;
-		background: @grayblue;
-		color: @text-color;
-		font-weight: bold;
-		height: 55px;
+		height: 75px;
 		display: table;
 		
 		& + .tabbody{
@@ -107,8 +132,7 @@
 
 
 		&.active{
-			background: #354153;
-			color: #fff;
+			font-weight: bold;
 
 			& + .tabbody{
 				display: block !important;
@@ -147,8 +171,12 @@
 
 	}
 	.tabbody{
-		padding: (@grid-gutter-width/2) 0;
-
+		@media (min-width: @screen-md-min) {
+			border-top:1px solid @border-color-3;
+		}
+		border-bottom:1px solid @border-color-3;
+		padding: @grid-gutter-width;
+		background-color: @table-2n-line-bg;
 	}
 
 
@@ -160,10 +188,13 @@
 		}
 
 		.tabhead{
-
+			text-transform: uppercase;
 			display: none !important;
+			border-bottom-color: @border-color-3;
 
-			margin-bottom: 20px;
+			&.active{
+				border-bottom: 4px solid @brand-primary;
+			}
 			
 			@media (max-width: @screen-sm-max) { 
 				display: table !important;
@@ -212,104 +243,6 @@
 }
 
 
-
-
-
-
-.site-search{
-	background: #fff;
-	position: relative; 
-
-	input.form-control{
-		border:0;
-		box-shadow: none;
-	}
-
-	button{
-		color:#ff4444;
-		background-color: #fff;
-		&:hover, &:focus{
-			background-color: #fff;
-		}
-	}
-
-
-	@media (max-width: @screen-xs-max) { 
-		display: none;
-		background: #DEE3E8;
-		margin-top: 10px;
-		padding: 10px;
-
-		&.active{
-			display: block;
-		}
-
-	}
-
-	ul.ui-autocomplete{
-		display: none;
-		position: absolute;
-		background: #fff;
-		left: 0;
-		right: 0;
-		-webkit-box-shadow: 0 10px 0 10px rgba(0,0,0,0.5);
-		box-shadow: 0 10px 0 10px rgba(0,0,0,0.5);
-		z-index: 100;
-		width: auto !important;
-		.list-unstyled;
-		margin: 0;
-
-		&.active{
-			display: block;
-		}
-		
-
-			li{
-				border-top:1px solid #eee;
-				display: block;
-				width: 100%;
-
-				a{
-					display: table;
-					width: 100%;
-					color:inherit;
-					text-decoration: none;
-
-					&.ui-state-focus{
-						background: #DEE3E8;
-					}
-				}
-
-	
-
-				.thumb{
-					display: table-cell;
-					vertical-align: middle;
-					padding: 0 (@grid-gutter-width/2) 0 0;
-
-				}
-
-				.name{
-					display: table-cell;
-					padding: (@grid-gutter-width/2);
-					vertical-align: middle;
-					width: 100%;
-				}
-
-				.thumb + .name{
-					padding: 0 (@grid-gutter-width/2);
-				}
-
-
-				.price{
-					display: table-cell;
-					vertical-align: middle;
-					padding: 0 (@grid-gutter-width/2);
-				}
-
-			}
-	}
-}
 
 
 
@@ -421,6 +354,7 @@
 
 	.headline{
 		font-weight: bold;
+    padding: @grid-gutter-width/2;
 	}
 	
 	table.table{
@@ -432,8 +366,11 @@
 
 
 .no-space{
+
+  	padding: 0 !important;
+
 	.row{
-		.make-row(0);
+	  .make-row(0);
 	}
 
 	.yCmsComponent{
@@ -452,4 +389,109 @@
 		width: 100%;
 		height: auto;
 	}
+}
+
+
+
+.error-page{
+	text-align: center;
+}
+
+
+// back link
+.back-link {
+  padding: @grid-gutter-width 0;
+
+  &.border {
+    border-bottom: 1px solid @border-color-3;
+  }
+
+  button {
+    padding: 0;
+  }
+
+  .glyphicon {
+    border-right: 1px solid @border-color-3;
+    border-radius: 0;
+    padding-right: 10px;
+    line-height: 16px;
+    top: -2px;
+  }
+
+  .label {
+    .page-headline();
+    padding-left: 10px;
+    white-space: normal;
+  }
+
+  @media (max-width: @screen-xs-max){
+    .make-row();
+    padding-left: @grid-gutter-width;
+    padding-right: @grid-gutter-width;
+  }
+
+  &.product-details .label {
+    font-weight: 600;
+  }
+}
+
+
+/////////////////////////////////////////////////
+//                 accordion                   //
+/////////////////////////////////////////////////
+.accordion {
+  font-weight: 600;
+  text-transform: uppercase;
+  margin: 0;
+
+  .panel-group {
+    margin: 0;
+  }
+
+  .panel {
+    border: none;
+    .box-shadow(none);
+
+    .panel-heading {
+      background-color: lighten(@accordion-bg, 95%);
+      border-bottom: 1px solid #ffffff;
+      position: relative;
+      padding: 0;
+
+      .accordion-toggle {
+        display: block;
+        color: @text-color;
+        padding: @grid-gutter-width;
+
+        &:before {
+          .glyphicon();
+        }
+        .glyphicon-chevron-up();
+
+        &.collapsed {
+          .glyphicon-chevron-down();
+        }
+      }
+      .accordion-lnk {
+        position: absolute;
+        left: 15 + @grid-gutter-width*2;
+        top: @grid-gutter-width;
+
+          &.no-subs {
+            display: block;
+            position: static;
+            padding: @grid-gutter-width;
+          }
+      }
+    }
+
+    .panel-collapse {
+      .accordion-bg(10);
+    }
+
+    .panel-heading + .panel-collapse > .panel-body {
+      border: none;
+      padding: 0;
+    }
+  }
 }

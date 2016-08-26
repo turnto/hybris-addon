@@ -33,9 +33,11 @@
 			mandatory="true" />
 	
 			<div class="forgotten-password">
-				<a href="<c:url value='/login/pw/request'/>" class="js-password-forgotten" data-cbox-title="<spring:theme code="forgottenPwd.title"/>">
-					<spring:theme code="login.link.forgottenPwd" />
-				</a>
+				<ycommerce:testId code="login_forgotPassword_link">
+					<a href="<c:url value='/login/pw/request'/>" class="js-password-forgotten" data-cbox-title="<spring:theme code="forgottenPwd.title"/>">
+						<spring:theme code="login.link.forgottenPwd" />
+					</a>
+				</ycommerce:testId>
 			</div>
 		<ycommerce:testId code="loginAndCheckoutButton">
 			<button type="submit" class="btn btn-primary btn-block">

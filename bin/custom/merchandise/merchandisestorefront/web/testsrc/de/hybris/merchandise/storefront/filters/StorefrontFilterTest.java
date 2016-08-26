@@ -1,9 +1,21 @@
+/*
+ * [y] hybris Platform
+ *
+ * Copyright (c) 2000-2016 hybris AG
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of hybris
+ * ("Confidential Information"). You shall not disclose such Confidential
+ * Information and shall use it only in accordance with the terms of the
+ * license agreement you entered into with hybris.
+ *
+ *  
+ */
 package de.hybris.merchandise.storefront.filters;
 
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.acceleratorstorefrontcommons.history.BrowseHistory;
 import de.hybris.platform.commercefacades.storesession.StoreSessionFacade;
-import de.hybris.platform.servicelayer.config.ConfigurationService;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -15,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.configuration.Configuration;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -55,12 +66,6 @@ public class StorefrontFilterTest
 
 	@Mock
 	private Enumeration<Locale> locales;
-
-	@Mock
-	private ConfigurationService configurationService;
-
-	@Mock
-	private Configuration configuration;
 
 
 	@Before

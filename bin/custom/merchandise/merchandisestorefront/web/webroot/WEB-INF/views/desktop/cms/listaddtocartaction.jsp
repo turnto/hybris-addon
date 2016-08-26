@@ -5,6 +5,7 @@
 <%@ taglib prefix="theme" tagdir="/WEB-INF/tags/shared/theme"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <c:set var="buttonType">submit</c:set>
 <c:choose>
 	<c:when test="${product.stock.stockLevelStatus.code eq 'outOfStock' }">

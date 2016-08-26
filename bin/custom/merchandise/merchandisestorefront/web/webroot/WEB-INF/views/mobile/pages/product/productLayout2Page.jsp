@@ -7,8 +7,6 @@
 <%@ taglib prefix="product" tagdir="/WEB-INF/tags/mobile/product"%>
 <%@ taglib prefix="format" tagdir="/WEB-INF/tags/shared/format"%>
 <%@ taglib prefix="common" tagdir="/WEB-INF/tags/mobile/common"%>
-<%@ taglib prefix="nav" tagdir="/WEB-INF/tags/mobile/nav"%>
-<%@ taglib prefix="storepickup" tagdir="/WEB-INF/tags/mobile/storepickup"%>
 
 <template:page pageTitle="${pageTitle}">
 	<jsp:body>
@@ -73,8 +71,3 @@
 		</cms:pageSlot>
 	</jsp:body>
 </template:page>
-<storepickup:findPickupStores product="${product}"/>
-<c:forEach items="${productReferences}" var="productReference">
-	<storepickup:findPickupStores product="${productReference.target}"/>
-</c:forEach>
-<nav:popupMenu />

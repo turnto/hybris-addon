@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
@@ -61,12 +61,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/store-pickup")
 public class PickupInStoreController extends AbstractSearchPageController
 {
+	private static final String QUANTITY_REDUCED_NUMBER_OF_ITEMS_ADDED = "basket.information.quantity.reducedNumberOfItemsAdded.";
 	private static final String TYPE_MISMATCH_ERROR_CODE = "typeMismatch";
 	private static final String ERROR_MSG_TYPE = "errorMsg";
 	private static final String QUANTITY_INVALID_BINDING_MESSAGE_KEY = "basket.error.quantity.invalid.binding";
 	private static final String POINTOFSERVICE_DISPLAY_SEARCH_RESULTS_COUNT = "pointofservice.display.search.results.count";
 
-	protected static final Logger LOG = Logger.getLogger(PickupInStoreController.class);
+	private static final Logger LOG = Logger.getLogger(PickupInStoreController.class);
 
 	private static final String PRODUCT_CODE_PATH_VARIABLE_PATTERN = "/{productCode:.*}";
 	private static final String GOOGLE_API_KEY_ID = "googleApiKey";
@@ -82,7 +83,7 @@ public class PickupInStoreController extends AbstractSearchPageController
 	private CustomerLocationFacade customerLocationFacade;
 
 	@Resource(name = "storeFinderStockFacade")
-	protected StoreFinderStockFacade<PointOfServiceStockData, StoreFinderStockSearchPageData<PointOfServiceStockData>> storeFinderStockFacade;
+	private StoreFinderStockFacade<PointOfServiceStockData, StoreFinderStockSearchPageData<PointOfServiceStockData>> storeFinderStockFacade;
 
 	@Resource(name = "customerLocationCookieGenerator")
 	private CustomerLocationCookieGenerator cookieGenerator;
@@ -108,7 +109,7 @@ public class PickupInStoreController extends AbstractSearchPageController
 	}
 
 	@RequestMapping(value = PRODUCT_CODE_PATH_VARIABLE_PATTERN + "/pointOfServices", method = RequestMethod.POST)
-	public String getPointOfServiceForStorePickupSubmit(@PathVariable("productCode") final String productCode,
+	public String getPointOfServiceForStorePickupSubmit(@PathVariable("productCode") final String productCode, // NOSONAR
 			@RequestParam(value = "locationQuery", required = false) final String locationQuery,
 			@RequestParam(value = "latitude", required = false) final Double latitude,
 			@RequestParam(value = "longitude", required = false) final Double longitude,
@@ -134,7 +135,7 @@ public class PickupInStoreController extends AbstractSearchPageController
 	}
 
 	@RequestMapping(value = PRODUCT_CODE_PATH_VARIABLE_PATTERN + "/pointOfServices", method = RequestMethod.GET)
-	public String getPointOfServiceForStorePickupClick(@PathVariable("productCode") final String productCode,
+	public String getPointOfServiceForStorePickupClick(@PathVariable("productCode") final String productCode, // NOSONAR
 			@RequestParam(value = "page", defaultValue = "0") final int page,
 			@RequestParam(value = "show", defaultValue = "Page") final AbstractSearchPageController.ShowMode showMode,
 			@RequestParam(value = "sort", required = false) final String sortCode,
@@ -155,7 +156,7 @@ public class PickupInStoreController extends AbstractSearchPageController
 				model, RequestMethod.GET, response);
 	}
 
-	protected String getPointOfServiceForStorePickup(final String productCode, final String locationQuery,
+	protected String getPointOfServiceForStorePickup(final String productCode, final String locationQuery, // NOSONAR
 			final GeoPoint geoPoint, final int page, final AbstractSearchPageController.ShowMode showMode, final String sortCode,
 			final Boolean cartPage, final Long entryNumber, final Model model, final RequestMethod requestMethod,
 			final HttpServletResponse response)
@@ -256,7 +257,7 @@ public class PickupInStoreController extends AbstractSearchPageController
 
 		if (qty <= 0)
 		{
-			model.addAttribute("errorMsg", "basket.error.quantity.invalid");
+			model.addAttribute(ERROR_MSG_TYPE, "basket.error.quantity.invalid");
 			return ControllerConstants.Views.Fragments.Cart.AddToCartPopup;
 		}
 
@@ -268,12 +269,12 @@ public class PickupInStoreController extends AbstractSearchPageController
 
 			if (cartModification.getQuantityAdded() == 0L)
 			{
-				model.addAttribute("errorMsg", "basket.information.quantity.noItemsAdded." + cartModification.getStatusCode());
+				model.addAttribute(ERROR_MSG_TYPE, "basket.information.quantity.noItemsAdded." + cartModification.getStatusCode());
 			}
 			else if (cartModification.getQuantityAdded() < qty)
 			{
-				model.addAttribute("errorMsg",
-						"basket.information.quantity.reducedNumberOfItemsAdded." + cartModification.getStatusCode());
+				model.addAttribute(ERROR_MSG_TYPE,
+						QUANTITY_REDUCED_NUMBER_OF_ITEMS_ADDED + cartModification.getStatusCode());
 			}
 
 			// Put in the cart again after it has been modified
@@ -281,7 +282,7 @@ public class PickupInStoreController extends AbstractSearchPageController
 		}
 		catch (final CommerceCartModificationException ex)
 		{
-			model.addAttribute("errorMsg", "basket.error.occurred");
+			model.addAttribute(ERROR_MSG_TYPE, "basket.error.occurred");
 			model.addAttribute("quantity", Long.valueOf(0L));
 			LOG.warn("Couldn't add product of code " + code + " to cart.", ex);
 		}
@@ -345,14 +346,14 @@ public class PickupInStoreController extends AbstractSearchPageController
 			{
 				// Less than successful
 				GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.ERROR_MESSAGES_HOLDER,
-						"basket.information.quantity.reducedNumberOfItemsAdded." + cartModification.getStatusCode());
+						QUANTITY_REDUCED_NUMBER_OF_ITEMS_ADDED + cartModification.getStatusCode());
 			}
 		}
 		else if (!CommerceCartModificationStatus.SUCCESS.equals(cartModificationData.getStatusCode()))
 		{
 			//When update pickupInStore happens to be same as existing entry with POS and SKU and that merged POS has lower stock
 			GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.ERROR_MESSAGES_HOLDER,
-					"basket.information.quantity.reducedNumberOfItemsAdded." + cartModificationData.getStatusCode());
+					QUANTITY_REDUCED_NUMBER_OF_ITEMS_ADDED + cartModificationData.getStatusCode());
 		}
 
 		return REDIRECT_PREFIX + "/cart";
@@ -374,7 +375,7 @@ public class PickupInStoreController extends AbstractSearchPageController
 		{
 			// Less than successful
 			GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.ERROR_MESSAGES_HOLDER,
-					"basket.information.quantity.reducedNumberOfItemsAdded." + cartModificationData.getStatusCode());
+					QUANTITY_REDUCED_NUMBER_OF_ITEMS_ADDED + cartModificationData.getStatusCode());
 		}
 
 		return REDIRECT_PREFIX + "/cart";

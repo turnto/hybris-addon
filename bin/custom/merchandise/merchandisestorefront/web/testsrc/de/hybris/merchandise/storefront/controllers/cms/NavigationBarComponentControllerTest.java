@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,9 +9,12 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.acceleratorcms.enums.NavigationBarMenuLayout;
@@ -24,6 +27,8 @@ import de.hybris.merchandise.storefront.controllers.ControllerConstants;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import junit.framework.Assert;
+
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +37,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 
-import junit.framework.Assert;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-
 
 /**
  * Unit test for {@link NavigationBarComponentController}
@@ -44,13 +44,13 @@ import static org.mockito.Mockito.verify;
 @UnitTest
 public class NavigationBarComponentControllerTest
 {
+	private static final String COMPONENT = "component";
 	private static final String COMPONENT_UID = "componentUid";
 	private static final String TEST_COMPONENT_UID = "componentUID";
 	private static final String TEST_TYPE_CODE = "myTypeCode";
 	private static final String TEST_TYPE_VIEW = ControllerConstants.Views.Cms.ComponentPrefix
 			+ StringUtils.lowerCase(TEST_TYPE_CODE);
 	private static final String DROP_DOWN_LAYOUT = "dropDownLayout";
-	private static final String COMPONENT = "component";
 
 	private NavigationBarComponentController navigationBarComponentController;
 
@@ -82,9 +82,10 @@ public class NavigationBarComponentControllerTest
 	{
 		given(navigationBarComponentModel.getDropDownLayout()).willReturn(navigationBarMenuLayout);
 		given(navigationBarComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
+		given(request.getAttribute("component")).willReturn(navigationBarComponentModel);
 
-		final String viewName = navigationBarComponentController.handleComponent(request, response, model,
-				navigationBarComponentModel);
+		final String viewName = navigationBarComponentController.handleGet(request, response, model);
+		verify(model, Mockito.times(1)).addAttribute(COMPONENT, navigationBarComponentModel);
 		verify(model, Mockito.times(1)).addAttribute(DROP_DOWN_LAYOUT, navigationBarMenuLayout.getCode().toLowerCase());
 		Assert.assertEquals(TEST_TYPE_VIEW, viewName);
 	}
@@ -94,9 +95,10 @@ public class NavigationBarComponentControllerTest
 	{
 		given(navigationBarComponentModel.getDropDownLayout()).willReturn(null);
 		given(navigationBarComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
+		given(request.getAttribute("component")).willReturn(navigationBarComponentModel);
 
-		final String viewName = navigationBarComponentController.handleComponent(request, response, model,
-				navigationBarComponentModel);
+		final String viewName = navigationBarComponentController.handleGet(request, response, model);
+		verify(model, Mockito.times(1)).addAttribute(COMPONENT, navigationBarComponentModel);
 		verify(model, Mockito.times(0)).addAttribute(DROP_DOWN_LAYOUT, navigationBarMenuLayout.getCode().toLowerCase());
 		Assert.assertEquals(TEST_TYPE_VIEW, viewName);
 	}

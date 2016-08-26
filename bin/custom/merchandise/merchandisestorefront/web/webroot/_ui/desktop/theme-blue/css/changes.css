@@ -57,3 +57,8 @@ button.positive, a.button.positive {
 .productList .productListItem .head {
   margin-left:  110px;
 }
+
+.volumePricesFlag{
+	float:right;
+	padding:5px 0 0 10px;
+}

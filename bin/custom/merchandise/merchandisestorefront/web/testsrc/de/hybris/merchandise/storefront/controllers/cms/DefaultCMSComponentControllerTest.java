@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
 
@@ -47,6 +47,7 @@ import org.springframework.ui.Model;
 @UnitTest
 public class DefaultCMSComponentControllerTest
 {
+	private static final String COMPONENT = "component";
 	private static final String COMPONENT_UID = "componentUid";
 	private static final String TEST_COMPONENT_UID = "componentUID";
 	private static final String TEST_VALUE = "myValue";
@@ -84,7 +85,10 @@ public class DefaultCMSComponentControllerTest
 	@Test
 	public void testRenderComponent() throws Exception
 	{
-		final String viewName = defaultCMSComponentController.handleComponent(request, response, model, component);
+		given(request.getAttribute(COMPONENT)).willReturn(component);
+
+		final String viewName = defaultCMSComponentController.handleGet(request, response, model);
+		verify(model, Mockito.times(1)).addAttribute(COMPONENT, component);
 		verify(model, Mockito.times(1)).addAttribute(TEST_PROPERTY, TEST_VALUE);
 		Assert.assertEquals(getTestTypeView(component), viewName);
 	}
@@ -120,7 +124,8 @@ public class DefaultCMSComponentControllerTest
 	{
 		given(request.getAttribute(COMPONENT_UID)).willReturn(TEST_COMPONENT_UID);
 		given(cmsComponentService.getAbstractCMSComponent(TEST_COMPONENT_UID)).willReturn(component);
-		final String viewName = defaultCMSComponentController.handleComponent(request, response, model, component);
+		final String viewName = defaultCMSComponentController.handleGet(request, response, model);
+		verify(model, Mockito.times(1)).addAttribute(COMPONENT, component);
 		verify(model, Mockito.times(1)).addAttribute(TEST_PROPERTY, TEST_VALUE);
 		Assert.assertEquals(getTestTypeView(component), viewName);
 	}

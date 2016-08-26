@@ -13,21 +13,36 @@ ACC.forgottenpassword = {
 				{
 					href: $(this).attr("href"),
 					width:"350px",
+					fixed: true,
+					top: 150,
+					onOpen: function()
+					{
+						$('#validEmail').remove();
+					},
 					onComplete: function(){
-						ACC.forgottenpassword.bindforgottenPwdForm();
+						$('form#forgottenPwdForm').ajaxForm({
+							success: function(data)
+							{
+								if ($(data).closest('#validEmail').length)
+								{
+									
+									if ($('#validEmail').length === 0)
+									{
+										$(".forgotten-password").replaceWith(data);
+										ACC.colorbox.resize();
+									}
+								}
+								else
+								{
+									$("#forgottenPwdForm .control-group").replaceWith($(data).find('.control-group'));
+									ACC.colorbox.resize();
+								}
+							}
+						});
 					}
 				}
 			);
 		});
-	},
-
-	bindforgottenPwdForm: function(){
-		$('form#forgottenPwdForm').ajaxForm({
-		    target: '.forgotten-password',
-		    success: function() { 
-				ACC.colorbox.resize();
-				ACC.forgottenpassword.bindforgottenPwdForm();
-			}
-		});
 	}
+
 };

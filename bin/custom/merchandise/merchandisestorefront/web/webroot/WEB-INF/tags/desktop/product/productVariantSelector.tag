@@ -3,11 +3,74 @@
 <%@ taglib prefix="theme" tagdir="/WEB-INF/tags/shared/theme" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="format" tagdir="/WEB-INF/tags/shared/format" %>
+<%@ taglib prefix="product" tagdir="/WEB-INF/tags/desktop/product" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@ attribute name="product" required="true" type="de.hybris.platform.commercefacades.product.data.ProductData" %>
 
-		<c:set var="showAddToCart"  value="" scope="session" />
+<c:set var="showAddToCart"  value="" scope="session" />
 
+<c:choose>
+	<%-- Verify if products is a multidimensional product --%>
+	<c:when test="${product.multidimensional}">
+		
+		<c:set var="levels" value="${fn:length(product.categories)}" />
+		<c:set var="selectedIndex" value="0" />
+		
+		<div class="variantOptions">
+			<c:forEach begin="1" end="${levels}" varStatus="loop">
+				<c:set var="i" value="0" />
+				<div class=" clearfix">
+						<c:choose>
+							<c:when test="${loop.index eq 1}">
+								<c:set var="productMatrix" value="${product.variantMatrix }" />
+							</c:when>
+							<c:otherwise>
+								<c:set var="productMatrix" value="${productMatrix[selectedIndex].elements }" />
+							</c:otherwise>
+						
+						</c:choose>
+	                    <div class="variantName">${productMatrix[0].parentVariantCategory.name}</div>
+						<c:choose>
+							<c:when test="${productMatrix[0].parentVariantCategory.hasImage}">
+							<ul class="variantList">
+								<c:forEach items="${productMatrix}" var="variantCategory">
+									<li <c:if test="${variantCategory.variantOption.url eq product.url}">class="selected"</c:if>>
+										<c:url value="${variantCategory.variantOption.url}" var="productStyleUrl"/>
+										<a href="${productStyleUrl}" class="swatchVariant" name="${variantCategory.variantOption.url}">
+											<product:productImage product="${product}" code="${variantCategory.variantOption.code}" format="styleSwatch"/>
+										</a>
+									</li>
+
+									<c:if test="${(variantCategory.variantOption.code eq product.code)}">
+										<c:set var="selectedIndex" value="${i}" />
+									</c:if>
+
+									<c:set var="i" value="${i + 1}" />
+								</c:forEach>
+							</ul>
+							</c:when>
+							<c:otherwise>
+			                     <select id="priority${loop.index}" class="selectPriority">
+			                           <c:forEach items="${productMatrix}" var="variantCategory">
+			                                <c:url value="${variantCategory.variantOption.url}" var="productStyleUrl"/>
+			                                <option value="${productStyleUrl}" ${(variantCategory.variantOption.code eq product.code) ? 'selected="selected"' : ''}/>${variantCategory.variantValueCategory.name}</option>
+				                              
+											<c:if test="${(variantCategory.variantOption.code eq product.code)}">
+												<c:set var="selectedIndex" value="${i}" />
+											</c:if>
+
+											<c:set var="i" value="${i + 1}" />
+			                           </c:forEach>
+			                     </select>						
+							</c:otherwise>
+						</c:choose>
+	              </div>
+			</c:forEach>
+		</div>
+	</c:when>
+	<c:otherwise>
+	
 <%-- Determine if product is one of apparel style or size variant --%>
 		<c:if test="${product.variantType eq 'ApparelStyleVariantProduct'}">
 			<c:set var="variantStyles" value="${product.variantOptions}" />
@@ -72,7 +135,7 @@
 				</c:if>
 				<c:if test="${not empty variantSizes}">
 					<div class="size clearfix">
-						<form>
+						<div class="variants">
 							<label for="Size"><spring:theme code="product.variants.size"/></label>
 							
 									<select id="Size" class="variant-select" disabled="disabled" >
@@ -112,8 +175,7 @@
 											</c:forEach>
 										</c:if>
 									</select>
-							
-						</form>
+						</div>	
 						<a href="#"  class="size-guide" title="<spring:theme code="product.variants.size.guide"/>">&nbsp;</a>
 					</div>
 				</c:if>
@@ -158,3 +220,7 @@
 				</div>
 			</div>
 		</c:if>
+		
+		
+	</c:otherwise>
+</c:choose>

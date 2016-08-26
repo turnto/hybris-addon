@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,17 +9,18 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
+import de.hybris.platform.acceleratorstorefrontcommons.controllers.ThirdPartyConstants;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractPageController;
+import de.hybris.platform.acceleratorstorefrontcommons.controllers.util.GlobalMessages;
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.commercefacades.order.OrderFacade;
 import de.hybris.platform.commercefacades.order.data.OrderData;
 import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
 import de.hybris.merchandise.storefront.controllers.ControllerConstants;
-import de.hybris.platform.acceleratorstorefrontcommons.controllers.util.GlobalMessages;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -56,21 +57,25 @@ public class GuestOrderController extends AbstractPageController
 		try
 		{
 			storeCmsPageInModel(model, getContentPageForLabelOrId(ORDER_DETAIL_CMS_PAGE));
-			model.addAttribute("metaRobots", "noindex,nofollow");
+			model.addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
 			setUpMetaDataForContentPage(model, getContentPageForLabelOrId(ORDER_DETAIL_CMS_PAGE));
 			final OrderData orderDetails = orderFacade.getOrderDetailsForGUID(orderGUID);
 			model.addAttribute("orderData", orderDetails);
 		}
 		catch (final UnknownIdentifierException e)
 		{
-			LOG.warn("Attempted to load a order that does not exist or is not visible");
-			model.addAttribute("metaRobots", "noindex,nofollow");
+			LOG.warn("Attempted to load an order that does not exist or is not visible");
+			model.addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
 			GlobalMessages.addErrorMessage(model, "system.error.page.not.found");
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return ControllerConstants.Views.Pages.Error.ErrorNotFoundPage;
 		}
 		catch (final IllegalArgumentException ae)
 		{
+			if (LOG.isDebugEnabled())
+			{
+				LOG.debug(ae);
+			}
 			return REDIRECT_ORDER_EXPIRED;
 
 		}

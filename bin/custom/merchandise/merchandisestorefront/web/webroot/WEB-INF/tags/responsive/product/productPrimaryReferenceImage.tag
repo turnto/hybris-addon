@@ -20,6 +20,6 @@
 		</c:choose>
 	</c:when>
 	<c:otherwise>
-		<theme:image code="img.missingProductImage.${format}" alt="${fn:escapeXml(product.name)}" title="${fn:escapeXml(product.name)}"/>
+		<theme:image code="img.missingProductImage.responsive.${format}" alt="${fn:escapeXml(product.name)}" title="${fn:escapeXml(product.name)}"/>
 	</c:otherwise>
 </c:choose>

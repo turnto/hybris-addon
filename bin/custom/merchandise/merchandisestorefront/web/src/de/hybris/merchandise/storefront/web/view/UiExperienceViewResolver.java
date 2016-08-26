@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.web.view;
 
@@ -35,6 +35,7 @@ public class UiExperienceViewResolver extends InternalResourceViewResolver
 {
 	private static final Logger LOG = Logger.getLogger(UiExperienceViewResolver.class);
 
+	private static final String ADDON = "addon:";
 	private UiExperienceService uiExperienceService;
 	public Map<UiExperienceLevel, String> uiExperienceViewPrefix;
 	private String unknownUiExperiencePrefix;
@@ -107,26 +108,27 @@ public class UiExperienceViewResolver extends InternalResourceViewResolver
 		return view;
 	}
 
-	public String getViewName(final UiExperienceLevel uiExperienceLevel, String viewName)
+	public String getViewName(final UiExperienceLevel uiExperienceLevel, final String viewName)
 	{
+		String properViewName = viewName;
 		final String prefix = getUiExperienceViewPrefix().get(uiExperienceLevel);
 		if (prefix != null)
 		{
-			if (viewName.startsWith(AbstractPageController.PAGE_ROOT + "addon:"))
+			if (viewName.startsWith(AbstractPageController.PAGE_ROOT + ADDON))
 			{
-				viewName = viewName.replace(AbstractPageController.PAGE_ROOT + "addon:", "addon:"); // ...pages/addon:/<extension-name>/.../<component-view>....->....addon:/<extension-name>/.../<component-view>
+				properViewName = viewName.replace(AbstractPageController.PAGE_ROOT + ADDON, ADDON); // ...pages/addon:/<extension-name>/.../<component-view>....->....addon:/<extension-name>/.../<component-view>
 			}
 
-			if (viewName.startsWith("addon:"))
+			if (properViewName.startsWith(ADDON))
 			{
-				viewName = viewName.replace("addon:", ""); // ................................addon:/<extension-name>/cms/<component-view>....->..../<extension-name>/cms/<component-view>
-				viewName = viewName.substring(1, viewName.length()); // ....................../<extension-name>/cms/<component-view>..........->....<extension-name>/cms/<component-view>
-				final String extensionName = viewName.substring(0, viewName.indexOf('/')); // <extension-name>/cms/<component-view>...........->....<extension-name>
-				viewName = viewName.substring(viewName.indexOf('/'), viewName.length()); // ..<extension-name>/cms/<component-view>...........->..../cms/<component-view>
-				return getAddOnPrefix() + "/" + extensionName + "/" + prefix + viewName; // ..<addon-prefix>/<extension-name>/<ui-prefix>/cms/<component-view>
+				properViewName = properViewName.replace(ADDON, ""); // ................................addon:/<extension-name>/cms/<component-view>....->..../<extension-name>/cms/<component-view>
+				properViewName = properViewName.substring(1, properViewName.length()); // ....................../<extension-name>/cms/<component-view>..........->....<extension-name>/cms/<component-view>
+				final String extensionName = properViewName.substring(0, properViewName.indexOf('/')); // <extension-name>/cms/<component-view>...........->....<extension-name>
+				properViewName = properViewName.substring(properViewName.indexOf('/'), properViewName.length()); // ..<extension-name>/cms/<component-view>...........->..../cms/<component-view>
+				return getAddOnPrefix() + "/" + extensionName + "/" + prefix + properViewName; // ..<addon-prefix>/<extension-name>/<ui-prefix>/cms/<component-view>
 			}
-			return prefix + viewName;
+			return prefix + properViewName;
 		}
-		return getUnknownUiExperiencePrefix() + viewName;
+		return getUnknownUiExperiencePrefix() + properViewName;
 	}
 }

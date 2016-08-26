@@ -9,10 +9,12 @@
 <!-- TODO needs responsive classes -->
 <!-- Issue created -->
 <c:if test="${not empty cartData.potentialOrderPromotions}">
-    <div class="cartpotproline"><spring:theme code="basket.potential.promotions" /></div>
-    <ycommerce:testId code="potentialPromotions_promotions_labels">
-        <c:forEach items="${cartData.potentialOrderPromotions}" var="promotion">
-            <div class="">${promotion.description}</div>
-        </c:forEach>
-    </ycommerce:testId>
+    <div class="cartpotproline">
+        <spring:theme code="basket.potential.promotions" />
+        <ycommerce:testId code="potentialPromotions_promotions_labels">
+            <c:forEach items="${cartData.potentialOrderPromotions}" var="promotion">
+                <div class="">${promotion.description}</div>
+            </c:forEach>
+        </ycommerce:testId>
+    </div>
 </c:if>

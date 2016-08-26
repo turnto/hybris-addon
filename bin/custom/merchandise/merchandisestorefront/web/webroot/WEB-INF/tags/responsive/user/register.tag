@@ -38,6 +38,7 @@
 		mandatory="true" />
 	<input type="hidden" id="recaptchaChallangeAnswered"
 		value="${requestScope.recaptchaChallangeAnswered}" />
+	<div class="form_field-elements control-group js-recaptcha-captchaaddon"></div>
 	<div class="form-actions clearfix">
 		<ycommerce:testId code="register_Register_button">
 			<button type="submit" class="btn btn-default btn-block">

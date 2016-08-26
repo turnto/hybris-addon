@@ -23,7 +23,7 @@
 					</span>
 				</c:if>
 			</label>
-			<form:password cssClass="${inputCSS}" id="${idKey}" path="${path}" />
+			<form:password cssClass="${inputCSS}" id="${idKey}" path="${path}" autocomplete="off"/>
 		</div>
 	</ycommerce:testId>
 </template:errorSpanField>

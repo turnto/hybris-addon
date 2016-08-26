@@ -2,39 +2,40 @@ ACC.storefinder = {
 	map:"",
 	bindAll: function ()
 	{
-		
-		this.drawMap();
+		this.initMap();
 		this.getStoreMarkersImages();
 		this.bindFindStoresNearMe();
 	},
 	
+	initMap:function(){
+		if($("#map_canvas").length > 0 && $(".js-googleMapsApi").length == 0){
+			$('head').append('<script class="js-googleMapsApi" type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v='+ACC.config.googleApiVersion+'&amp;key='+ACC.config.googleApiKey+'&amp;sensor=false&amp;callback=ACC.storefinder.drawMap"></script>');
+		}
+	},
+	
 	drawMap: function(){
+		var $e=$('#map_canvas')
 		
-		if($('#map_canvas').length!=0)
+		var centerPoint = new google.maps.LatLng($e.data("latitude"), $e.data("longitude"));
+		
+		var mapOptions = {
+			zoom: 13,
+			zoomControl: true,
+			panControl: true,
+			streetViewControl: false,
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+			center: centerPoint
+		}
+		
+		ACC.storefinder.map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+		if($e.data("southLatitude"))
 		{
-			var $e=$('#map_canvas')
-			
-			var centerPoint = new google.maps.LatLng($e.data("latitude"), $e.data("longitude"));
-			
-			var mapOptions = {
-				zoom: 13,
-				zoomControl: true,
-				panControl: true,
-				streetViewControl: false,
-				mapTypeId: google.maps.MapTypeId.ROADMAP,
-				center: centerPoint
-			}
-			
-			ACC.storefinder.map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-			if($e.data("southLatitude"))
-			{
-				this.setMapBouns();
-				this.getStorePosition();
-			}
-			else{
-				store =$e.data('stores');
-				this.addStore(store.id,store.latitude,store.longitude, store.name)
-			}
+			this.setMapBouns();
+			this.getStorePosition();
+		}
+		else{
+			store =$e.data('stores');
+			this.addStore(store.id,store.latitude,store.longitude, store.name)
 		}
 	},
 	

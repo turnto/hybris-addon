@@ -81,6 +81,11 @@ ACC.product = {
 				"productName":cartAnalyticsData.productName} ;
 
 		ACC.track.trackAddToCart(productCode, quantity, cartData);
+		
+		// if it is orderForm, disable add to cart button in the end
+		if($('#orderFormAddToCart').length > 0) {
+			$('#addToCartBtn').attr('disabled','disabled');
+		}
 	}
 
 };

@@ -2,7 +2,7 @@
 <!--
  [y] hybris Platform
 
- Copyright (c) 2000-2015 hybris AG
+ Copyright (c) 2000-2016 hybris AG
  All rights reserved.
 
  This software is the confidential and proprietary information of hybris
@@ -125,7 +125,17 @@
 		<property name="sessionService" ref="sessionService"/>
 		<property name="contextInformationLoader" ref="contextInformationLoader"/>
 		<property name="cmsPageContextService" ref="cmsPageContextService"/>
+		<property name="siteChannelValidationStrategy" ref="acceleratorSiteChannelValidationStrategy"/>
 	</bean>
+	
+	<bean id="acceleratorSiteChannelValidationStrategy" class="de.hybris.platform.acceleratorservices.site.strategies.impl.DefaultSiteChannelValidationStrategy">
+		<property name="supportedSiteChannels" ref="acceleratorSiteChannels" />
+	</bean>
+	
+	<alias name="b2cAcceleratorSiteChannels" alias="acceleratorSiteChannels"/>
+	<util:set id="b2cAcceleratorSiteChannels" value-type="de.hybris.platform.commerceservices.enums.SiteChannel">
+		<ref bean="SiteChannel.B2C"/>
+	</util:set>
 
 	<bean id="storefrontFilter" class="de.hybris.merchandise.storefront.filters.StorefrontFilter" >
 		<property name="storeSessionFacade" ref="storeSessionFacade"/>
@@ -153,7 +163,7 @@
 
 	<alias name="defaultSessionCookieGenerator" alias="sessionCookieGenerator"/>
 	<bean id="defaultSessionCookieGenerator" class="de.hybris.merchandise.storefront.security.cookie.EnhancedCookieGenerator" >
-		<property name="cookieSecure" value="false"/>
+		<property name="cookieSecure" value="true"/>
 		<property name="cookieName" value="JSESSIONID"/>
 		<property name="cookieMaxAge" value="-1"/>
 		<property name="useDefaultPath" value="false"/>
@@ -162,7 +172,7 @@
 	
 	<alias name="defaultCartRestoreCookieGenerator" alias="cartRestoreCookieGenerator"/>
 	<bean id="defaultCartRestoreCookieGenerator" class="de.hybris.merchandise.storefront.security.cookie.CartRestoreCookieGenerator" >
-		<property name="cookieSecure" value="false"/>
+		<property name="cookieSecure" value="true"/>
 		<property name="cookieMaxAge" value="360000000"/>
 		<property name="useDefaultPath" value="false"/>
 		<property name="httpOnly" value="true"/>
@@ -171,7 +181,7 @@
 
 	<alias name="defaultCustomerLocationCookieGenerator" alias="customerLocationCookieGenerator"/>
 	<bean id="defaultCustomerLocationCookieGenerator" class="de.hybris.merchandise.storefront.security.cookie.CustomerLocationCookieGenerator" >
-		<property name="cookieSecure" value="false"/>
+		<property name="cookieSecure" value="true"/>
 		<property name="cookieMaxAge" value="360000000"/>
 		<property name="useDefaultPath" value="false"/>
 		<property name="httpOnly" value="true"/>

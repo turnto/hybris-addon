@@ -1,5 +1,5 @@
 <%@ tag body-content="empty" trimDirectiveWhitespaces="true" %>
-<%@ attribute name="order" required="true" type="de.hybris.platform.commercefacades.order.data.OrderData" %>
+<%@ attribute name="order" required="true" type="de.hybris.platform.commercefacades.order.data.AbstractOrderData" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -26,4 +26,5 @@
         <li>${fn:escapeXml(order.paymentInfo.billingAddress.region.name)}&nbsp;${fn:escapeXml(order.paymentInfo.billingAddress.town)}</li>
         <li>${fn:escapeXml(order.paymentInfo.billingAddress.postalCode)}</li>
         <li>${fn:escapeXml(order.paymentInfo.billingAddress.country.name)}</li>
+        <li>${fn:escapeXml(order.paymentInfo.billingAddress.phone)}</li>
     </ul>

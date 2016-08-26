@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,11 +9,15 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.security.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import de.hybris.bootstrap.annotations.UnitTest;
+import de.hybris.platform.acceleratorstorefrontcommons.constants.WebConstants;
+import de.hybris.platform.servicelayer.session.SessionService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +27,7 @@ import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.ArgumentMatcher;
 import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -34,7 +39,9 @@ import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 @UnitTest
 public class WebHttpSessionRequestCacheUnitTest
 {
-	// 
+	//
+
+	@InjectMocks
 	private final WebHttpSessionRequestCache cache = new WebHttpSessionRequestCache();
 
 	@Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -42,6 +49,9 @@ public class WebHttpSessionRequestCacheUnitTest
 
 	@Mock
 	private HttpServletResponse response;
+
+	@Mock
+	private SessionService sessionService;
 
 	@Mock
 	private Authentication authentication;
@@ -68,6 +78,108 @@ public class WebHttpSessionRequestCacheUnitTest
 		Mockito.verify(request.getSession()).setAttribute(Mockito.eq("SPRING_SECURITY_SAVED_REQUEST"),
 				Mockito.argThat(new DefaultSavedRequestArgumentMatcher("some blah")));
 	}
+
+
+	@Test
+	public void testCalcRedirectUrlWithEncodingAttrs()
+	{
+		assertEquals(
+				"/",
+				executeCalculateRelativeRedirectUrl("electronics/en", "/merchandisestorefront/electronics/en",
+						"https://electronics.local:9002/merchandisestorefront/electronics/en"));
+		assertEquals(
+				"/",
+				executeCalculateRelativeRedirectUrl("electronics/en", "/merchandisestorefront/electronics/en",
+						"https://electronics.local:9002/merchandisestorefront/electronics/en/"));
+	}
+
+
+	@Test
+	public void testCalcRedirectUrlWithMismatchEncodingAttrs()
+	{
+		assertEquals(
+				"electronics/en",
+				executeCalculateRelativeRedirectUrl("electronics/ja/Y/Z", "/merchandisestorefront/electronics/ja/Y/Z",
+						"https://electronics.local:9002/merchandisestorefront/electronics/en"));
+		assertEquals(
+				"/",
+				executeCalculateRelativeRedirectUrl("electronics/ja/Y/Z", "/merchandisestorefront/electronics/en",
+						"https://electronics.local:9002/merchandisestorefront/electronics/en/"));
+	}
+
+	@Test
+	public void testCalcRedirectUrlWithoutEncodingAttrs()
+	{
+		assertEquals(
+				"/",
+				executeCalculateRelativeRedirectUrl("", "/merchandisestorefront",
+						"https://electronics.local:9002/merchandisestorefront"));
+		assertEquals(
+				"/",
+				executeCalculateRelativeRedirectUrl("", "/merchandisestorefront",
+						"https://electronics.local:9002/merchandisestorefront/"));
+	}
+
+	@Test
+	public void testCalcRedirectUrlWithEncodingAttrsServletPath()
+	{
+		assertEquals(
+				"/Open-Catalogue/Cameras/Digital-Cameras/c/575",
+				executeCalculateRelativeRedirectUrl("electronics/en", "/merchandisestorefront/electronics/en",
+						"https://electronics.local:9002/merchandisestorefront/electronics/en/Open-Catalogue/Cameras/Digital-Cameras/c/575"));
+	}
+
+	@Test
+	public void testCalcRedirectUrlEmptyContextWithoutEncodingAttrs()
+	{
+		assertEquals("/", executeCalculateRelativeRedirectUrl("", "", "https://electronics.local:9002/"));
+	}
+
+	@Test
+	public void testCalcRedirectUrlEmptyContextWithEncodingAttrs()
+	{
+		assertEquals(
+				"/",
+				executeCalculateRelativeRedirectUrl("electronics/en", "/electronics/en",
+						"https://electronics.local:9002/electronics/en"));
+		assertEquals(
+				"/",
+				executeCalculateRelativeRedirectUrl("electronics/en", "/electronics/en",
+						"https://electronics.local:9002/electronics/en/"));
+	}
+
+	@Test
+	public void testCalcRedirectUrlEmptyContextWithEncAttrsServletPath()
+	{
+		assertEquals(
+				"/login",
+				executeCalculateRelativeRedirectUrl("electronics/en", "/electronics/en",
+						"https://electronics.local:9002/electronics/en/login"));
+		assertEquals(
+				"/login/",
+				executeCalculateRelativeRedirectUrl("electronics/en", "/electronics/en",
+						"https://electronics.local:9002/electronics/en/login/"));
+		assertEquals(
+				"/Open-Catalogue/Cameras/Hand-held-Camcorders/c/584",
+				executeCalculateRelativeRedirectUrl("electronics/en", "/electronics/en",
+						"https://electronics.local:9002/electronics/en/Open-Catalogue/Cameras/Hand-held-Camcorders/c/584"));
+	}
+
+	@Test
+	public void testCalcRedirectUrlEmptyContextWithoutEncAttrsServletPath()
+	{
+		assertEquals(
+				"Open-Catalogue/Cameras/Hand-held-Camcorders/c/584",
+				executeCalculateRelativeRedirectUrl("", "",
+						"https://electronics.local:9002/Open-Catalogue/Cameras/Hand-held-Camcorders/c/584"));
+	}
+
+	protected String executeCalculateRelativeRedirectUrl(final String urlEncodingAttrs, final String contextPath, final String url)
+	{
+		BDDMockito.given(sessionService.getAttribute(WebConstants.URL_ENCODING_ATTRIBUTES)).willReturn(urlEncodingAttrs);
+		return cache.calculateRelativeRedirectUrl(contextPath, url);
+	}
+
 
 	class DefaultSavedRequestArgumentMatcher extends ArgumentMatcher<DefaultSavedRequest>
 	{

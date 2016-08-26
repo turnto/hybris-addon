@@ -2,7 +2,7 @@
 <!--
  [y] hybris Platform
 
- Copyright (c) 2000-2015 hybris AG
+ Copyright (c) 2000-2016 hybris AG
  All rights reserved.
 
  This software is the confidential and proprietary information of hybris
@@ -112,11 +112,8 @@
 		<security:authentication-provider ref="acceleratorAuthenticationProvider" />
 	</security:authentication-manager>
 
-	<bean id="acceleratorAuthenticationProvider" class="de.hybris.merchandise.storefront.security.AcceleratorAuthenticationProvider">
-		<property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
-		<property name="userService" ref="userService" />
-		<property name="modelService" ref="modelService" />
-		<property name="userDetailsService" ref="originalUidUserDetailsService" />
+	<bean id="acceleratorAuthenticationProvider" parent="abstractAcceleratorAuthenticationProvider" 
+			class="de.hybris.merchandise.storefront.security.AcceleratorAuthenticationProvider">
 		<property name="adminGroup" value="ROLE_ADMINGROUP"/>
 	</bean>
 
@@ -184,9 +181,9 @@
 		<property name="guidCookieStrategy" ref="guidCookieStrategy" />
 	</bean>
 
-	<bean id="loginAuthenticationSuccessHandler" class="de.hybris.merchandise.storefront.security.StorefrontAuthenticationSuccessHandler" >
+	<bean id="loginAuthenticationSuccessHandler" class="de.hybris.platform.acceleratorstorefrontcommons.security.StorefrontAuthenticationSuccessHandler" >
 		<property name="customerFacade" ref="customerFacade" />
-		<property name="defaultTargetUrl" value="/my-account"/>
+		<property name="defaultTargetUrl" value="#{'responsive' == '${commerceservices.default.desktop.ui.experience}' ? '/' : '/my-account'}"/>
 		<property name="useReferer" value="true"/>
 		<property name="requestCache" ref="httpSessionRequestCache" />
 		<property name="uiExperienceService" ref="uiExperienceService"/>
@@ -204,6 +201,9 @@
 				<value>/login</value>
 			</list>
 		</property>
+		<property name="listRedirectUrlsForceDefaultTarget">
+			<list></list>
+		</property>
 	</bean>
 
 	<bean id="loginCheckoutGuidAuthenticationSuccessHandler" class="de.hybris.merchandise.storefront.security.GUIDAuthenticationSuccessHandler" >
@@ -211,7 +211,7 @@
 		<property name="guidCookieStrategy" ref="guidCookieStrategy" />
 	</bean>
 
-	<bean id="loginCheckoutAuthenticationSuccessHandler" class="de.hybris.merchandise.storefront.security.StorefrontAuthenticationSuccessHandler" >
+	<bean id="loginCheckoutAuthenticationSuccessHandler" class="de.hybris.platform.acceleratorstorefrontcommons.security.StorefrontAuthenticationSuccessHandler" >
 		<property name="customerFacade" ref="customerFacade" />
 		<property name="defaultTargetUrl" value="/checkout"/>
 		<property name="uiExperienceService" ref="uiExperienceService"/>
@@ -230,6 +230,9 @@
 				<value>/login/checkout</value>
 			</list>
 		</property>
+		<property name="listRedirectUrlsForceDefaultTarget">
+			<list></list>
+		</property>
 	</bean>
 
 	<alias name="defaultCommerceRedirectStrategy" alias="commerceRedirectStrategy"/>
@@ -237,13 +240,6 @@
 		<property name="checkoutFlowFacade" ref="checkoutFlowFacade"/>
 		<property name="expressTargetUrl" value="/checkout/multi/express"/>
    </bean>
-
-	<!-- Login Failure Handlers -->
-    <bean id="bruteForceAttackCounter" class="de.hybris.merchandise.storefront.security.impl.DefaultBruteForceAttackCounter">
-        <constructor-arg name="maxFailedLogins" value="5" />
-        <constructor-arg name="cacheExpiration" value="60" />
-        <constructor-arg name="cacheSizeLimit" value="1000" />
-    </bean>
 
 	<bean id="loginAuthenticationFailureHandler" class="de.hybris.merchandise.storefront.security.LoginAuthenticationFailureHandler" >
         <property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
@@ -257,7 +253,7 @@
 
 	<!-- Logout Success Handler -->
 
-	<bean id="logoutSuccessHandler" class="de.hybris.merchandise.storefront.security.StorefrontLogoutSuccessHandler" >
+	<bean id="logoutSuccessHandler" class="de.hybris.platform.acceleratorstorefrontcommons.security.StorefrontLogoutSuccessHandler" >
 		<property name="defaultTargetUrl" value="/?logout=true"/>
 		<property name="guidCookieStrategy" ref="guidCookieStrategy"/>
 		<property name="useReferer" value="true"/>
@@ -284,7 +280,7 @@
 		<property name="cookieName" value="merchandisestorefrontRememberMe" />
 		<property name="alwaysRemember" value="true" />
 		<property name="userService" ref="userService"/>
-		<property name="useSecureCookie" value="false"/>
+		<property name="useSecureCookie" value="true"/>
 		<property name="customerFacade" ref="customerFacade"/>
 		<property name="checkoutCustomerStrategy" ref="checkoutCustomerStrategy"/>
 		<property name="urlEncoderService" ref="urlEncoderService"/>

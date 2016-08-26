@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,16 +9,18 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.interceptors.beforeview;
 
 import de.hybris.platform.acceleratorcms.data.CmsPageRequestContextData;
 import de.hybris.platform.acceleratorcms.model.actions.AbstractCMSActionModel;
 import de.hybris.platform.acceleratorcms.services.CMSPageContextService;
+import de.hybris.platform.acceleratorservices.addonsupport.RequiredAddOnsNameProvider;
 import de.hybris.platform.acceleratorservices.data.RequestContextData;
 import de.hybris.platform.acceleratorservices.util.SpringHelper;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractPageController;
+import de.hybris.platform.acceleratorstorefrontcommons.interceptors.BeforeViewHandler;
 import de.hybris.platform.cms2.jalo.preview.PreviewData;
 import de.hybris.platform.cms2.model.contents.components.AbstractCMSComponentModel;
 import de.hybris.platform.cms2.model.contents.contentslot.ContentSlotModel;
@@ -35,8 +37,8 @@ import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.jalo.c2l.LocalizableItem;
 import de.hybris.platform.servicelayer.model.AbstractItemModel;
 import de.hybris.platform.servicelayer.session.SessionService;
+import de.hybris.platform.servicelayer.type.TypeService;
 import de.hybris.merchandise.storefront.filters.cms.CMSSiteFilter;
-import de.hybris.merchandise.storefront.interceptors.BeforeViewHandler;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -83,6 +85,12 @@ public class CmsPageBeforeViewHandler implements BeforeViewHandler
 	@Resource(name = "requestContextRestrictionConverter")
 	private Converter<RequestContextData, RestrictionData> requestContextRestrictionConverter;
 
+	@Resource(name = "typeService")
+	private TypeService typeService;
+
+	@Resource(name = "reqAddOnsNameProvider")
+	private RequiredAddOnsNameProvider requiredAddOnsNameProvider;
+
 
 	@Override
 	public void beforeView(final HttpServletRequest request, final HttpServletResponse response, final ModelAndView modelAndView)
@@ -95,23 +103,19 @@ public class CmsPageBeforeViewHandler implements BeforeViewHandler
 		modelAndView.addObject("pageBodyCssClasses", buildCssClasses(page));
 		if (page != null)
 		{
-			final Set<String> actonJsFiles = new HashSet();
+			final List<String> dependantAddOns = requiredAddOnsNameProvider.getAddOns(request.getSession().getServletContext()
+					.getServletContextName());
+
+			final Set<String> actionJsFiles = new HashSet();
 
 			final Collection<ContentSlotData> contentSlotsForPage = cmsPageService.getContentSlotsForPage(page);
 			for (final ContentSlotData contentSlotData : contentSlotsForPage)
 			{
 				final ContentSlotModel contentSlot = contentSlotData.getContentSlot();
 				final List<AbstractCMSComponentModel> cmsComponents = contentSlot.getCmsComponents();
-				for (final AbstractCMSComponentModel cmsComponent : cmsComponents)
-				{
-					final List<AbstractCMSActionModel> actions = cmsComponent.getActions();
-					for (final AbstractCMSActionModel action : actions)
-					{
-						actonJsFiles.add(StringUtils.lowerCase(action.getItemtype()) + ".js");
-					}
-				}
+				addCmsComponentActions(actionJsFiles, cmsComponents, dependantAddOns);
 			}
-			modelAndView.addObject("cmsActionsJsFiles", actonJsFiles);
+			modelAndView.addObject("cmsActionsJsFiles", actionJsFiles);
 		}
 
 		// Create the restriction data
@@ -126,6 +130,29 @@ public class CmsPageBeforeViewHandler implements BeforeViewHandler
 
 		sessionService.setAttribute(LocalizableItem.LANGUAGE_FALLBACK_ENABLED, Boolean.TRUE);
 		sessionService.setAttribute(AbstractItemModel.LANGUAGE_FALLBACK_ENABLED_SERVICE_LAYER, Boolean.TRUE);
+	}
+
+	protected String getNameOfComponentExtension(final AbstractCMSComponentModel component)
+	{
+		return typeService.getComposedTypeForCode(component.getItemtype()).getExtensionName();
+	}
+
+	protected void addCmsComponentActions(final Set<String> actonJsFiles, final List<AbstractCMSComponentModel> cmsComponents,
+			final List<String> dependantAddOns)
+	{
+		for (final AbstractCMSComponentModel cmsComponent : cmsComponents)
+		{
+			final List<AbstractCMSActionModel> actions = cmsComponent.getActions();
+			for (final AbstractCMSActionModel action : actions)
+			{
+				// exclude actions defined in addons
+				final String extension = getNameOfComponentExtension(action);
+				if (!dependantAddOns.contains(extension))
+				{
+					actonJsFiles.add(StringUtils.lowerCase(action.getItemtype()) + ".js");
+				}
+			}
+		}
 	}
 
 	protected AbstractPageModel updateCmsPageInModelAndView(final HttpServletRequest request, final ModelAndView modelAndView)
@@ -152,24 +179,29 @@ public class CmsPageBeforeViewHandler implements BeforeViewHandler
 					LOG.info("Replaced page [" + requestedPage + "] with preview page [" + previewPage + "]");
 					modelAndView.addObject(AbstractPageController.CMS_PAGE_MODEL, previewPage);
 
-					// Check to see if we are using the default view for the page
-					if (modelAndView.getViewName() != null && modelAndView.getViewName().equals(getViewForPage(requestedPage)))
-					{
-						final String viewForPreviewPage = getViewForPage(previewPage);
-						if (viewForPreviewPage != null && !viewForPreviewPage.equals(modelAndView.getViewName()))
-						{
-							// Change the view name
-							LOG.info("Changing view from [" + modelAndView.getViewName() + "] to preview view [" + viewForPreviewPage
-									+ "]");
-							modelAndView.setViewName(viewForPreviewPage);
-						}
-					}
+					assignViewForPreviewPage(modelAndView, requestedPage, previewPage);
 
 					return previewPage;
 				}
 			}
 		}
 		return requestedPage;
+	}
+
+	protected void assignViewForPreviewPage(final ModelAndView modelAndView, final AbstractPageModel requestedPage,
+			final AbstractPageModel previewPage)
+	{
+		// Check to see if we are using the default view for the page
+		if (modelAndView.getViewName() != null && modelAndView.getViewName().equals(getViewForPage(requestedPage)))
+		{
+			final String viewForPreviewPage = getViewForPage(previewPage);
+			if (viewForPreviewPage != null && !viewForPreviewPage.equals(modelAndView.getViewName()))
+			{
+				// Change the view name
+				LOG.info("Changing view from [" + modelAndView.getViewName() + "] to preview view [" + viewForPreviewPage + "]");
+				modelAndView.setViewName(viewForPreviewPage);
+			}
+		}
 	}
 
 	protected String buildCssClasses(final AbstractPageModel page)
@@ -202,7 +234,7 @@ public class CmsPageBeforeViewHandler implements BeforeViewHandler
 
 	/**
 	 * Retrieves a preview ticket, if available and retrieves the preview page from the {@link PreviewData}
-	 * 
+	 *
 	 * @param request
 	 * @return preview page
 	 */
@@ -226,7 +258,7 @@ public class CmsPageBeforeViewHandler implements BeforeViewHandler
 
 	/**
 	 * Returns ths view name for the page by retrieving the frontendTemplateName from the masterTemplate of the page
-	 * 
+	 *
 	 * @param page
 	 * @return view name or null, if the view name cannot retrieved from the masterTemplate
 	 */

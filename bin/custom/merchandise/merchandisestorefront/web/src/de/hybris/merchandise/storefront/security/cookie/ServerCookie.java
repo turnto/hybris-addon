@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.security.cookie;
 
@@ -30,6 +30,22 @@ package de.hybris.merchandise.storefront.security.cookie;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ */
+
+/*
+ *  This file was changed on 07.01.2016. Modified methods:
+ *  escapeDoubleQuotes
+ *  modifyDoubleQuotesChar
+ *
+ *  11.01.2016:
+ *  The order of methods in CookieSupport class was modified
+ *  introduction of new method hasCookieSupport, therefore the following methods have been modified:
+ *  getNewVersionFromTokenInPathOrDomain
+ *  getNewVersionFromTokenInValueOrComment
+ *
+ *  21.01.2016. Modified methods:
+ *  isHttpSeparator
+ *  isV0Separator
  */
 
 import java.io.Serializable;
@@ -64,7 +80,7 @@ public class ServerCookie implements Serializable
 		}
 	};
 
-	private static final String ancientDate;
+	private static final String ancientDate;  // NOSONAR
 
 	static
 	{
@@ -88,11 +104,13 @@ public class ServerCookie implements Serializable
 	// -------------------- Cookie parsing tools
 
 
-	public static void appendCookieValue(final StringBuffer headerBuf, final int version, final String name, final String value,
+	public static void appendCookieValue(final StringBuffer headerBuf, final int version, final String name, final String value, // NOSONAR
 			final String path, final String domain, final String comment, final int maxAge, final boolean isSecure,
 			final boolean isHttpOnly)
 	{
-		final StringBuffer buf = new StringBuffer();
+
+		// StringBuffer cannot be replaced by StringBuilder inside this whole method due to the type used in functions called later on
+		final StringBuffer buf = new StringBuffer(); // NOSONAR
 		// Servlet implementation checks name
 		buf.append(name);
 		buf.append("=");
@@ -106,63 +124,38 @@ public class ServerCookie implements Serializable
 		 * Note that by checking for tokens we will also throw an exception if a control character is encountered.
 		 */
 		// Start by using the version we were asked for
-		int newVersion = version;
 
-		// If it is v0, check if we need to switch
-		if (newVersion == 0
-				&& (!CookieSupport.ALLOW_HTTP_SEPARATORS_IN_V0 && CookieSupport.isHttpToken(value) || CookieSupport.ALLOW_HTTP_SEPARATORS_IN_V0
-						&& CookieSupport.isV0Token(value)))
-		{
-			// HTTP token in value - need to use v1
-			newVersion = 1;
-		}
+		int newVersion = getNewVersionBeforeCookieHeader(value, path, domain, comment, version);
 
-		if (newVersion == 0 && comment != null)
-		{
-			// Using a comment makes it a v1 cookie
-			newVersion = 1;
-		}
-
-		if (newVersion == 0
-				&& (!CookieSupport.ALLOW_HTTP_SEPARATORS_IN_V0 && CookieSupport.isHttpToken(path) || CookieSupport.ALLOW_HTTP_SEPARATORS_IN_V0
-						&& CookieSupport.isV0Token(path)))
-		{
-			// HTTP token in path - need to use v1
-			newVersion = 1;
-		}
-
-		if (newVersion == 0
-				&& (!CookieSupport.ALLOW_HTTP_SEPARATORS_IN_V0 && CookieSupport.isHttpToken(domain) || CookieSupport.ALLOW_HTTP_SEPARATORS_IN_V0
-						&& CookieSupport.isV0Token(domain)))
-		{
-			// HTTP token in domain - need to use v1
-			newVersion = 1;
-		}
 
 		// Now build the cookie header
-		// Value
-		maybeQuote(buf, value);
-		// Add version 1 specific information
-		if (newVersion == 1)
-		{
-			// Version=1 ... required
-			buf.append("; Version=1");
+		addVersionAndDomainInfo(value, domain, comment, buf, newVersion);
 
-			// Comment=comment
-			if (comment != null)
-			{
-				buf.append("; Comment=");
-				maybeQuote(buf, comment);
-			}
+		addMaxAgeInfo(maxAge, buf, newVersion);
+
+		// Path=path
+		if (path != null)
+		{
+			buf.append("; Path=");
+			maybeQuote(buf, path);
 		}
 
-		// Add domain information, if present
-		if (domain != null)
+		// Secure
+		if (isSecure)
 		{
-			buf.append("; Domain=");
-			maybeQuote(buf, domain);
+			buf.append("; Secure");
 		}
 
+		// HttpOnly
+		if (isHttpOnly)
+		{
+			buf.append("; HttpOnly");
+		}
+		headerBuf.append(buf);
+	}
+
+	protected static void addMaxAgeInfo(final int maxAge, final StringBuffer buf, final int newVersion) // NOSONAR
+	{
 		// Max-Age=secs ... or use old "Expires" format
 		if (maxAge >= 0)
 		{
@@ -188,26 +181,85 @@ public class ServerCookie implements Serializable
 				}
 			}
 		}
+	}
 
-		// Path=path
-		if (path != null)
+	protected static void addVersionAndDomainInfo(final String value, final String domain, final String comment,
+												final StringBuffer buf, final int newVersion) // NOSONAR
+	{
+		// Value
+		maybeQuote(buf, value);
+		// Add version 1 specific information
+		if (newVersion == 1)
 		{
-			buf.append("; Path=");
-			maybeQuote(buf, path);
+			// Version=1 ... required
+			buf.append("; Version=1");
+
+			// Comment=comment
+			if (comment != null)
+			{
+				buf.append("; Comment=");
+				maybeQuote(buf, comment);
+			}
 		}
 
-		// Secure
-		if (isSecure)
+		// Add domain information, if present
+		if (domain != null)
 		{
-			buf.append("; Secure");
+			buf.append("; Domain=");
+			maybeQuote(buf, domain);
+		}
+	}
+
+	protected static int getNewVersionBeforeCookieHeader(final String value, final String path, final String domain,
+													   final String comment, final int version)
+	{
+		int newVersion = getNewVersionFromTokenInValueOrComment(value, comment, version);
+		if (newVersion == 0) {
+			newVersion = getNewVersionFromTokenInPathOrDomain(path, domain, newVersion);
+		}
+		return newVersion;
+	}
+
+	protected static int getNewVersionFromTokenInPathOrDomain(final String path, final String domain, final int version)
+	{
+		int newVersion = version;
+		
+		if (hasCookieSupport(path))
+		{
+			// HTTP token in path - need to use v1
+			newVersion = 1;
 		}
 
-		// HttpOnly
-		if (isHttpOnly)
+		if (newVersion == 0	&& hasCookieSupport(domain))
 		{
-			buf.append("; HttpOnly");
+			// HTTP token in domain - need to use v1
+			newVersion = 1;
 		}
-		headerBuf.append(buf);
+		return newVersion;
+	}
+
+	protected static boolean hasCookieSupport(String value) {
+		return !CookieSupport.ALLOW_HTTP_SEPARATORS_IN_V0 && CookieSupport.isHttpToken(value) || CookieSupport.ALLOW_HTTP_SEPARATORS_IN_V0
+				&& CookieSupport.isV0Token(value);
+	}
+
+	protected static int getNewVersionFromTokenInValueOrComment(final String value, final String comment, final int version)
+	{
+		int newVersion = version;
+
+		// If it is v0, check if we need to switch
+		if (newVersion == 0	&& hasCookieSupport(value))
+		{
+			// HTTP token in value - need to use v1
+			newVersion = 1;
+		}
+
+		if (newVersion == 0 && comment != null)
+		{
+			// Using a comment makes it a v1 cookie
+			newVersion = 1;
+		}
+		return newVersion;
 	}
 
 	/**
@@ -216,8 +268,9 @@ public class ServerCookie implements Serializable
 	 * @param buf
 	 * @param value
 	 */
-	protected static void maybeQuote(final StringBuffer buf, final String value)
+	protected static void maybeQuote(final StringBuffer buf, final String value) //NOSONAR
 	{
+		// StringBuffer cannot be replaced by StringBuilder due to the type used in functions called later on
 		if (value == null || value.isEmpty())
 		{
 			buf.append("\"\"");
@@ -262,30 +315,53 @@ public class ServerCookie implements Serializable
 		}
 
 		final StringBuilder result = new StringBuilder();
+		boolean ignoreChar = false;
 		for (int i = beginIndex; i < endIndex; i++)
 		{
-			final char c = s.charAt(i);
-			if (c == '\\')
+			if (!ignoreChar)
 			{
-				result.append(c);
-				//ignore the character after an escape, just append it
-				if (++i >= endIndex)
-				{
-					throw new IllegalArgumentException("Invalid escape character in cookie value.");
-				}
-				result.append(s.charAt(i));
-			}
-			else if (c == '"')
-			{
-				result.append('\\').append('"');
+				final char c = s.charAt(i);
+				ignoreChar = modifyDoubleQuotesChar(s, endIndex, result, i, c);
 			}
 			else
 			{
-				result.append(c);
+				ignoreChar = false;
 			}
 		}
 
 		return result.toString();
+	}
+
+	/**
+	 * This method is modifying result param due to charString value. If "\\", then we add this character to result and
+	 * add next char if this was not the end of passed string. If charString '"', then escape it with \\. All other
+	 * will just append charString param.
+	 *
+	 * @return true when '\\' was present in the string, otherwise false
+	 */
+	protected static boolean modifyDoubleQuotesChar(final String processedString, final int endIndex, final StringBuilder result,
+			int stringIndex, final char charString)
+	{
+		if (charString == '\\')
+		{
+			result.append(charString);
+			//ignore the character after an escape, just append it
+			if (stringIndex >= endIndex - 1)
+			{
+				throw new IllegalArgumentException("Invalid escape character in cookie value.");
+			}
+			result.append(processedString.charAt(stringIndex + 1));
+			return true;
+		}
+		else if (charString == '"')
+		{
+			result.append('\\').append('"');
+		}
+		else
+		{
+			result.append(charString);
+		}
+		return false;
 	}
 
 	public static final class CookieSupport
@@ -339,18 +415,18 @@ public class ServerCookie implements Serializable
 		 */
 		private static final char[] HTTP_SEPARATORS;
 		private static final boolean[] HTTP_SEPARATOR_FLAGS = new boolean[128];
+		private static final String DEFAULT_FALSE_VALUE = "false";
 
 		static
 		{
 			STRICT_SERVLET_COMPLIANCE = Boolean
-					.valueOf(System.getProperty("org.apache.catalina.STRICT_SERVLET_COMPLIANCE", "false")).booleanValue();
+					.parseBoolean(System.getProperty("org.apache.catalina.STRICT_SERVLET_COMPLIANCE", DEFAULT_FALSE_VALUE));
 
-			ALLOW_EQUALS_IN_VALUE = Boolean.valueOf(
-					System.getProperty("org.apache.tomcat.util.http.ServerCookie.ALLOW_EQUALS_IN_VALUE", "false")).booleanValue();
+			ALLOW_EQUALS_IN_VALUE = Boolean.parseBoolean(
+					System.getProperty("org.apache.tomcat.util.http.ServerCookie.ALLOW_EQUALS_IN_VALUE", DEFAULT_FALSE_VALUE));
 
-			ALLOW_HTTP_SEPARATORS_IN_V0 = Boolean.valueOf(
-					System.getProperty("org.apache.tomcat.util.http.ServerCookie.ALLOW_HTTP_SEPARATORS_IN_V0", "false"))
-					.booleanValue();
+			ALLOW_HTTP_SEPARATORS_IN_V0 = Boolean.parseBoolean(
+					System.getProperty("org.apache.tomcat.util.http.ServerCookie.ALLOW_HTTP_SEPARATORS_IN_V0", DEFAULT_FALSE_VALUE));
 
 			final String alwaysAddExpires = System.getProperty("org.apache.tomcat.util.http.ServerCookie.ALWAYS_ADD_EXPIRES");
 			if (alwaysAddExpires == null)
@@ -359,7 +435,7 @@ public class ServerCookie implements Serializable
 			}
 			else
 			{
-				ALWAYS_ADD_EXPIRES = Boolean.valueOf(alwaysAddExpires).booleanValue();
+				ALWAYS_ADD_EXPIRES = Boolean.parseBoolean(alwaysAddExpires);
 			}
 
 			final String fwdSlashIsSeparator = System.getProperty("org.apache.tomcat.util.http.ServerCookie.FWD_SLASH_IS_SEPARATOR");
@@ -369,11 +445,11 @@ public class ServerCookie implements Serializable
 			}
 			else
 			{
-				FWD_SLASH_IS_SEPARATOR = Boolean.valueOf(fwdSlashIsSeparator).booleanValue();
+				FWD_SLASH_IS_SEPARATOR = Boolean.parseBoolean(fwdSlashIsSeparator);
 			}
 
-			ALLOW_NAME_ONLY = Boolean.valueOf(
-					System.getProperty("org.apache.tomcat.util.http.ServerCookie.ALLOW_NAME_ONLY", "false")).booleanValue();
+			ALLOW_NAME_ONLY = Boolean.parseBoolean(
+					System.getProperty("org.apache.tomcat.util.http.ServerCookie.ALLOW_NAME_ONLY", DEFAULT_FALSE_VALUE));
 
 
 			/*
@@ -407,6 +483,12 @@ public class ServerCookie implements Serializable
 
 		}
 
+		// ------------------------------------------------------------- Constructor
+		private CookieSupport()
+		{
+			// Utility class. Don't allow instances to be created.
+		}
+
 		// ----------------------------------------------------------------- Methods
 
 		/**
@@ -414,12 +496,9 @@ public class ServerCookie implements Serializable
 		 */
 		public static final boolean isV0Separator(final char c)
 		{
-			if (c < 0x20 || c >= 0x7f)
+			if ((c < 0x20 || c >= 0x7f) && c != 0x09)
 			{
-				if (c != 0x09)
-				{
-					throw new IllegalArgumentException("Control character in cookie value or attribute.");
-				}
+				throw new IllegalArgumentException("Control character in cookie value or attribute.");
 			}
 
 			return V0_SEPARATOR_FLAGS[c];
@@ -461,12 +540,9 @@ public class ServerCookie implements Serializable
 		 */
 		public static final boolean isHttpSeparator(final char c)
 		{
-			if (c < 0x20 || c >= 0x7f)
+			if ((c < 0x20 || c >= 0x7f) && c != 0x09)
 			{
-				if (c != 0x09)
-				{
-					throw new IllegalArgumentException("Control character in cookie value or attribute.");
-				}
+				throw new IllegalArgumentException("Control character in cookie value or attribute.");
 			}
 
 			return HTTP_SEPARATOR_FLAGS[c];
@@ -506,14 +582,7 @@ public class ServerCookie implements Serializable
 			{
 				return false;
 			}
-			return (value.charAt(0) == '\"' && value.charAt(value.length() - 1) == '\"');
-		}
-
-
-		// ------------------------------------------------------------- Constructor
-		private CookieSupport()
-		{
-			// Utility class. Don't allow instances to be created.
+			return value.charAt(0) == '\"' && value.charAt(value.length() - 1) == '\"';
 		}
 	}
 }

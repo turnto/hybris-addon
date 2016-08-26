@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,25 +9,25 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.interceptors;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import de.hybris.platform.acceleratorstorefrontcommons.interceptors.BeforeControllerHandler;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * A postHandle HandlerInterceptor that runs a number of BeforeViewHandlers before the view is rendered.
  */
 public class BeforeControllerHandlerInterceptor extends HandlerInterceptorAdapter
 {
-	private final String INTERCEPTOR_ONCE_KEY = BeforeControllerHandlerInterceptor.class.getName();
+	private static final String INTERCEPTOR_ONCE_KEY = BeforeControllerHandlerInterceptor.class.getName();
 
 	private List<BeforeControllerHandler> beforeControllerHandlers;
 

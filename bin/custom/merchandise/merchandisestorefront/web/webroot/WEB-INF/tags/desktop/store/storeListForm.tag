@@ -35,7 +35,7 @@
 			<c:url value="${pos.url}" var="posUrl"/>
 			<tr class="storeItem">
 				<td headers="header1">
-					<a href="${posUrl}" class="left">
+					<a href="${fn:escapeXml(posUrl)}" class="left">
 						<img src="" alt="" class="storeMarker" />
 						<ycommerce:testId code="storeFinder_result_image">
 							<store:storeImage store="${pos}" format="cartIcon"/>
@@ -48,7 +48,7 @@
 					<div class="details">
 						<div class="itemName">
 							<ycommerce:testId code="storeFinder_result_link">
-								<a href="${posUrl}">${pos.name}</a>
+								<a href="${fn:escapeXml(posUrl)}">${pos.name}</a>
 							</ycommerce:testId>
 						</div>	
 						<p>${pos.address.phone}</p>
@@ -67,6 +67,7 @@
 								<li>${pos.address.line2}</li>
 								<li>${pos.address.town}</li>
 								<li>${pos.address.postalCode}</li>
+								<li>${pos.address.phone}</li>
 							</ul>
 						</c:if>
 					</ycommerce:testId>

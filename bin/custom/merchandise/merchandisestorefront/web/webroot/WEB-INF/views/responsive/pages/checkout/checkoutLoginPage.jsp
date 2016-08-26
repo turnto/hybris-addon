@@ -13,16 +13,19 @@
 						<cms:component component="${feature}" />
 					</cms:pageSlot>
 				</div>
+				
+				<cms:pageSlot position="CenterContentSlot" var="feature" class="checkoutLoginPageCenter">
+					<cms:component component="${feature}"/>
+				</cms:pageSlot>
+				
 				<div class="col-sm-6">
 					<cms:pageSlot position="RightContentSlot" var="feature">
 						<cms:component component="${feature}" />
 					</cms:pageSlot>
-
 				</div>
 
 			</div>
 
 		</div>
-
 
 </template:page>

@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
 
@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller("DynamicBannerComponentController")
 @Scope("tenant")
 @RequestMapping(value = ControllerConstants.Actions.Cms.DynamicBannerComponent)
-public class DynamicBannerComponentController extends AbstractCMSComponentController<DynamicBannerComponentModel>
+public class DynamicBannerComponentController extends AbstractAcceleratorCMSComponentController<DynamicBannerComponentModel>
 {
 	@SuppressWarnings("unused")
 	private static final Logger LOG = Logger.getLogger(DynamicBannerComponentController.class);
@@ -90,19 +90,25 @@ public class DynamicBannerComponentController extends AbstractCMSComponentContro
 		{
 			for (final CatalogVersionModel catalogVersionModel : catalogVersionService.getSessionCatalogVersions())
 			{
-				try
+				final MediaModel media = getMediaByCodeAndCatalogVersion(mediaCode, catalogVersionModel);
+				if (media != null)
 				{
-					final MediaModel media = mediaService.getMedia(catalogVersionModel, mediaCode);
-					if (media != null)
-					{
-						return media;
-					}
-				}
-				catch (final UnknownIdentifierException ignore)
-				{
-					// Ignore this exception
+					return media;
 				}
 			}
+		}
+		return null;
+	}
+
+	protected MediaModel getMediaByCodeAndCatalogVersion(final String mediaCode, final CatalogVersionModel catalogVersionModel)
+	{
+		try
+		{
+			return mediaService.getMedia(catalogVersionModel, mediaCode);
+		}
+		catch (final UnknownIdentifierException ignore)
+		{
+			// Ignore this exception
 		}
 		return null;
 	}

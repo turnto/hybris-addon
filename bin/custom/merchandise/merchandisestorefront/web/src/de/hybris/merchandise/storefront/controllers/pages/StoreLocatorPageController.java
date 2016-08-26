@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
@@ -18,10 +18,12 @@ import de.hybris.platform.acceleratorservices.store.data.UserLocationData;
 import de.hybris.platform.acceleratorstorefrontcommons.breadcrumb.Breadcrumb;
 import de.hybris.platform.acceleratorstorefrontcommons.breadcrumb.impl.StorefinderBreadcrumbBuilder;
 import de.hybris.platform.acceleratorstorefrontcommons.constants.WebConstants;
+import de.hybris.platform.acceleratorstorefrontcommons.controllers.ThirdPartyConstants;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractSearchPageController;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.util.GlobalMessages;
 import de.hybris.platform.acceleratorstorefrontcommons.forms.StoreFinderForm;
 import de.hybris.platform.acceleratorstorefrontcommons.forms.StorePositionForm;
+import de.hybris.platform.acceleratorstorefrontcommons.util.MetaSanitizerUtil;
 import de.hybris.platform.acceleratorstorefrontcommons.util.XSSFilterUtil;
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.cms2.model.pages.AbstractPageModel;
@@ -32,10 +34,7 @@ import de.hybris.platform.commerceservices.search.pagedata.PageableData;
 import de.hybris.platform.commerceservices.store.data.GeoPoint;
 import de.hybris.platform.commerceservices.storefinder.data.StoreFinderSearchPageData;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
-import de.hybris.platform.storelocator.exception.GeoLocatorException;
-import de.hybris.platform.storelocator.exception.MapServiceException;
 import de.hybris.merchandise.storefront.controllers.ControllerConstants;
-import de.hybris.platform.acceleratorstorefrontcommons.util.MetaSanitizerUtil;
 
 import java.util.List;
 
@@ -64,7 +63,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(value = "/store-finder")
 public class StoreLocatorPageController extends AbstractSearchPageController
 {
-	protected static final Logger LOG = Logger.getLogger(StoreLocatorPageController.class);
+	private static final Logger LOG = Logger.getLogger(StoreLocatorPageController.class);
 
 	private static final String STORE_FINDER_CMS_PAGE_LABEL = "storefinder";
 	private static final String GOOGLE_API_KEY_ID = "googleApiKey";
@@ -112,14 +111,13 @@ public class StoreLocatorPageController extends AbstractSearchPageController
 	}
 
 	@RequestMapping(method = RequestMethod.GET, params = "q")
-	public String findStores(@RequestParam(value = "page", defaultValue = "0") final int page,
+	public String findStores(@RequestParam(value = "page", defaultValue = "0") final int page, // NOSONAR
 			@RequestParam(value = "show", defaultValue = "Page") final AbstractSearchPageController.ShowMode showMode,
 			@RequestParam(value = "sort", required = false) final String sortCode,
 			@RequestParam(value = "q") final String locationQuery,
 			@RequestParam(value = "latitude", required = false) final Double latitude,
 			@RequestParam(value = "longitude", required = false) final Double longitude, final StoreFinderForm storeFinderForm,
-			final Model model, final BindingResult bindingResult) throws GeoLocatorException, MapServiceException,
-			CMSItemNotFoundException
+			final Model model, final BindingResult bindingResult) throws CMSItemNotFoundException
 	{
 		final String sanitizedSearchQuery = XSSFilterUtil.filter(locationQuery);
 
@@ -160,7 +158,7 @@ public class StoreLocatorPageController extends AbstractSearchPageController
 	public String searchByCurrentPosition(@RequestParam(value = "page", defaultValue = "0") final int page,
 			@RequestParam(value = "show", defaultValue = "Page") final AbstractSearchPageController.ShowMode showMode,
 			@RequestParam(value = "sort", required = false) final String sortCode, final StorePositionForm storePositionForm,
-			final Model model) throws GeoLocatorException, MapServiceException, CMSItemNotFoundException
+			final Model model) throws CMSItemNotFoundException
 	{
 		final GeoPoint geoPoint = new GeoPoint();
 		geoPoint.setLatitude(storePositionForm.getLatitude());
@@ -176,7 +174,7 @@ public class StoreLocatorPageController extends AbstractSearchPageController
 	// setup methods to populate the model
 	protected void setUpMetaData(final String locationQuery, final Model model)
 	{
-		model.addAttribute("metaRobots", "noindex,follow");
+		model.addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_FOLLOW);
 		final String metaKeywords = MetaSanitizerUtil.sanitizeKeywords(locationQuery);
 		final String metaDescription = MetaSanitizerUtil.sanitizeDescription(getSiteName()
 				+ " "
@@ -236,7 +234,6 @@ public class StoreLocatorPageController extends AbstractSearchPageController
 		setUpNoResultsErrorMessage(model, searchResult);
 	}
 
-
 	protected void updateLocalUserPreferences(final GeoPoint geoPoint, final String location)
 	{
 		final UserLocationData userLocationData = new UserLocationData();
@@ -244,7 +241,6 @@ public class StoreLocatorPageController extends AbstractSearchPageController
 		userLocationData.setPoint(geoPoint);
 		customerLocationService.setUserLocation(userLocationData);
 	}
-
 
 	protected void setUpPageForms(final Model model)
 	{

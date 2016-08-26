@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.url;
 
@@ -69,11 +69,10 @@ public class DefaultPreviewDataModelUrlResolver implements UrlResolver<PreviewDa
 	{
 		this.pageMapping = pageMapping;
 	}
-
-
+	
 	/**
 	 * Returns the relative URL for the specified page <code>page</code>.
-	 * 
+	 *
 	 * @return relative URL for the specified page
 	 */
 	@Override
@@ -82,34 +81,11 @@ public class DefaultPreviewDataModelUrlResolver implements UrlResolver<PreviewDa
 		if (previewDataModel != null)
 		{
 			final AbstractPageModel page = previewDataModel.getPage();
-
-			final Map<String, String> pageMapping = getPageMapping();
-			if (pageMapping != null && page != null)
+			
+			final String url = processPage(page, getPageMapping());
+			if (url != null)
 			{
-				// Lookup the page mapping by page UID
-				final String pageUid = page.getUid();
-				if (pageUid != null)
-				{
-					final String url = pageMapping.get(pageUid);
-					if (url != null && !url.isEmpty())
-					{
-						return url;
-					}
-				}
-
-				// For ContentPages also lookup by label
-				if (page instanceof ContentPageModel)
-				{
-					final String pageLabel = ((ContentPageModel) page).getLabel();
-					if (pageLabel != null)
-					{
-						final String url = pageMapping.get(pageLabel);
-						if (url != null && !url.isEmpty())
-						{
-							return url;
-						}
-					}
-				}
+				return url;
 			}
 
 			if (page instanceof ContentPageModel)
@@ -128,8 +104,59 @@ public class DefaultPreviewDataModelUrlResolver implements UrlResolver<PreviewDa
 				return getProductModelUrlResolver().resolve(getPreviewValueForProductPage(previewDataModel));
 			}
 		}
-
 		return "/";
+	}
+
+	protected String processPage(final AbstractPageModel page, final Map<String, String> pageMapping)
+	{
+		if (pageMapping != null && page != null)
+		{
+			final String urlForUid = checkPageUid(page, pageMapping);
+			if (urlForUid != null)
+			{
+				return urlForUid;
+			}
+
+			final String urlForLabel = checkPageLabel(page, pageMapping);
+			if (urlForLabel != null)
+			{
+				return urlForLabel;
+			}
+		}
+		return null;
+	}
+
+	protected String checkPageLabel(final AbstractPageModel page, final Map<String, String> pageMapping)
+	{
+		// For ContentPages also lookup by label
+		if (page instanceof ContentPageModel)
+		{
+			final String pageLabel = ((ContentPageModel) page).getLabel();
+			if (pageLabel != null)
+			{
+				final String url = pageMapping.get(pageLabel);
+				if (url != null && !url.isEmpty())
+				{
+					return url;
+				}
+			}
+		}
+		return null;
+	}
+
+	protected String checkPageUid(final AbstractPageModel page, final Map<String, String> pageMapping)
+	{
+		// Lookup the page mapping by page UID
+		final String pageUid = page.getUid();
+		if (pageUid != null)
+		{
+			final String url = pageMapping.get(pageUid);
+			if (url != null && !url.isEmpty())
+			{
+				return url;
+			}
+		}
+		return null;
 	}
 
 	protected CategoryModel getPreviewValueForCategoryPage(final PreviewDataModel previewCtx)

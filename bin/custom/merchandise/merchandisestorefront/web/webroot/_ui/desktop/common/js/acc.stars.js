@@ -32,8 +32,13 @@ ACC.stars = {
 
 	initialize: function()
 	{
-		this.bindStarsWrapperRadioButtons($('#stars-wrapper input'));
-		this.bindStarsWrapperRadioButtonsFirstTimeFocus($('#stars-wrapper input'));
+		// workaround for IE: IE has a bug where wrapping a label around an image doesn't work the same as if you wrap it around text
+		$("#stars-wrapper label img").live("click", function() {
+			$(this).next("input[type='radio']").click();
+		});
+		var $input = $('#stars-wrapper input');
+		this.bindStarsWrapperRadioButtons($input);
+		this.bindStarsWrapperRadioButtonsFirstTimeFocus($input);
 	}
 }
 

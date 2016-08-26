@@ -1,16 +1,16 @@
 <%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="template" tagdir="/WEB-INF/tags/responsive/template" %>
-<%@ taglib prefix="common" tagdir="/WEB-INF/tags/responsive/common" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-
-<spring:theme code="updatePwd.title" var="title"/>
 <template:page pageTitle="${pageTitle}">
-	<div class="global-alerts">
-		<div class="alert alert-danger alert-dismissable">
-			<spring:theme code="text.page.message.underconstruction" text="Information: Page Under Construction - Not Completely Functional"/>
+	<div class="item_container_holder">
+		<div class="title_holder">
+			<h2>
+				<spring:theme code="forgottenPwd.title"/>
+			</h2>
+		</div>
+		<div class="item_container">
+			<spring:theme code="account.confirmation.forgotten.password.link.sent"/>
 		</div>
 	</div>
-	
 </template:page>

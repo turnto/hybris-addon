@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,15 +9,15 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.interceptors.beforeview;
 
 import de.hybris.platform.acceleratorservices.storefront.data.MetaElementData;
 import de.hybris.platform.acceleratorservices.uiexperience.UiExperienceService;
+import de.hybris.platform.acceleratorstorefrontcommons.interceptors.BeforeViewHandler;
 import de.hybris.platform.commerceservices.enums.UiExperienceLevel;
 import de.hybris.platform.commerceservices.util.ResponsiveUtils;
-import de.hybris.merchandise.storefront.interceptors.BeforeViewHandler;
 
 import java.util.List;
 
@@ -37,12 +37,6 @@ public class UiExperienceMetadataViewHandler implements BeforeViewHandler
 	@Resource(name = "uiExperienceService")
 	private UiExperienceService uiExperienceService;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.hybris.merchandise.storefront.interceptors.BeforeViewHandler#beforeView(javax.servlet.http.
-	 * HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView)
-	 */
 	@Override
 	public void beforeView(final HttpServletRequest request, final HttpServletResponse response, final ModelAndView modelAndView)
 			throws Exception
@@ -51,7 +45,7 @@ public class UiExperienceMetadataViewHandler implements BeforeViewHandler
 		if (modelAndView != null && modelAndView.getModel().containsKey("metatags"))
 		{
 
-			final List<MetaElementData> metaelements = ((List<MetaElementData>) modelAndView.getModel().get("metatags"));
+			final List<MetaElementData> metaelements = (List<MetaElementData>) modelAndView.getModel().get("metatags");
 			final UiExperienceLevel currentUiExperienceLevel = uiExperienceService.getUiExperienceLevel();
 			if (UiExperienceLevel.DESKTOP.equals(currentUiExperienceLevel))
 			{

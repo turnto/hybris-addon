@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,13 +9,13 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.interceptors.beforeview;
 
 import de.hybris.platform.acceleratorstorefrontcommons.constants.WebConstants;
+import de.hybris.platform.acceleratorstorefrontcommons.interceptors.BeforeViewHandler;
 import de.hybris.platform.servicelayer.session.SessionService;
-import de.hybris.merchandise.storefront.interceptors.BeforeViewHandler;
 
 import java.util.List;
 
@@ -29,15 +29,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Handler to add cart restoration messages when appropriate
- * 
+ *
  */
 public class CartRestorationBeforeViewHandler implements BeforeViewHandler
 {
-
 	public SessionService sessionService;
-
 	public List<String> pagesToShowModifications;
-
 
 	@Override
 	public void beforeView(final HttpServletRequest request, final HttpServletResponse response, final ModelAndView modelAndView)
@@ -68,7 +65,7 @@ public class CartRestorationBeforeViewHandler implements BeforeViewHandler
 	/**
 	 * Decide whether or not the modifications related to the cart restoration or merge should be displayed in the
 	 * notifications
-	 * 
+	 *
 	 * @param request
 	 * @return whether or not to display the modifications
 	 */

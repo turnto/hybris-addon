@@ -1,27 +1,18 @@
-<%@ tag body-content="empty" trimDirectiveWhitespaces="true" %>
-<%@ attribute name="product" required="true" type="de.hybris.platform.commercefacades.product.data.ProductData" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="formElement" tagdir="/WEB-INF/tags/responsive/formElement" %>
-<%@ taglib prefix="template" tagdir="/WEB-INF/tags/responsive/template" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ tag body-content="empty" trimDirectiveWhitespaces="true"%>
+<%@ attribute name="product" required="true" type="de.hybris.platform.commercefacades.product.data.ProductData"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="formElement" tagdir="/WEB-INF/tags/responsive/formElement"%>
+<%@ taglib prefix="template" tagdir="/WEB-INF/tags/responsive/template"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <c:url value="${product.url}/reviewhtml/3" var="getPageOfReviewsUrl"/>
 <c:url value="${product.url}/reviewhtml/all" var="getAllReviewsUrl"/>
 <c:url value="${product.url}/review" var="productReviewActionUrl"/>
 
-<c:choose>
-    <c:when test="${flags.get('checkboxRating').getFlag() and flags.get('checkboxRating').getSetupType().getCode() eq 'staticEmbed'}">
-        ${reviewContent}
-    </c:when>
-    <c:when test="${flags.get('checkboxRating').getFlag() and flags.get('checkboxRating').getSetupType().getCode() ne 'overlay'}">
-        <div id="TurnToReviewsContent"></div>
-    </c:when>
-</c:choose>
-
-<%--<div class="tab-review">
+<div class="tab-review">
 	<div class="review-pagination-bar">
 		<button class="btn btn-default js-review-write-toggle "><spring:theme code="review.write.title"/></button>
 
@@ -71,4 +62,4 @@
 			<button class="btn btn-default less-reviews-btn"><spring:theme code="review.show.less" /></button>
 		</div>
 	</div>
-</div>--%>
+</div>

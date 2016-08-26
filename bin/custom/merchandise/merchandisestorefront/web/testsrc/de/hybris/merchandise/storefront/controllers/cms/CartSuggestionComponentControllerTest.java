@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
 
@@ -123,9 +123,10 @@ public class CartSuggestionComponentControllerTest
 		given(
 				simpleSuggestionFacade.getSuggestionsForProductsInCart(Mockito.anyListOf(ProductReferenceTypeEnum.class),
 						Mockito.eq(true), Mockito.eq(10))).willReturn(productDataList);
+		given(request.getAttribute(COMPONENT)).willReturn(cartSuggestionComponentModel);
 
-		final String viewName = cartSuggestionComponentController.handleComponent(request, response, model,
-				cartSuggestionComponentModel);
+		final String viewName = cartSuggestionComponentController.handleGet(request, response, model);
+		verify(model, Mockito.times(1)).addAttribute(COMPONENT, cartSuggestionComponentModel);
 		verify(model, Mockito.times(1)).addAttribute(TITLE, TITLE_VALUE);
 		verify(model, Mockito.times(1)).addAttribute(SUGGESTIONS, productDataList);
 		Assert.assertEquals(TEST_TYPE_VIEW, viewName);

@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.filters;
 
@@ -48,21 +48,25 @@ public class CustomerLocationRestorationFilter extends OncePerRequestFilter
 
 			if (cookies != null)
 			{
-				for (final Cookie cookie : cookies)
-				{
-					if (getCustomerLocationCookieGenerator().getCookieName().equals(cookie.getName()))
-					{
-						final UserLocationData cookieUserLocationData = decipherUserLocationData(StringUtils.remove(cookie.getValue(),"\""));
-						getCustomerLocationFacade().setUserLocationData(cookieUserLocationData);
-						break;
-					}
-				}
+				setUserLocationDataFromCookies(cookies);
 			}
 		}
 
 		filterChain.doFilter(request, response);
 	}
 
+	protected void setUserLocationDataFromCookies(final Cookie[] cookies)
+	{
+		for (final Cookie cookie : cookies)
+		{
+			if (getCustomerLocationCookieGenerator().getCookieName().equals(cookie.getName()))
+			{
+				final UserLocationData cookieUserLocationData = decipherUserLocationData(StringUtils.remove(cookie.getValue(), "\""));
+				getCustomerLocationFacade().setUserLocationData(cookieUserLocationData);
+				break;
+			}
+		}
+	}
 
 	protected UserLocationData decipherUserLocationData(final String customerLocationString)
 	{
@@ -75,10 +79,10 @@ public class CustomerLocationRestorationFilter extends OncePerRequestFilter
 		if (StringUtils.isNotEmpty(latitudeAndLongitude))
 		{
 			final GeoPoint geoPoint = new GeoPoint();
-			geoPoint.setLatitude(Double.parseDouble(StringUtils.substringBefore(latitudeAndLongitude,
-					CustomerLocationCookieGenerator.LATITUDE_LONGITUDE_SEPARATOR)));
-			geoPoint.setLongitude(Double.parseDouble(StringUtils.substringAfter(latitudeAndLongitude,
-					CustomerLocationCookieGenerator.LATITUDE_LONGITUDE_SEPARATOR)));
+			geoPoint.setLatitude(Double.parseDouble(
+					StringUtils.substringBefore(latitudeAndLongitude, CustomerLocationCookieGenerator.LATITUDE_LONGITUDE_SEPARATOR)));
+			geoPoint.setLongitude(Double.parseDouble(
+					StringUtils.substringAfter(latitudeAndLongitude, CustomerLocationCookieGenerator.LATITUDE_LONGITUDE_SEPARATOR)));
 			userLocationData.setPoint(geoPoint);
 		}
 

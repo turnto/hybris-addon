@@ -1,77 +1,69 @@
-<%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="template" tagdir="/WEB-INF/tags/responsive/template" %>
-<%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags" %>
-
-<c:set var="isOnCcPinboard" value="${flags.get('ccPinboard').getFlag() eq 'true'}"/>
+<%@ page trimDirectiveWhitespaces="true"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="template" tagdir="/WEB-INF/tags/responsive/template"%>
+<%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags"%>
 
 <template:page pageTitle="${pageTitle}">
 
-    <div class="no-space">
-        <cms:pageSlot position="Section1" var="feature">
-            <cms:component component="${feature}"/>
-        </cms:pageSlot>
+		<div class="no-space">
+			<div class="row">
+				<div class="col-xs-12 no-space">
+					<cms:pageSlot position="Section1" var="feature">
+						<cms:component component="${feature}" />
+					</cms:pageSlot>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-md-6 no-space">
+					<div class="row">
+						<cms:pageSlot position="Section2A" var="feature">
+							<cms:component component="${feature}" element="div" class="col-xs-12 col-sm-6 no-space yComponentWrapper"/>
+						</cms:pageSlot>
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-6 no-space">
+					<div class="row">
+						<cms:pageSlot position="Section2B" var="feature">
+							<cms:component component="${feature}" element="div" class="col-xs-12 col-sm-6 no-space yComponentWrapper"/>
+						</cms:pageSlot>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<cms:pageSlot position="Section2C" var="feature" element="div" class="landingLayout2PageSection2C">
+						<cms:component component="${feature}" element="div" class="col-xs-12 no-space yComponentWrapper"/>
+					</cms:pageSlot>
+				</div>
+			</div>
+		</div>
 
-        <div class="row">
-            <cms:pageSlot position="Section2A" var="feature">
-                <cms:component component="${feature}" element="div" class="col-xs-6 col-sm-3"/>
-            </cms:pageSlot>
-            <cms:pageSlot position="Section2B" var="feature">
-                <cms:component component="${feature}" element="div" class="col-xs-6 col-sm-3"/>
-            </cms:pageSlot>
-        </div>
-    </div>
+		<div class="row">
+			<div class="col-xs-12 no-space">
+			<cms:pageSlot position="Section3" var="feature">
+				<cms:component component="${feature}" element="div" class="col-xs-12 no-space yComponentWrapper"/>
+			</cms:pageSlot>
+			</div>
+		</div>
 
-    <cms:pageSlot position="Section3" var="feature">
-        <cms:component component="${feature}"/>
-    </cms:pageSlot>
+		<div class="no-space">
+		
+			<div class="row">
+				<div class="col-xs-12 no-space">
+					<div class="row">
+						<cms:pageSlot position="Section4" var="feature">
+							<cms:component component="${feature}" element="div" class="col-xs-6 col-md-3 no-space yComponentWrapper"/>
+						</cms:pageSlot>
+					</div>
+				</div>
+			</div>
 
-    <c:if test="${isOnCcPinboard and isSiteKeyInvalid eq 'false'}">
-        <div id="TurnToPinboardContent"></div>
-    </c:if>
+			<div class="row">
+				<div class="col-xs-12 no-space">
+					<cms:pageSlot position="Section5" var="feature">
+						<cms:component component="${feature}" element="div" class="col-xs-12 no-space yComponentWrapper"/>
+					</cms:pageSlot>
+				</div>
+			</div>
 
-    <div class="no-space">
-
-        <div class="row">
-            <cms:pageSlot position="Section4" var="feature">
-                <cms:component component="${feature}" element="div" class="col-xs-6 col-sm-3"/>
-            </cms:pageSlot>
-        </div>
-
-        <cms:pageSlot position="Section5" var="feature">
-            <cms:component component="${feature}"/>
-        </cms:pageSlot>
-    </div>
-
+		</div>
+		
 </template:page>
-
-<c:if test="${isOnCcPinboard}">
-    <script type="text/javascript">
-        var turnToConfig = {
-            siteKey: "${siteKey}",
-            pinboard: {
-                contentType: 'checkoutComments',
-                maxDaysOld: -1
-            }
-        };
-
-        (function () {
-            var tt = document.createElement('script');
-            tt.type = 'text/javascript';
-            tt.async = true;
-            tt.src = document.location.protocol + "//static.www.turnto.com/traServer${currentVersion}/trajs/" + turnToConfig.siteKey + "/tra.js";
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(tt, s);
-        })();
-
-        (function () {
-            var tt = document.createElement('script');
-            tt.type = 'text/javascript';
-            tt.async = true;
-            tt.src = document.location.protocol + "//static.www.turnto.com/traServer${currentVersion}/pinboardjs/" + turnToConfig.siteKey + "/turnto-pinboard.js";
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(tt, s);
-        })();
-
-    </script>
-</c:if>

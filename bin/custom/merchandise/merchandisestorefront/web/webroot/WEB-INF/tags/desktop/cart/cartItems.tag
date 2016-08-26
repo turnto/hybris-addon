@@ -24,9 +24,6 @@
 		</span>
 	</div>
 	
-	
-	
-	
 	<table class="cart">
 		<thead>
 			<tr>
@@ -37,10 +34,11 @@
 					<th id="header5"><spring:theme code="basket.page.shipping"/></th>
 				</c:if>
 				<th id="header6"><spring:theme code="basket.page.total"/></th>
+				<th id="header7">&nbsp;</th>
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${cartData.entries}" var="entry">
+			<c:forEach items="${cartData.entries}" var="entry" varStatus="loop">
 				<c:url value="${entry.product.url}" var="productUrl"/>
 				<tr class="cartItem">
 					
@@ -105,42 +103,61 @@
 						</c:if>
 					</td>
 					
-					
-					
-					
-					
 					<td headers="header3" class="itemPrice">
 						<format:price priceData="${entry.basePrice}" displayFreeForZero="true"/>
 					</td>
 					
-					
-					
-					<td headers="header4" class="quantity">
-						<c:url value="/cart/update" var="cartUpdateFormAction" />
-						<form:form id="updateCartForm${entry.entryNumber}" action="${cartUpdateFormAction}" method="post" commandName="updateQuantityForm${entry.entryNumber}"
-						           data-cart='{"cartCode" : "${cartData.code}","productPostPrice":"${entry.basePrice.value}","productName":"${entry.product.name}"}'>
-							<input type="hidden" name="entryNumber" value="${entry.entryNumber}"/>
-							<input type="hidden" name="productCode" value="${entry.product.code}"/>
-							<input type="hidden" name="initialQuantity" value="${entry.quantity}"/>
-							<ycommerce:testId code="cart_product_quantity">
-								<form:label cssClass="skip" path="quantity" for="quantity${entry.entryNumber}"><spring:theme code="basket.page.quantity"/></form:label>
-								<form:input disabled="${not entry.updateable}" type="text" size="1" id="quantity${entry.entryNumber}" class="qty" path="quantity" />
-							</ycommerce:testId>
-							<c:if test="${entry.updateable}" >
-								<ycommerce:testId code="cart_product_updateQuantity">
-									<a href="#" id="QuantityProduct_${entry.entryNumber}" class="updateQuantityProduct"><spring:theme code="basket.page.update"/></a>
-								</ycommerce:testId>
-							</c:if>
-						</form:form>
-						<c:if test="${entry.updateable}" >
-							<ycommerce:testId code="cart_product_removeProduct">
-								<spring:theme code="text.iconCartRemove" var="iconCartRemove"/>
-								<a href="#" id="RemoveProduct_${entry.entryNumber}" class="submitRemoveProduct">${iconCartRemove}</a>
-							</ycommerce:testId>
-						</c:if>
-					</td>
-
-
+					<c:choose>
+						<c:when test="${not entry.product.multidimensional}" >
+							<td headers="header4" class="quantity">
+								<c:url value="/cart/update" var="cartUpdateFormAction" />
+								<form:form id="updateCartForm${loop.index}" action="${cartUpdateFormAction}" method="post" commandName="updateQuantityForm${entry.entryNumber}"
+							           data-cart='{"cartCode" : "${cartData.code}","productPostPrice":"${entry.basePrice.value}","productName":"${entry.product.name}"}'>
+									<input type="hidden" name="entryNumber" value="${entry.entryNumber}"/>
+									<input type="hidden" name="productCode" value="${entry.product.code}"/>
+									<input type="hidden" name="initialQuantity" value="${entry.quantity}"/>
+									<ycommerce:testId code="cart_product_quantity">
+										<form:label cssClass="skip" path="quantity" for="quantity${entry.entryNumber}"><spring:theme code="basket.page.quantity"/></form:label>
+										<form:input disabled="${not entry.updateable}" type="text" size="1" id="quantity${entry.entryNumber}" class="qty" path="quantity" />
+									</ycommerce:testId>
+									<c:if test="${entry.updateable}" >
+										<ycommerce:testId code="cart_product_updateQuantity">
+										<a href="#" id="QuantityProduct_${loop.index}" class="updateQuantityProduct"><spring:theme code="basket.page.update"/></a>
+										</ycommerce:testId>
+									</c:if>
+								</form:form>
+								<c:if test="${entry.updateable}" >
+									<ycommerce:testId code="cart_product_removeProduct">
+										<spring:theme code="text.iconCartRemove" var="iconCartRemove"/>
+										<a href="#" id="RemoveProduct_${loop.index}" class="submitRemoveProduct">${iconCartRemove}</a>
+									</ycommerce:testId>
+								</c:if>
+							</td>
+						</c:when>
+						<c:otherwise>
+							<td headers="header4" class="quantity">
+								<c:url value="/cart/updateMultiD" var="cartUpdateFormAction" />
+								<form:form id="updateCartForm${loop.index}" action="${cartUpdateFormAction}" method="post" commandName="updateQuantityForm${entry.entryNumber}">
+									<input type="hidden" name="entryNumber" value="${entry.entryNumber}"/>
+									<input type="hidden" name="productCode" value="${entry.product.code}"/>
+									<input type="hidden" name="initialQuantity" value="${entry.quantity}"/>	
+									<span class="qty">
+										<c:out value="${entry.quantity}" />
+									</span>
+									<input type="hidden" name="quantity" value="0"/>								
+									<ycommerce:testId code="cart_product_updateQuantity">
+										<div id="QuantityProduct${loop.index}" class="updateQuantityProduct"></div>
+									</ycommerce:testId>
+								</form:form>
+								<c:if test="${entry.updateable}" >
+									<ycommerce:testId code="cart_product_removeProduct">
+										<spring:theme code="text.iconCartRemove" var="iconCartRemove"/>
+										<a href="#" id="RemoveProduct" data-index="${loop.index}" class="submitRemoveProductMultiD">${iconCartRemove}</a>
+									</ycommerce:testId>
+								</c:if>
+							</td>
+						</c:otherwise>
+					</c:choose>
 
 					<c:if test="${ycommerce:checkIfPickupEnabledForStore() eq true}">
 						<td headers="header5" class="shipping">
@@ -177,12 +194,12 @@
 												</label>
 												<div class="basket-page-shipping-pickup pointOfServiceName" >${entry.deliveryPointOfService.name}</div>
 											
-											<c:set var="canBePickedUp" value="${entry.product.availableForPickup and not empty entry.deliveryPointOfService.name}" />
-											<c:set var="hideChangeStoreLink" value="${not canBePickedUp ? 'style=display:none' : ''}" />
-											<div ${hideChangeStoreLink} class="changeStoreLink">
-												<storepickup:clickPickupInStore product="${entry.product}" cartPage="true"  entryNumber="${entry.entryNumber}"
-														deliveryPointOfService="${entry.deliveryPointOfService.name}" quantity="${entry.quantity}"/>
-											</div>
+												<c:set var="canBePickedUp" value="${entry.product.availableForPickup and not empty entry.deliveryPointOfService.name}" />
+												<c:set var="hideChangeStoreLink" value="${not canBePickedUp ? 'style=display:none' : ''}" />
+												<div ${hideChangeStoreLink} class="changeStoreLink">
+													<storepickup:clickPickupInStore product="${entry.product}" cartPage="true"  entryNumber="${entry.entryNumber}"
+															deliveryPointOfService="${entry.deliveryPointOfService.name}" quantity="${entry.quantity}"/>
+												</div>
 											</c:when>
 											<c:otherwise>
 											</c:otherwise>
@@ -193,18 +210,36 @@
 						 </td>
 					</c:if>
 
-					 <td headers="header6" class="total">
+					<td headers="header6" class="total">
 						 <ycommerce:testId code="cart_totalProductPrice_label">
 							 <format:price priceData="${entry.totalPrice}" displayFreeForZero="true"/>
 						 </ycommerce:testId>
-					 </td>
-					 
+					</td>
+
+					<td headers="header7" class="multidimensional">
+						<c:if test="${entry.product.multidimensional}" >
+							<ycommerce:testId code="cart_product_updateQuantity">
+								<a href="#" id="QuantityProductToggle" data-index="${loop.index}" class="updateQuantityProduct updateQuantityProduct-toggle">+</a>
+							</ycommerce:testId>
+						</c:if>
+					</td>
 				 </tr>
+				 
+				<tr><td colspan="6"><div id="ajaxGrid${loop.index}" style="display: none"></div></td></tr> 
+				
+				<c:if test="${entry.product.multidimensional}" >
+					<tr><th colspan="6">
+						<c:forEach items="${entry.entries}" var="currentEntry" varStatus="stat">
+							<c:set var="subEntries" value="${stat.first ? '' : subEntries}${currentEntry.product.code}:${currentEntry.quantity},"/>
+						</c:forEach>
+
+						<div style="display:none" id="grid${loop.index}" data-sub-entries="${subEntries}"> </div>
+					</th></tr>		
+				</c:if>
+				
 			</c:forEach>
 		</tbody>
 	</table>
-	
-	
 	
 </div>
 <storepickup:pickupStorePopup />

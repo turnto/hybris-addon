@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
 
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller("CategoryFeatureComponentController")
 @Scope("tenant")
 @RequestMapping(value = ControllerConstants.Actions.Cms.CategoryFeatureComponent)
-public class CategoryFeatureComponentController extends AbstractCMSComponentController<CategoryFeatureComponentModel>
+public class CategoryFeatureComponentController extends AbstractAcceleratorCMSComponentController<CategoryFeatureComponentModel>
 {
 	@Resource(name = "categoryUrlConverter")
 	private Converter<CategoryModel, CategoryData> categoryUrlConverter;

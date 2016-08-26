@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
@@ -18,6 +18,7 @@ import de.hybris.platform.acceleratorstorefrontcommons.constants.WebConstants;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractPageController;
 import de.hybris.platform.acceleratorstorefrontcommons.forms.ForgottenPwdForm;
 import de.hybris.platform.acceleratorstorefrontcommons.forms.UpdatePwdForm;
+import de.hybris.platform.acceleratorstorefrontcommons.forms.validation.UpdatePasswordFormValidator;
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.commercefacades.customer.CustomerFacade;
 import de.hybris.platform.commerceservices.customer.TokenInvalidatedException;
@@ -49,6 +50,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping(value = "/login/pw")
 public class PasswordResetPageController extends AbstractPageController
 {
+	private static final String FORGOTTEN_PWD_TITLE = "forgottenPwd.title";
+
 	@SuppressWarnings("unused")
 	private static final Logger LOG = Logger.getLogger(PasswordResetPageController.class);
 
@@ -62,6 +65,10 @@ public class PasswordResetPageController extends AbstractPageController
 
 	@Resource(name = "simpleBreadcrumbBuilder")
 	private ResourceBreadcrumbBuilder resourceBreadcrumbBuilder;
+
+	@Resource(name = "updatePasswordFormValidator")
+	private UpdatePasswordFormValidator updatePasswordFormValidator;
+
 
 	@RequestMapping(value = "/request", method = RequestMethod.GET)
 	public String getPasswordRequest(final Model model) throws CMSItemNotFoundException
@@ -98,7 +105,7 @@ public class PasswordResetPageController extends AbstractPageController
 		model.addAttribute(new ForgottenPwdForm());
 		storeCmsPageInModel(model, getContentPageForLabelOrId(null));
 		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(null));
-		model.addAttribute(WebConstants.BREADCRUMBS_KEY, resourceBreadcrumbBuilder.getBreadcrumbs("forgottenPwd.title"));
+		model.addAttribute(WebConstants.BREADCRUMBS_KEY, resourceBreadcrumbBuilder.getBreadcrumbs(FORGOTTEN_PWD_TITLE));
 		return ControllerConstants.Views.Pages.Password.PasswordResetRequest;
 	}
 
@@ -107,7 +114,7 @@ public class PasswordResetPageController extends AbstractPageController
 	{
 		storeCmsPageInModel(model, getContentPageForLabelOrId(null));
 		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(null));
-		model.addAttribute(WebConstants.BREADCRUMBS_KEY, resourceBreadcrumbBuilder.getBreadcrumbs("forgottenPwd.title"));
+		model.addAttribute(WebConstants.BREADCRUMBS_KEY, resourceBreadcrumbBuilder.getBreadcrumbs(FORGOTTEN_PWD_TITLE));
 		return ControllerConstants.Views.Pages.Password.PasswordResetRequestConfirmation;
 	}
 
@@ -117,7 +124,7 @@ public class PasswordResetPageController extends AbstractPageController
 	{
 		storeCmsPageInModel(model, getContentPageForLabelOrId(null));
 		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(null));
-		model.addAttribute(WebConstants.BREADCRUMBS_KEY, resourceBreadcrumbBuilder.getBreadcrumbs("forgottenPwd.title"));
+		model.addAttribute(WebConstants.BREADCRUMBS_KEY, resourceBreadcrumbBuilder.getBreadcrumbs(FORGOTTEN_PWD_TITLE));
 
 		if (bindingResult.hasErrors())
 		{
@@ -160,6 +167,7 @@ public class PasswordResetPageController extends AbstractPageController
 	public String changePassword(@Valid final UpdatePwdForm form, final BindingResult bindingResult, final Model model,
 			final RedirectAttributes redirectModel) throws CMSItemNotFoundException
 	{
+		getUpdatePasswordFormValidator().validate(form, bindingResult);
 		if (bindingResult.hasErrors())
 		{
 			prepareErrorMessage(model, UPDATE_PWD_CMS_PAGE);
@@ -179,6 +187,10 @@ public class PasswordResetPageController extends AbstractPageController
 			}
 			catch (final RuntimeException e)
 			{
+				if (LOG.isDebugEnabled())
+				{
+					LOG.debug(e);
+				}
 				GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.ERROR_MESSAGES_HOLDER, "updatePwd.token.invalid");
 			}
 		}
@@ -195,5 +207,11 @@ public class PasswordResetPageController extends AbstractPageController
 		GlobalMessages.addErrorMessage(model, "form.global.error");
 		storeCmsPageInModel(model, getContentPageForLabelOrId(page));
 		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(page));
+	}
+
+
+	public UpdatePasswordFormValidator getUpdatePasswordFormValidator()
+	{
+		return updatePasswordFormValidator;
 	}
 }

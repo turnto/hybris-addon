@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.interceptors.beforeview;
 
@@ -19,13 +19,13 @@ import de.hybris.platform.acceleratorservices.addonsupport.RequiredAddOnsNamePro
 import de.hybris.platform.acceleratorservices.config.SiteConfigService;
 import de.hybris.platform.acceleratorservices.uiexperience.UiExperienceService;
 import de.hybris.platform.acceleratorstorefrontcommons.constants.WebConstants;
+import de.hybris.platform.acceleratorstorefrontcommons.interceptors.BeforeViewHandler;
 import de.hybris.platform.cms2.model.site.CMSSiteModel;
 import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.commerceservices.enums.SiteTheme;
 import de.hybris.platform.commerceservices.enums.UiExperienceLevel;
 import de.hybris.platform.commerceservices.i18n.CommerceCommonI18NService;
 import de.hybris.platform.core.model.c2l.LanguageModel;
-import de.hybris.merchandise.storefront.interceptors.BeforeViewHandler;
 import de.hybris.merchandise.storefront.util.CSRFTokenManager;
 import de.hybris.merchandise.storefront.web.view.UiExperienceViewResolver;
 
@@ -51,11 +51,13 @@ public class UiThemeResourceBeforeViewHandler implements BeforeViewHandler
 {
 	@SuppressWarnings("unused")
 	private static final Logger LOG = Logger.getLogger(UiThemeResourceBeforeViewHandler.class);
-
+	
 	protected static final String COMMON = "common";
 	protected static final String SHARED = "shared";
 	protected static final String RESOURCE_TYPE_JAVASCRIPT = "javascript";
 	protected static final String RESOURCE_TYPE_CSS = "css";
+	
+	private static final String PATHS = ".paths.";
 
 	@Resource(name = "cmsSiteService")
 	private CMSSiteService cmsSiteService;
@@ -93,7 +95,7 @@ public class UiThemeResourceBeforeViewHandler implements BeforeViewHandler
 				uiExperienceViewResolver.getUiExperienceViewPrefix().get(uiExperienceService.getUiExperienceLevel()), "/");
 		final Object urlEncodingAttributes = request.getAttribute(WebConstants.URL_ENCODING_ATTRIBUTES);
 		final String contextPath = StringUtils.remove(request.getContextPath(),
-				(urlEncodingAttributes != null) ? urlEncodingAttributes.toString() : "");
+				urlEncodingAttributes != null ? urlEncodingAttributes.toString() : "");
 
 		final String siteRootUrl = contextPath + "/_ui/" + uiExperienceCodeLower;
 		final String sharedResourcePath = contextPath + "/_ui/" + SHARED;
@@ -110,8 +112,9 @@ public class UiThemeResourceBeforeViewHandler implements BeforeViewHandler
 		modelAndView.addObject("commonResourcePath", commonResourcePath);
 		modelAndView.addObject("encodedContextPath", encodedContextPath);
 		modelAndView.addObject("siteRootUrl", siteRootUrl);
-		modelAndView.addObject("language", (currentLanguage != null ? currentLanguage.getIsocode() : "en"));
+		modelAndView.addObject("language", currentLanguage != null ? currentLanguage.getIsocode() : "en");
 		modelAndView.addObject("CSRFToken", CSRFTokenManager.getTokenForSession(request.getSession()));
+		modelAndView.addObject("themeName", themeName);
 
 		modelAndView.addObject("uiExperienceLevel", uiExperienceCode);
 
@@ -147,7 +150,7 @@ public class UiThemeResourceBeforeViewHandler implements BeforeViewHandler
 	{
 		final String[] propertyNames = new String[]
 		{ RESOURCE_TYPE_CSS + ".paths", //
-				RESOURCE_TYPE_CSS + ".paths." + uiExperience //
+				RESOURCE_TYPE_CSS + PATHS + uiExperience //
 		};
 
 		return getAddOnResourcePaths(contextPath, addOnNames, propertyNames);
@@ -157,7 +160,7 @@ public class UiThemeResourceBeforeViewHandler implements BeforeViewHandler
 			final List<String> addOnNames)
 	{
 		final String[] propertyNames = new String[]
-		{ RESOURCE_TYPE_CSS + ".paths." + uiExperience + "." + themeName };
+		{ RESOURCE_TYPE_CSS + PATHS + uiExperience + "." + themeName };
 
 		return getAddOnResourcePaths(contextPath, addOnNames, propertyNames);
 	}
@@ -167,7 +170,7 @@ public class UiThemeResourceBeforeViewHandler implements BeforeViewHandler
 	{
 		final String[] propertyNames = new String[]
 		{ RESOURCE_TYPE_JAVASCRIPT + ".paths", //
-				RESOURCE_TYPE_JAVASCRIPT + ".paths." + uiExperience //
+				RESOURCE_TYPE_JAVASCRIPT + PATHS + uiExperience //
 		};
 
 		return getAddOnResourcePaths(contextPath, addOnNames, propertyNames);
@@ -182,18 +185,24 @@ public class UiThemeResourceBeforeViewHandler implements BeforeViewHandler
 		{
 			for (final String propertyName : propertyNames)
 			{
-				final String addOnResourcePropertyValue = siteConfigService.getProperty(addon + "." + propertyName);
-				if (addOnResourcePropertyValue != null)
-				{
-					final String[] propertyPaths = addOnResourcePropertyValue.split(";");
-					for (final String propertyPath : propertyPaths)
-					{
-						addOnResourcePaths.add(contextPath + "/_ui/addons/" + addon + propertyPath);
-					}
-				}
+				addAddOnResourcePaths(contextPath, addOnResourcePaths, addon, propertyName);
 			}
 		}
 		return addOnResourcePaths;
+	}
+
+	protected void addAddOnResourcePaths(final String contextPath, final List<String> addOnResourcePaths, final String addon,
+			final String propertyName)
+	{
+		final String addOnResourcePropertyValue = siteConfigService.getProperty(addon + "." + propertyName);
+		if (addOnResourcePropertyValue != null)
+		{
+			final String[] propertyPaths = addOnResourcePropertyValue.split(";");
+			for (final String propertyPath : propertyPaths)
+			{
+				addOnResourcePaths.add(contextPath + "/_ui/addons/" + addon + propertyPath);
+			}
+		}
 	}
 
 	protected String getThemeNameForSite(final CMSSiteModel site)

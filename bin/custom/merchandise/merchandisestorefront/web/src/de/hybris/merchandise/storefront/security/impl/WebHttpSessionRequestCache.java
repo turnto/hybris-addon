@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.security.impl;
 
@@ -120,8 +120,6 @@ public class WebHttpSessionRequestCache extends HttpSessionRequestCache implemen
 					}
 				};
 
-
-
 				if (isCreateSessionAllowed() || request.getSession(false) != null)
 				{
 					request.getSession().setAttribute(SAVED_REQUEST, savedRequest);
@@ -167,30 +165,22 @@ public class WebHttpSessionRequestCache extends HttpSessionRequestCache implemen
 		if (UrlUtils.isAbsoluteUrl(url))
 		{
 			String relUrl = url.substring(url.indexOf("://") + 3);
-			String modifiedContextPath = contextPath;
+			String modifiedContextPath = StringUtils.isNotEmpty(contextPath)? contextPath : "/";
 			final String urlEncodingAttributes = getSessionService().getAttribute(WebConstants.URL_ENCODING_ATTRIBUTES);
 			if (urlEncodingAttributes != null && !url.contains(urlEncodingAttributes)
 					&& modifiedContextPath.contains(urlEncodingAttributes))
 			{
 				modifiedContextPath = StringUtils.remove(modifiedContextPath, urlEncodingAttributes);
 			}
-			if (StringUtils.isEmpty(relUrl))
-			{
-				relUrl = "/";
-			}
-			else
-			{
-				relUrl = relUrl.substring(relUrl.indexOf(modifiedContextPath) + modifiedContextPath.length());
-			}
-			return relUrl;
+
+            relUrl =  relUrl.substring(relUrl.indexOf(modifiedContextPath) + modifiedContextPath.length());
+
+			return StringUtils.isEmpty(relUrl)? "/" : relUrl;
 		}
 		else
 		{
 			return url;
 		}
 	}
-
-
-
 
 }

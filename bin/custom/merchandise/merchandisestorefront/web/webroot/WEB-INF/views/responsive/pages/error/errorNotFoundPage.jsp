@@ -17,6 +17,12 @@
 	<cms:pageSlot position="MiddleContent" var="comp" >
 		<cms:component component="${comp}"/>
 	</cms:pageSlot>
+	<cms:pageSlot position="BottomContent" var="comp" element="div" class="errorNotFoundPageBottom">
+		<cms:component component="${comp}"/>
+	</cms:pageSlot>
+	<cms:pageSlot position="SideContent" var="feature" element="div" class="errorNotFoundPageSide">
+		<cms:component component="${feature}"/>
+	</cms:pageSlot>
 	
 	<div class="error-page">
 		<a class="btn btn-default js-shopping-button" href="${homePageUrl}">

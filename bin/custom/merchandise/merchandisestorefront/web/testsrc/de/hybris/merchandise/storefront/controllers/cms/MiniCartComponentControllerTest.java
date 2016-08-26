@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,9 +9,11 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
+
+import static org.mockito.BDDMockito.given;
 
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.acceleratorcms.enums.CartTotalDisplayType;
@@ -28,6 +30,8 @@ import java.math.BigDecimal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import junit.framework.Assert;
+
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,13 +40,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ExtendedModelMap;
 
-import junit.framework.Assert;
-
-import static org.mockito.BDDMockito.given;
 
 @UnitTest
 public class MiniCartComponentControllerTest
 {
+	private static final String COMPONENT = "component";
 	private static final String COMPONENT_UID = "componentUid";
 	private static final String TEST_COMPONENT_UID = "MiniCart";
 	private static final Integer TOTAL_UNIT_COUNT = Integer.valueOf(1);
@@ -127,8 +129,9 @@ public class MiniCartComponentControllerTest
 	public void testRenderComponent() throws Exception
 	{
 		final ExtendedModelMap model = new ExtendedModelMap();
-		final String viewName = miniCartComponentController.handleComponent(request, response, model, miniCartComponentModel);
-		Assert.assertEquals(ControllerConstants.Views.Cms.ComponentPrefix
-				+ StringUtils.lowerCase(miniCartComponentModel.getItemtype()), viewName);
+		given(request.getAttribute(COMPONENT)).willReturn(miniCartComponentModel);
+		final String viewName = miniCartComponentController.handleGet(request, response, model);
+		Assert.assertEquals(
+				ControllerConstants.Views.Cms.ComponentPrefix + StringUtils.lowerCase(miniCartComponentModel.getItemtype()), viewName);
 	}
 }

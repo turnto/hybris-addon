@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.security.cookie;
 
@@ -67,7 +67,7 @@ public class EnhancedCookieGenerator extends CookieGenerator
 	@Override
 	public void addCookie(final HttpServletResponse response, final String cookieValue)
 	{
-		super.addCookie(new HttpServletResponseWrapper(response)
+		super.addCookie(new HttpServletResponseWrapper(response) // NOSONAR
 		{
 			@Override
 			public void addCookie(final Cookie cookie)
@@ -77,7 +77,8 @@ public class EnhancedCookieGenerator extends CookieGenerator
 				if (isHttpOnly())
 				{
 					// Custom code to write the cookie including the httpOnly flag
-					final StringBuffer headerBuffer = new StringBuffer(100);
+					// StringBuffer cannot be replaced by StringBuilder due to the type required by called function
+					final StringBuffer headerBuffer = new StringBuffer(100); // NOSONAR
 					ServerCookie.appendCookieValue(headerBuffer, cookie.getVersion(), cookie.getName(), cookie.getValue(),
 							cookie.getPath(), cookie.getDomain(), cookie.getComment(), cookie.getMaxAge(), cookie.getSecure(),
 							true);

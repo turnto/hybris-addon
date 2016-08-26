@@ -4,7 +4,7 @@
 
 
 <footer class="main-footer">
-	<cms:pageSlot position="Footer" var="feature">
-		<cms:component component="${feature}"/>
-	</cms:pageSlot>
+    <cms:pageSlot position="Footer" var="feature">
+        <cms:component component="${feature}"/>
+    </cms:pageSlot>
 </footer>

@@ -7,16 +7,26 @@
 
 <template:page pageTitle="${pageTitle}">
 
+	<div class="row">		
+		<cms:pageSlot position="Section1" var="feature">
+			<cms:component component="${feature}" element="div" class="col-xs-12 yComponentWrapper"/>
+		</cms:pageSlot>		
+	</div>
 	<div class="row">
-		<cms:pageSlot position="ProductLeftRefinements" var="feature">
-			<cms:component component="${feature}"/>
-		</cms:pageSlot>
-
-		<cms:pageSlot position="ProductListSlot" var="feature">
-			<cms:component component="${feature}"/>
-		</cms:pageSlot>
-
-
+		<div class="col-xs-3">
+			<div class="row">
+				<cms:pageSlot position="ProductLeftRefinements" var="feature">
+					<cms:component component="${feature}" element="div" class="col-xs-12 yComponentWrapper"/>
+				</cms:pageSlot>
+			</div>
+		</div>
+		<div class="col-sm-12 col-md-9">
+			<div class="row">
+			<cms:pageSlot position="ProductListSlot" var="feature">
+				<cms:component component="${feature}" element="div" class="col-xs-12 product-list-wrapper yComponentWrapper"/>
+			</cms:pageSlot>
+			</div>
+		</div>
 	</div>
 
 </template:page>

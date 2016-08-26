@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.web.wrappers;
 
@@ -49,11 +49,11 @@ public class UrlEncodeHttpRequestWrapper extends HttpServletRequestWrapper
 
 		if (StringUtils.startsWith(originalRequestURI, contextPath))
 		{
-			originalRequestUriMinusAnyContextPath = StringUtils.remove(originalRequestURI, contextPath);
+			originalRequestUriMinusAnyContextPath = StringUtils.removeStart(originalRequestURI, contextPath);
 		}
 		else if (StringUtils.startsWith(originalRequestURI, originalContextPath))
 		{
-			originalRequestUriMinusAnyContextPath = StringUtils.remove(originalRequestURI, originalContextPath);
+			originalRequestUriMinusAnyContextPath = StringUtils.removeStart(originalRequestURI, originalContextPath);
 		}
 		else
 		{
@@ -68,7 +68,7 @@ public class UrlEncodeHttpRequestWrapper extends HttpServletRequestWrapper
 	public String getServletPath()
 	{
 		final String originalServletPath = super.getServletPath();
-		if (("/").equals(originalServletPath) || ("/" + pattern).equals(originalServletPath)
+		if ("/".equals(originalServletPath) || ("/" + pattern).equals(originalServletPath)
 				|| ("/" + pattern + "/").equals(originalServletPath))
 		{
 			return "";

@@ -16,7 +16,7 @@ ACC.ratingstars = {
 
 			for (var i = 1; i <= ratingData.total; i++) {
 				var $clone = $ratingIcon.clone().removeClass("js-ratingIcon");
-
+				
 				// adds the active class to the stars that are less than or equal than the current rating
 				if(i <= ratingData.rating){
 					$clone.addClass("active")
@@ -28,7 +28,7 @@ ACC.ratingstars = {
 					$clonelh = $ratingIcon.clone().removeClass("ratingIcon");
 					$clonelh.addClass("lh")
 				}
-
+				
 
 				// inert the rating icons in the dom
 				$clone.insertBefore($ratingIcon);
@@ -68,9 +68,10 @@ ACC.ratingstars = {
 			e.preventDefault();
 			var ratingData = $e.data("rating");
 			var cindex =  $(this).index()+1;
-			ratingData.rating = cindex/2;
-			$(".js-ratingSetInput").val(cindex/2);
-		});
+			ratingData.rating = cindex/2
+
+			$(".js-ratingSetInput").val(ratingData.rating)
+		})
 
 		$e.each(function(){
 			var ratingData = $(this).data("rating");
@@ -79,13 +80,13 @@ ACC.ratingstars = {
 
 			for (var i = 1; i <= ratingData.total; i++) {
 				var $clone = $ratingIcon.clone().removeClass("js-ratingIcon");
-
+				
 				// divides the icons for the half rating points
 				$clone.addClass("fh")
 				$clonelh = $ratingIcon.clone().removeClass("js-ratingIcon");
 				$clonelh.addClass("lh")
-
-
+				
+			
 				// inert the rating icons in the dom
 				$clone.insertBefore($ratingIcon);
 				if($clonelh){

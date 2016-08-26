@@ -25,10 +25,18 @@ ACC.checkout = {
 		$(document).on("click",".js-saved-payments",function(e){
 			e.preventDefault();
 
-			ACC.colorbox.open("",{
-				href: "#savedpayments",
+			var title = $("#savedpaymentstitle").html();
+
+			$.colorbox({
+				href: "#savedpaymentsbody",
 				inline:true,
-				width:"320px",
+				maxWidth:"100%",
+				opacity:0.7,
+				//width:"320px",
+				title: title,
+				close:'<span class="glyphicon glyphicon-remove"></span>',
+				onComplete: function(){
+				}
 			});
 		})
 	},
@@ -65,7 +73,7 @@ ACC.checkout = {
 					document.getElementById("expressCheckoutCheckbox").checked = true;
 		});
 		
-		$(document).on("change",".confirmGuestEmail,.guestEmail",function(){
+		$(document).on("input",".confirmGuestEmail,.guestEmail",function(){
 			  
 			  var orginalEmail = $(".guestEmail").val();
 			  var confirmationEmail = $(".confirmGuestEmail").val();

@@ -28,17 +28,18 @@
 					<c:url value="${productReference.target.url}/quickView" var="productUrl"/>
 					<div class="item">
 						<a href="${productUrl}" class="js-reference-item" data-quickview-title="<spring:theme code="popup.quick.view.select"/></span>">
-						<product:productPrimaryReferenceImage
-							product="${productReference.target}" format="product" />
+                            <div class="thumb">
+                                <product:productPrimaryReferenceImage product="${productReference.target}" format="product" />
+                            </div>
 						 
-						<c:if test="${component.displayProductTitles}">
-							<div class="item-name">${productReference.target.name}</div>
-						</c:if>
-						<c:if test="${component.displayProductPrices}">
-							<div class="priceContainer">
-								<format:fromPrice priceData="${productReference.target.price}" />
-							</div>
-						</c:if>
+                            <c:if test="${component.displayProductTitles}">
+                                <div class="item-name">${productReference.target.name}</div>
+                            </c:if>
+                            <c:if test="${component.displayProductPrices}">
+                                <div class="priceContainer">
+                                    <format:fromPrice priceData="${productReference.target.price}" />
+                                </div>
+                            </c:if>
 						</a>
 
 					</div>

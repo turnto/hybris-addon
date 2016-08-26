@@ -18,7 +18,8 @@
 <ycommerce:testId code="facetNav_title_${facetData.name}">
 	<div class="facet js-facet js-shop-stores-facet">
 		<div class="facet-name js-facet-name">
-				<spring:theme code="search.nav.facetTitle" arguments="${facetData.name}"/>
+			<span class="glyphicon facet-arrow"></span>
+			<spring:theme code="search.nav.facetTitle" arguments="${facetData.name}"/>
 		</div>
 
 		<div class="facet-values js-facet-values">
@@ -29,7 +30,7 @@
 						<label for="user_location_query" class="sr-only"><spring:theme code="storeFinder.search"/></label>
 						<input type="text" class="form-control js-shop-store-search-input" name="q" id="user_location_query" placeholder="">
 						<span class="input-group-btn">
-							<button type="submit" id="user_location_query_button" class="btn btn-primary ">
+							<button type="submit" id="user_location_query_button" class="btn btn-link">
 								<span class="glyphicon glyphicon-search"></span>
 							</button>
 						</span>
@@ -39,7 +40,7 @@
 				<div class="line-text"><span><spring:theme code="storeFinder.line.text"/></span></div>
 
 				
-				<button type="button" id="findStoresNearMeAjax" class="btn btn-primary btn-block"><spring:theme code="storeFinder.findStoresNearMe"/></button>
+				<button type="button" id="findStoresNearMeAjax" class="btn btn-default btn-block"><spring:theme code="storeFinder.findStoresNearMe"/></button>
 			
 			</div>
 

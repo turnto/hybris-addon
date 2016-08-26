@@ -117,9 +117,13 @@
 	text-decoration: underline;
 }
 
+.orderHead{
+	margin-top: 0.7em;/*align with the button margin*/
+}
 
-
-
+.orderConfirmationMsg{
+	font-weight: bold;
+}
 
 
 

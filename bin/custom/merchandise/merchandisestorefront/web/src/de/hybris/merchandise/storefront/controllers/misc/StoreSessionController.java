@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.misc;
 
@@ -78,7 +78,7 @@ public class StoreSessionController extends AbstractController
 		{
 			userFacade.syncSessionLanguage();
 		}
-		return (urlEncoderService.isLanguageEncodingEnabled()) ? getReturnRedirectUrlForUrlEncoding(request, previousLanguage,
+		return urlEncoderService.isLanguageEncodingEnabled() ? getReturnRedirectUrlForUrlEncoding(request, previousLanguage,
 				storeSessionFacade.getCurrentLanguage().getIsocode()) : getReturnRedirectUrlWithoutReferer(request);
 	}
 
@@ -89,7 +89,7 @@ public class StoreSessionController extends AbstractController
 		final String previousCurrency = storeSessionFacade.getCurrentCurrency().getIsocode();
 		storeSessionFacade.setCurrentCurrency(isoCode);
 		userFacade.syncSessionCurrency();
-		return (urlEncoderService.isCurrencyEncodingEnabled()) ? getReturnRedirectUrlForUrlEncoding(request, previousCurrency,
+		return urlEncoderService.isCurrencyEncodingEnabled() ? getReturnRedirectUrlForUrlEncoding(request, previousCurrency,
 				storeSessionFacade.getCurrentCurrency().getIsocode()) : getReturnRedirectUrlWithoutReferer(request);
 	}
 

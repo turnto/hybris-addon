@@ -3,177 +3,111 @@
 <%@ taglib prefix="template" tagdir="/WEB-INF/tags/responsive/template"%>
 <%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-<spring:url value="/my-account/update-profile" var="updateProfileUrl"/>
-<spring:url value="/my-account/update-password" var="updatePasswordUrl"/>
-<spring:url value="/my-account/update-email" var="updateEmailUrl"/>
-<spring:url value="/my-account/address-book" var="addressBookUrl"/>
-<spring:url value="/my-account/payment-details" var="paymentDetailsUrl"/>
-<spring:url value="/my-account/orders" var="ordersUrl"/>
+<c:set var="noBorder" value=""/>
+<c:if test="${not empty paymentInfoData}">
+    <c:set var="noBorder" value="no-border"/>
+</c:if>
 
-<template:page pageTitle="${pageTitle}">
-
-	<div class="global-alerts">
-		<div class="alert alert-info" role="alert">
-			<spring:theme code="text.page.message.underconstruction" text="Information: Page Under Construction - Not Completely Functional"/>
-		</div>
-	</div>
-
-
-		<div class="row">
-			<div class="col-md-3 col-lg-2">
-				<div class="account-navigation">
-					<div class="account-navigation-header">
-						<span class="hidden-xs hidden-sm">
-							<spring:theme code="text.account.yourAccount" text="My Account"/>
-						</span> 
-						<a class="hidden-md hidden-lg" href="">
-							<span class="glyphicon glyphicon-chevron-left"></span> 
-							<spring:theme code="text.account.yourAccount" text="My Account"/> 
-						</a>
-					</div>
-					<ul class="account-navigation-list">
-						<li class="title">
-							<spring:theme code="text.account.profile" text="Profile"/>
-						</li>
-						<li>
-							<a href="${updateProfileUrl}">
-								<spring:theme code="text.account.profile.updatePersonalDetails" text="Update personal details"/> 
-							</a>
-						</li>
-						<li>
-							<a href="${updatePasswordUrl}">
-								<spring:theme code="text.account.profile.changePassword" text="Change your password"/> 
-							</a>
-						</li>
-						<li>
-							<a href="${updateEmailUrl}">
-								<spring:theme code="text.account.profile.updateEmail" text="Update your email"/> 
-							</a>
-						</li>
-						<li class="title">
-							<spring:theme code="text.account.addressBook" text="Address Book"/>
-						</li>
-						<li>
-							<a href="${addressBookUrl}">
-								<spring:theme code="text.account.addressBook.manageDeliveryAddresses" text="Manage your delivery address"/> 
-							</a>
-						</li>
-						<li class="title">
-							<spring:theme code="text.account.paymentDetails" text="Payment Details"/>
-						</li>
-						<li>
-							<a href="${paymentDetailsUrl}">
-								<spring:theme code="text.account.paymentDetails.managePaymentDetails" text="Manage your payment details"/> 
-							</a>
-						</li>
-						<li class="title">
-							<spring:theme code="text.account.orderHistory" text="Order History"/>
-						</li>
-						<li>
-							<a href="${ordersUrl}">
-								<spring:theme code="text.account.orderHistory.viewOrders" text="View your order history"/> 
-							</a>
-						</li>
-					</ul>
-				</div>
-
-
-
-			</div>
-			<div class="col-md-9 col-lg-10">
-				<div class="account-section">
-					<div class="account-section-header">Payment Details</div>
-					<div
-						class="account-section-content	 account-section-content-small ">
-
-						<div class="account-paymentdetails">
-							<p>Manage your payment details.</p>
-							<a href="" class="btn btn-primary btn-block">Add New Payment</a>
-							<ul class="account-paymentdetails-list">
-
-
-								<li>
-									<div class="remove">
-										<button class="btn btn-default">
-											<span class="glyphicon glyphicon-trash"></span>
-										</button>
-									</div> <strong>Mr Fitzgerald Sharp</strong> (default)<br>Visa<br>************5894<br>07/2018<br>572
-									Stratford Road<br> 951 Walker Court<br>Glidden<br>
-									Wisconsin 5860
-
-									<div class="actions">
-
-										<button class="btn btn-primary">Edit</button>
-									</div>
-								</li>
-
-								<li>
-									<div class="remove">
-										<button class="btn btn-default">
-											<span class="glyphicon glyphicon-trash"></span>
-										</button>
-									</div> <strong>Mr Roberta Robinson</strong><br>Visa<br>************5894<br>07/2018<br>883
-									Carroll Street<br> 377 Losee Terrace<br>Fairhaven<br>
-									Wyoming 6949
-
-									<div class="actions">
-
-										<button class="btn btn-default">Set as Default</button>
-
-										<button class="btn btn-primary">Edit</button>
-									</div>
-								</li>
-
-								<li>
-									<div class="remove">
-										<button class="btn btn-default">
-											<span class="glyphicon glyphicon-trash"></span>
-										</button>
-									</div> <strong>Mr Doreen Hart</strong><br>Visa<br>************5894<br>07/2018<br>175
-									Bragg Street<br> 758 Beaumont Street<br>Wescosville<br>
-									Oklahoma 1492
-
-									<div class="actions">
-
-										<button class="btn btn-default">Set as Default</button>
-
-										<button class="btn btn-primary">Edit</button>
-									</div>
-								</li>
-
-								<li>
-									<div class="remove">
-										<button class="btn btn-default">
-											<span class="glyphicon glyphicon-trash"></span>
-										</button>
-									</div> <strong>Mr Head Decker</strong><br>Visa<br>************5894<br>07/2018<br>568
-									Ainslie Street<br> 503 Lewis Avenue<br>Ripley<br>
-									Virginia 1987
-
-									<div class="actions">
-
-										<button class="btn btn-default">Set as Default</button>
-
-										<button class="btn btn-primary">Edit</button>
-									</div>
-								</li>
-
-							</ul>
-							<a href="" class="btn btn-primary btn-block">Add New Payment</a>
-
-						</div>
-
-
-
-					</div>
-				</div>
-			</div>
-		</div>
-
-
-
-
-
-
-</template:page>
+<div class="account-section-header ${noBorder}">
+    <spring:theme code="text.account.paymentDetails" />
+</div>
+<c:choose>
+    <c:when test="${not empty paymentInfoData}">
+        <div class="account-paymentdetails account-list">
+            <div class="account-cards card-select">
+                <c:forEach items="${paymentInfoData}" var="paymentInfo">
+                    <div class="card col-xs-12 col-sm-6 col-md-4">
+                        <div class="account-cards-actions">
+                            <ycommerce:testId code="paymentDetails_deletePayment_button" >
+                                <a class="action-links removePaymentDetailsButton" href="#" data-payment-id="${paymentInfo.id}" data-popup-title="<spring:theme code="text.account.paymentDetails.delete.popup.title"/>">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                </a>
+                            </ycommerce:testId>
+                        </div>
+                        <ul>
+                            <li>
+                                <c:if test="${paymentInfo.defaultPaymentInfo}" >
+                                    <strong>
+                                </c:if>
+                                    ${fn:escapeXml(paymentInfo.accountHolderName)}<c:if test="${paymentInfo.defaultPaymentInfo}" >&nbsp;(<spring:theme code="text.default" />)</c:if>
+                                <c:if test="${paymentInfo.defaultPaymentInfo}" ></strong></c:if>
+                            </li>
+                            <li>${fn:escapeXml(paymentInfo.cardTypeData.name)}</li>
+                            <li>
+                                <ycommerce:testId code="paymentDetails_item_cardNumber_text" >${fn:escapeXml(paymentInfo.cardNumber)}</ycommerce:testId>
+                            </li>
+                            <li>
+                                <c:if test="${paymentInfo.expiryMonth lt 10}">0</c:if>
+                                ${fn:escapeXml(paymentInfo.expiryMonth)}&nbsp;/&nbsp;${fn:escapeXml(paymentInfo.expiryYear)}
+                            </li>
+                            <c:if test="${paymentInfo.billingAddress ne null}">
+                                <li>${fn:escapeXml(paymentInfo.billingAddress.line1)}</li>
+                                <li>${fn:escapeXml(paymentInfo.billingAddress.town)}&nbsp;${fn:escapeXml(paymentInfo.billingAddress.region.isocodeShort)}</li>
+                                <li>${fn:escapeXml(paymentInfo.billingAddress.country.name)}&nbsp;${fn:escapeXml(paymentInfo.billingAddress.postalCode)}</li>
+                            </c:if>
+                        </ul>
+                        <c:if test="${not paymentInfo.defaultPaymentInfo}" >
+                            <c:url value="/my-account/set-default-payment-details" var="setDefaultPaymentActionUrl"/>
+                            <form:form id="setDefaultPaymentDetails${paymentInfo.id}" action="${setDefaultPaymentActionUrl}" method="post">
+                                <input type="hidden" name="paymentInfoId" value="${paymentInfo.id}"/>
+                                <ycommerce:testId code="paymentDetails_setAsDefault_button" >
+                                    <button type="submit" class="account-set-default-address">
+                                        <spring:theme code="text.setDefault" text="Set as Default" />
+                                    </button>
+                                </ycommerce:testId>
+                            </form:form>
+                        </c:if>
+                    </div>
+                    <div style="display:none">
+                        <div id="popup_confirm_payment_removal_${paymentInfo.id}" class="account-address-removal-popup">
+                            <spring:theme code="text.account.paymentDetails.delete.following"/>
+                            <div class="address">
+                                <strong>
+                                ${fn:escapeXml(paymentInfo.accountHolderName)}
+                                </strong>
+                                <br>${fn:escapeXml(paymentInfo.cardTypeData.name)}
+                                <br>${fn:escapeXml(paymentInfo.cardNumber)}
+                                <br>
+                                <c:if test="${paymentInfo.expiryMonth lt 10}">0</c:if>
+                                ${fn:escapeXml(paymentInfo.expiryMonth)}&nbsp;/&nbsp;${fn:escapeXml(paymentInfo.expiryYear)}
+                                <c:if test="${paymentInfo.billingAddress ne null}">
+                                    <br>${fn:escapeXml(paymentInfo.billingAddress.line1)}
+                                    <br>${fn:escapeXml(paymentInfo.billingAddress.town)}&nbsp;${fn:escapeXml(paymentInfo.billingAddress.region.isocodeShort)}
+                                    <br>${fn:escapeXml(paymentInfo.billingAddress.country.name)}&nbsp;${fn:escapeXml(paymentInfo.billingAddress.postalCode)}
+                                </c:if>
+                            </div>
+                            <c:url value="/my-account/remove-payment-method" var="removePaymentActionUrl"/>
+                            <form:form id="removePaymentDetails${paymentInfo.id}" action="${removePaymentActionUrl}" method="post">
+                                <input type="hidden" name="paymentInfoId" value="${paymentInfo.id}"/>
+                                <br />
+                                <div class="modal-actions">
+                                    <ycommerce:testId code="paymentDetailsDelete_delete_button" >
+                                        <div class="col-xs-12 col-sm-6 col-sm-push-6">
+                                            <button type="submit" class="btn btn-default btn-primary btn-block paymentsDeleteBtn">
+                                                <spring:theme code="text.account.paymentDetails.delete"/>
+                                            </button>
+                                        </div>
+                                    </ycommerce:testId>
+                                    <div class="col-xs-12 col-sm-6 col-sm-pull-6">
+                                        <a class="btn btn-default closeColorBox paymentsDeleteBtn btn-block" data-payment-id="${paymentInfo.id}">
+                                            <spring:theme code="text.button.cancel" />
+                                        </a>
+                                    </div>
+                                </div>
+                            </form:form>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+        </div>
+    </c:when>
+    <c:otherwise>
+        <div class="account-section-content	col-md-6 col-md-push-3 content-empty">
+            <spring:theme code="text.account.paymentDetails.noPaymentInformation" />
+        </div>
+    </c:otherwise>
+</c:choose>

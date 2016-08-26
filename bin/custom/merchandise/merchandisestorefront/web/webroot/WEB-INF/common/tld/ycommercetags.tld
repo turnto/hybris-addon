@@ -29,6 +29,15 @@
 		<function-class>de.hybris.platform.acceleratorstorefrontcommons.tags.Functions</function-class>
 		<function-signature>de.hybris.platform.commercefacades.product.data.ImageData getPrimaryImageForProductAndFormat(de.hybris.platform.commercefacades.product.data.ProductData,java.lang.String)</function-signature>
 	</function>
+	
+	<function>
+		<description>
+			Get the primary image for the ProductData specified in the format specified.
+		</description>
+		<name>productCodeImage</name>
+		<function-class>de.hybris.platform.acceleratorstorefrontcommons.tags.Functions</function-class>
+		<function-signature>de.hybris.platform.commercefacades.product.data.ImageData getImageForProductCode(de.hybris.platform.commercefacades.product.data.ProductData,java.lang.String,java.lang.String)</function-signature>
+	</function>
 
 	<function>
 		<description>
@@ -64,6 +73,15 @@
 		<name>encodeUrl</name>
 		<function-class>de.hybris.platform.acceleratorstorefrontcommons.tags.Functions</function-class>
 		<function-signature>java.lang.String encodeUrl(java.lang.String)</function-signature>
+	</function>
+	
+	<function>
+		<description>
+			Returns normalized code for selection data code
+		</description>
+		<name>normalizedCode</name>
+		<function-class>de.hybris.platform.acceleratorstorefrontcommons.tags.Functions</function-class>
+		<function-signature>java.lang.String normalizedCode(java.lang.String)</function-signature>
 	</function>
 	
 	<function>

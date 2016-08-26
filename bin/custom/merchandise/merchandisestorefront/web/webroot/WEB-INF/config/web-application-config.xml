@@ -2,7 +2,7 @@
 <!--
  [y] hybris Platform
 
- Copyright (c) 2000-2015 hybris AG
+ Copyright (c) 2000-2016 hybris AG
  All rights reserved.
 
  This software is the confidential and proprietary information of hybris
@@ -31,7 +31,7 @@
 			</map>
 		</property>
 	</bean>
-
+	
 	<!-- Load additional configuration -->
 	<import resource="spring-filter-config.xml"/>
 	<import resource="btg-config.xml"/>
@@ -39,5 +39,6 @@
 	<import resource="spring-mvc-config.xml"/>
 	<import resource="classpath:/acceleratorcms/spring/web-spring-context.xml"/>
 	<import resource="spring-cms-config.xml"/>
+	<import resource="multi-step-checkout-config.xml"/>
 
 </beans>

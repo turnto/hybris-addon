@@ -5,6 +5,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags" %>
 <%@ taglib prefix="theme" tagdir="/WEB-INF/tags/shared/theme" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <c:if test="${not empty facetData.values}">
 	<div class="facet">
@@ -25,8 +26,8 @@
 								<li>
 									<c:if test="${facetData.multiSelect}">
 										<form action="#" method="get">
-											<input type="hidden" name="q" value="${facetValue.query.query.value}"/>
-											<input type="hidden" name="text" value="${searchPageData.freeTextSearch}"/>
+											<input type="hidden" name="q" value="${fn:escapeXml(facetValue.query.query.value)}"/>
+											<input type="hidden" name="text" value="${fn:escapeXml(searchPageData.freeTextSearch)}"/>
 											<label class="facet_block-label">
 												<input type="checkbox" ${facetValue.selected ? 'checked="checked"' : ''} onchange="$(this).closest('form').submit()"/>
 												${facetValue.name}
@@ -53,8 +54,8 @@
 							<li>
 								<c:if test="${facetData.multiSelect}">
 									<form action="#" method="get">
-										<input type="hidden" name="q" value="${facetValue.query.query.value}"/>
-										<input type="hidden" name="text" value="${searchPageData.freeTextSearch}"/>
+										<input type="hidden" name="q" value="${fn:escapeXml(facetValue.query.query.value)}"/>
+										<input type="hidden" name="text" value="${fn:escapeXml(searchPageData.freeTextSearch)}"/>
 										<label class="facet_block-label">
 											<input type="checkbox" ${facetValue.selected ? 'checked="checked"' : ''} onchange="$(this).closest('form').submit()"/>
 											${facetValue.name}&nbsp;

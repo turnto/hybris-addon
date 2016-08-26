@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,16 +9,16 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.interceptors.beforecontroller;
 
 import de.hybris.platform.acceleratorstorefrontcommons.annotations.RequireHardLogIn;
 import de.hybris.platform.acceleratorstorefrontcommons.constants.WebConstants;
+import de.hybris.platform.acceleratorstorefrontcommons.interceptors.BeforeControllerHandler;
 import de.hybris.platform.order.CartService;
 import de.hybris.platform.servicelayer.session.SessionService;
 import de.hybris.platform.servicelayer.user.UserService;
-import de.hybris.merchandise.storefront.interceptors.BeforeControllerHandler;
 
 import java.lang.annotation.Annotation;
 
@@ -142,8 +142,8 @@ public class RequireHardLoginBeforeControllerHandler implements BeforeController
 				final String guid = (String) request.getSession().getAttribute(SECURE_GUID_SESSION_KEY);
 				boolean redirect = true;
 
-				if (((!getUserService().isAnonymousUser(getUserService().getCurrentUser()) || checkForAnonymousCheckout()) &&
-						checkForGUIDCookie(request, response, guid)))
+				if ((!getUserService().isAnonymousUser(getUserService().getCurrentUser()) || checkForAnonymousCheckout()) &&
+						checkForGUIDCookie(request, response, guid))
 				{
 					redirect = false;
 				}
@@ -168,22 +168,7 @@ public class RequireHardLoginBeforeControllerHandler implements BeforeController
 			final String guidCookieName = getCookieGenerator().getCookieName();
 			if (guidCookieName != null)
 			{
-				for (final Cookie cookie : request.getCookies())
-				{
-					if (guidCookieName.equals(cookie.getName()))
-					{
-						if (guid.equals(cookie.getValue()))
-						{
-							return true;
-						}
-						else
-						{
-							LOG.info("Found secure cookie with invalid value. expected [" + guid + "] actual [" + cookie.getValue()
-									+ "]. removing.");
-							getCookieGenerator().removeCookie(response);
-						}
-					}
-				}
+				return isGuidStoredinCookies(request, response, guid, guidCookieName);
 			}
 		}
 
@@ -191,6 +176,27 @@ public class RequireHardLoginBeforeControllerHandler implements BeforeController
 
 	}
 
+	protected boolean isGuidStoredinCookies(final HttpServletRequest request, final HttpServletResponse response,
+			final String guid, final String guidCookieName) {
+		for (final Cookie cookie : request.getCookies())
+		{
+			if (guidCookieName.equals(cookie.getName()))
+			{
+				if (guid.equals(cookie.getValue()))
+				{
+					return true;
+				}
+				else
+				{
+					LOG.info("Found secure cookie with invalid value. expected [" + guid + "] actual [" + cookie.getValue()
+							+ "]. removing.");
+					getCookieGenerator().removeCookie(response);
+				}
+			}
+		}
+		return false;
+	}
+	
 	protected boolean checkForAnonymousCheckout()
 	{
 		if(Boolean.TRUE.equals(getSessionService().getAttribute(WebConstants.ANONYMOUS_CHECKOUT)))

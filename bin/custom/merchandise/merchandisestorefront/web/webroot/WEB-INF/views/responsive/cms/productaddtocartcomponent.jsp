@@ -3,15 +3,25 @@
 <%@ taglib prefix="theme" tagdir="/WEB-INF/tags/shared/theme" %>
 <%@ taglib prefix="action" tagdir="/WEB-INF/tags/responsive/action" %>
 
+<c:set var="isForceInStock" value="${product.stock.stockLevelStatus.code eq 'inStock' and empty product.stock.stockLevel}"/>
+<c:choose> 
+  <c:when test="${isForceInStock}">
+    <c:set var="maxQty" value="FORCE_IN_STOCK"/>
+  </c:when>
+  <c:otherwise>
+    <c:set var="maxQty" value="${product.stock.stockLevel}"/>
+  </c:otherwise>
+</c:choose>
+
 <div class="addtocart-component">
 		<c:if test="${empty showAddToCart ? true : showAddToCart}">
 		<div class="qty-selector input-group js-qty-selector">
 			<span class="input-group-btn">
-				<button class="btn btn-primary js-qty-selector-minus" type="button">-</button>
+				<button class="btn btn-default js-qty-selector-minus" type="button"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
 			</span>
-				<input type="text" maxlength="3" class="form-control js-qty-selector-input" size="1" value='1' data-max="${product.stock.stockLevel}" data-min="1" name="pdpAddtoCartInput"  id="pdpAddtoCartInput"  />
+				<input type="text" maxlength="3" class="form-control js-qty-selector-input" size="1" value='1' data-max="${maxQty}" data-min="1" name="pdpAddtoCartInput"  id="pdpAddtoCartInput"  />
 			<span class="input-group-btn">
-				<button class="btn btn-primary js-qty-selector-plus" type="button">+</button>
+				<button class="btn btn-default js-qty-selector-plus" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
 			</span>
 		</div>
 		</c:if>
@@ -25,15 +35,15 @@
 				<spring:theme code="product.variants.only.left" arguments="${product.stock.stockLevel}"/>
 			</c:set>
 		</c:if>
-		<c:if test="${product.stock.stockLevelStatus.code eq 'inStock' and empty product.stock.stockLevel}">
+		<c:if test="${isForceInStock}">
 			<c:set var="productStockLevel">
 				<spring:theme code="product.variants.available"/>
 			</c:set>
 		</c:if>
-		<div class="stock-status">
+		<div class="stock-wrapper clearfix">
 			${productStockLevel}
 		</div>
-		<div class="row">
+		<div class="actions">
 			<action:actions element="div"  parentComponent="${component}"/>
 		</div>
 </div>

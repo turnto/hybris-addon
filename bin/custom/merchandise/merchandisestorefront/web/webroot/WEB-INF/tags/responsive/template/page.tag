@@ -11,6 +11,7 @@
 <%@ taglib prefix="footer"
 	tagdir="/WEB-INF/tags/responsive/common/footer"%>
 <%@ taglib prefix="common" tagdir="/WEB-INF/tags/responsive/common"%>
+<%@ taglib prefix="cart" tagdir="/WEB-INF/tags/responsive/cart" %>
 
 <template:master pageTitle="${pageTitle}">
 
@@ -23,6 +24,15 @@
 	</jsp:attribute>
 
 	<jsp:body>
+		<div class="branding-mobile hidden-md hidden-lg">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12 js-mobile-logo">
+						<%--populated by JS acc.navigation--%>
+					</div>
+				</div>
+			</div>
+		</div>
 		<main data-currency-iso-code="${currentCurrency.isocode}">
 			<spring:theme code="text.skipToContent" var="skipToContent" />
 			<a href="#skip-to-content" class="skiptocontent" data-role="none">${skipToContent}</a>
@@ -39,6 +49,7 @@
 		
 			<div class="container">
 				<common:globalMessages />
+				<cart:cartRestoration />
 				<jsp:doBody />
 			</div>
 

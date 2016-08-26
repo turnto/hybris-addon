@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,11 +9,12 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.misc;
 
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.AbstractController;
+import de.hybris.platform.cms2.misc.UrlUtils;
 import de.hybris.platform.servicelayer.i18n.I18NService;
 
 import javax.annotation.Resource;
@@ -54,14 +55,8 @@ public class FavIconController extends AbstractController
 		String iconPath = themeSource.getTheme(themeName).getMessageSource()
 				.getMessage(FAVICON_THEME_CODE, new Object[]{}, i18nService.getCurrentLocale());
 		final String originalContextPath = (String) request.getAttribute(ORIGINAL_CONTEXT);
-
-		if (originalContextPath != null)
-		{
-			final String requestUrl = String.valueOf(request.getRequestURL());
-			iconPath = requestUrl.substring(0, requestUrl.indexOf(originalContextPath)
-					+ originalContextPath.length()) + "/" + iconPath;
-		}
-
+		final String hostUrl = UrlUtils.extractHostInformationFromRequest(request);
+		iconPath = hostUrl +  originalContextPath + iconPath;
 		return REDIRECT_PREFIX + iconPath;
 	}
 }

@@ -7,6 +7,7 @@
 <%@ taglib prefix="theme" tagdir="/WEB-INF/tags/shared/theme" %>
 <%@ taglib prefix="format" tagdir="/WEB-INF/tags/shared/format" %>
 <%@ taglib prefix="product" tagdir="/WEB-INF/tags/desktop/product" %>
+<%@ taglib prefix="cart" tagdir="/WEB-INF/tags/desktop/cart" %>
 
 
 
@@ -29,40 +30,49 @@
 </c:forEach>
 ]
 },
-"cartAnalyticsData":{"cartCode" : "${cartCode}","productPostPrice":"${entry.basePrice.value}","productName":"${product.name}"}
+"cartAnalyticsData":{"cartCode" : "${cartCode}","productPostPrice":"${entry.basePrice.value}","productName":"<c:out value='${product.name}' />"}
 ,
 "addToCartLayer":"<spring:escapeBody javaScriptEscape="true">
 <spring:theme code="text.addToCart" var="addToCartText"/>
 <c:url value="/cart" var="cartUrl"/>
 <c:url value="/cart/checkout" var="checkoutUrl"/>
 <div id="addToCartLayer">
-<div class="cart_popup_error_msg"><spring:theme code="${errorMsg}" /></div>
-<div class="legend"><spring:theme code="basket.added.to.basket" /></div>
-<div class="popupCartItem">
-	<div class="itemThumb"><product:productPrimaryImage product="${product}" format="cartIcon"/></div>
-	<div class="itemDesc">
-		<div class="itemName"><c:out value="${product.name}" /></div>
-		<div class="itemQuantity"><span class="label"><spring:theme code="popup.cart.quantity.added"/></span>${quantity}</div>
-			<c:forEach items="${product.baseOptions}" var="baseOptions">
-				<c:forEach items="${baseOptions.selected.variantOptionQualifiers}" var="baseOptionQualifier">
-					<c:if test="${baseOptionQualifier.qualifier eq 'style' and not empty baseOptionQualifier.image.url}">
-						<div class="itemColor">
-							<span class="label"><spring:theme code="product.variants.colour"/></span>
-							<img src="${baseOptionQualifier.image.url}"  alt="${baseOptionQualifier.value}" title="${baseOptionQualifier.value}"/>
-						</div>
-					</c:if>
-					<c:if test="${baseOptionQualifier.qualifier eq 'size'}">
-						<div class="itemSize">
-							<span class="label"><spring:theme code="product.variants.size"/></span>
-							${baseOptionQualifier.value}
-						</div>
-					</c:if>
-				</c:forEach>
+<div class="cart_popup_error_msg">
+	<c:choose>
+		<c:when test="${multidErrorMsgs ne null and not empty multidErrorMsgs}">
+			<c:forEach items="${multidErrorMsgs}" var="multidErrorMsg">
+				<spring:theme code="${multidErrorMsg}" />
+				</br>
 			</c:forEach>
-		<div class="itemPrice"><format:price priceData="${entry.basePrice}"/></div>
-	</div>
-</div>	
-
+		</c:when>
+		<c:otherwise>
+			<spring:theme code="${errorMsg}" />
+		</c:otherwise>
+	</c:choose>
+</div>
+<div class="legend"><spring:theme code="basket.added.to.basket" />
+	<c:if test="${numberShowing > 0 and fn:length(products) > numberShowing}">
+		<p class="legend">
+			<spring:theme code="popup.cart.showing" arguments="${numberShowing},${fn:length(products)}"/>
+			<c:if test="${fn:length(products) > numberShowing}">
+				<a href="${cartUrl}">Show All</a>
+			</c:if>
+		</p>
+	</c:if>
+</div>
+<c:choose>
+	<c:when test="${modifications ne null}">
+		<c:forEach items="${modifications}" var="modification" end="${numberShowing - 1}">
+			<c:set var="product" value="${modification.entry.product}" />
+			<c:set var="entry" value="${modification.entry}" />
+			<c:set var="quantity" value="${modification.quantityAdded}" />
+			<cart:popupCartItems entry="${entry}" product="${product}" quantity="${quantity}"/>
+		</c:forEach>
+	</c:when>
+	<c:otherwise>
+		<cart:popupCartItems entry="${entry}" product="${product}" quantity="${quantity}"/>
+	</c:otherwise>
+</c:choose>
 <div class="links"><a href="${cartUrl}" class="button positive"><spring:theme code="checkout.checkout" /></a></div>
 
 </div>

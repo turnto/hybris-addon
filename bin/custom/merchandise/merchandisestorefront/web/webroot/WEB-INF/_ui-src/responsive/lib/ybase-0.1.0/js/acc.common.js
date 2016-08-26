@@ -1,8 +1,8 @@
 ACC.common = {
-	
+	currentCurrency: "USD",
 	processingMessage: $("<img src='" + ACC.config.commonResourcePath + "/images/spinner.gif'/>"),
 
-	
+
 	blockFormAndShowProcessingMessage: function (submitButton)
 	{
 		var form = submitButton.parents('form:first');
@@ -15,7 +15,6 @@ ACC.common = {
 		// to trigger a buffer update in a screen reader
 		$('#accesibility_refreshScreenReaderBufferField').attr('value', new Date().getTime());
 	}
-
 };
 
 

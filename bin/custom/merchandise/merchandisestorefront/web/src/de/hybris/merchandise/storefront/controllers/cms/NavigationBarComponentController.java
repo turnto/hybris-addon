@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
 
@@ -26,12 +26,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 /**
- * 
+ *
  */
 @Controller("NavigationBarComponentController")
 @Scope("tenant")
 @RequestMapping(value = ControllerConstants.Actions.Cms.NavigationBarComponent)
-public class NavigationBarComponentController extends AbstractCMSComponentController<NavigationBarComponentModel>
+public class NavigationBarComponentController extends AbstractAcceleratorCMSComponentController<NavigationBarComponentModel>
 {
 	@Override
 	protected void fillModel(final HttpServletRequest request, final Model model, final NavigationBarComponentModel component)
@@ -40,7 +40,8 @@ public class NavigationBarComponentController extends AbstractCMSComponentContro
 		{
 			model.addAttribute("dropDownLayout", component.getDropDownLayout().getCode().toLowerCase());
 		}
-		else if (component.getNavigationNode() != null && component.getNavigationNode().getChildren() != null && !component.getNavigationNode().getChildren().isEmpty())
+		else if (component.getNavigationNode() != null && component.getNavigationNode().getChildren() != null
+				&& !component.getNavigationNode().getChildren().isEmpty())
 		{
 			// Component has children but not drop down layout, default to auto
 			model.addAttribute("dropDownLayout", NavigationBarMenuLayout.AUTO.getCode().toLowerCase());

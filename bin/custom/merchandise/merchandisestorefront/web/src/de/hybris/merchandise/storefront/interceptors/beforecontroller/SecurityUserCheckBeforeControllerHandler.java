@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,13 +9,13 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.interceptors.beforecontroller;
 
 import de.hybris.platform.acceleratorcms.services.CMSPageContextService;
+import de.hybris.platform.acceleratorstorefrontcommons.interceptors.BeforeControllerHandler;
 import de.hybris.platform.servicelayer.user.UserService;
-import de.hybris.merchandise.storefront.interceptors.BeforeControllerHandler;
 
 import java.io.IOException;
 

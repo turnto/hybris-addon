@@ -3,9 +3,6 @@
 @pickup-store-panel-height: @pickup-store-item-height * 6 + @pickup-store-item-height / 2;
 @pickup-store-tab-height: @pickup-store-item-height * 4 + @pickup-store-item-height / 2;
 @pickup-store-item-arrow-size: @pickup-store-item-height/2;
-.back-to-storelist{
-	display: none;
-}
 
 @media (min-width: @screen-md-min) { 
 	#colorbox #cboxTitle{
@@ -21,10 +18,6 @@
 
 
 .pickup-component{
-	padding: 0;
-	margin: -10px;
-
-
 
 
 	.find-store-display{
@@ -105,12 +98,27 @@
 				.pickup-search-bar{
 					height: @pickup-store-item-height;
 					display: table-cell;
-					padding: 0   (@grid-gutter-width/2);
-					vertical-align: middle;
+					padding-right: (@grid-gutter-width/2);
 
 					.input-group{
+						border: 1px solid @input-border-color;
+
+						&-btn {
+							vertical-align: top;
+						}
+
+						.form-control {
+							border: 0 none;
+							height: @input-height-large;
+						}
+
 						.btn{
 							box-shadow: none !important;
+							height: @input-height-large;
+
+							.glyphicon {
+								top: 0;
+							}
 						}
 					}
 
@@ -135,8 +143,8 @@
 
 
 			.store-navigation-pager{
-				height: (@pickup-store-item-height /2);
-				line-height: (@pickup-store-item-height /2);
+				height: @input-height-large;
+				line-height: @input-height-large;
 				padding: 0  (@grid-gutter-width/2);
 
 				.clearfix;
@@ -162,7 +170,6 @@
 			width: 50%;
 			
 			position: relative;
-			height: @pickup-store-panel-height;
 			background: #fff;
 			overflow: hidden;
 
@@ -233,13 +240,9 @@
 
 			.pickup-product{
 
-				height: @pickup-store-item-height*2;
-					
+				height: 125px;
 				width: 100%;
-				// font-size: @font-size-small;
 				font-weight: bold;
-				
-
 				border-top:1px solid #ddd;
 
 
@@ -307,17 +310,10 @@
 
 
 				.action{
-					height: @pickup-store-item-height;
-					padding:  11px (@grid-gutter-width/2);
+					height: 70px;
+					padding:  (@grid-gutter-width/2);
 					text-align: right;
 
-
-					
-
-					button{
-						// display: block;
-						vertical-align: top;
-					}
 
 					.qty-selector{
 						display: inline-block;
@@ -326,12 +322,13 @@
 						margin-right: (@grid-gutter-width/2);
 
 						.input-group{
-							width: (@input-height-base*3);
+							width: 142px;
 
 							input{
 								padding-left: 0;
 								padding-right: 0;
 								text-align: center;
+								height: floor((@padding-large-vertical * 2) + (@btn-font-size * @btn-line-height) + (@btn-border-width * 2));
 							}
 						}
 	
@@ -367,11 +364,11 @@
 			height: @pickup-store-item-height;
 			background: @grayblue;
 			border-bottom:1px solid #ddd;
-			border-right:1px solid #ff4444;
+			border-right:1px solid @brand-primary;;
 			text-align: center;
 			line-height: 56px;
 			.glyphicon{
-				color: #ff4444;
+				color: @brand-primary;;
 				-webkit-animation:spin 1s linear infinite;
 			    -moz-animation:spin 1s linear infinite;
 			    animation:spin 1s linear infinite;
@@ -387,8 +384,6 @@
 		.pickup-store-list-entry{ 
 
 			height: @pickup-store-item-height;
-			// overflow: hidden;
-		
 
 			input{
 				display: none;
@@ -625,7 +620,9 @@
 				.store-image{
 					float: none;
 					width: auto;
+					margin-bottom: @grid-gutter-width/2;
 					.clearfix;
+
 					img{
 						width: 50%;
 						height: auto;
@@ -675,15 +672,15 @@
 							}
 
 							.btn{
-								padding-left: 15px;
-								padding-right: 15px;	
+								padding-left: 10px;
+								padding-right: 10px;
 							}
 
 						}
 
 						.btn{
-							padding-left: 10px;
-							padding-right: 10px;	
+							padding-left: 6px;
+							padding-right: 6px;
 						}
 					}
 				}	
@@ -708,7 +705,7 @@
 	
 	.store-tabs{
 		position: relative;
-		padding: (@grid-gutter-width/2);
+		padding: 0 0 (@grid-gutter-width/2) (@grid-gutter-width/2);
 
 
 		
@@ -719,7 +716,7 @@
 			.list-unstyled;
 			background-image: linear-gradient(to right, #F6F6F6 0%, #FFFFFF 8px);
 			position: absolute;
-			right: (@grid-gutter-width/2);
+			right: 0;
 			top: (@grid-gutter-width/2);
 			padding: 10px 0;
 
@@ -799,6 +796,7 @@
 						padding: 0 5px;
 						color:#fff;
 						white-space: nowrap;
+						z-index: 100;
 					}
 
 					&:after{

@@ -18,7 +18,7 @@
 		</cms:pageSlot>
 	</div>
 
-	<cms:pageSlot position="Section3" var="feature" element="div" class="">
+	<cms:pageSlot position="Section3" var="feature" element="div" >
 		<cms:component component="${feature}"/>
 	</cms:pageSlot>
 </template:page>

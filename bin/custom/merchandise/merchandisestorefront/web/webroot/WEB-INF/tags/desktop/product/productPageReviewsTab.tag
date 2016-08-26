@@ -30,7 +30,7 @@
 						<label class="control-label"><spring:theme code="review.rating"/>:</label>
 						<div id="stars-wrapper" class="controls clearfix">
 							<c:forEach begin="1" end="5" varStatus="status">
-								<label><img class="no_star" src="${commonResourcePath}/images/jquery.ui.stars.custom.gif" alt="<spring:theme code="review.rating.alt"/>"/><form:radiobutton path="rating" value="${status.index}"/>${status.index}/${status.end}</label></br>
+								<label><img class="no_star" src="${commonResourcePath}/images/jquery.ui.stars.custom.gif" alt="<spring:theme code="review.rating.alt"/>"/><form:radiobutton path="rating" value="${status.index}"/>${status.index}/${status.end}</label><br/>
 							</c:forEach>
 						</div>
 						<div class="help-inline"><form:errors path="rating" /></div>

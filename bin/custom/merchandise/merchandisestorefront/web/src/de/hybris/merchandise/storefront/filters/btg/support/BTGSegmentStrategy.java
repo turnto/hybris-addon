@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.filters.btg.support;
 
@@ -22,5 +22,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface BTGSegmentStrategy
 {
-	void evaluateSegment(HttpServletRequest httpRequest) throws ServletException, IOException;
+	// It is possible for this class to be extended or for method to be used in other extensions - so no sonar added
+	void evaluateSegment(HttpServletRequest httpRequest) throws ServletException, IOException; // NOSONAR
 }

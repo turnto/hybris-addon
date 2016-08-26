@@ -9,7 +9,7 @@ ACC.carousel = {
 			navigation:true,
 			navigationText : ["<span class='glyphicon glyphicon-chevron-left'></span>", "<span class='glyphicon glyphicon-chevron-right'></span>"],
 			pagination:false,
-			itemsCustom : [[0, 1], [640, 2], [1024, 5], [1400, 7]]
+			itemsCustom : [[0, 2], [640, 4], [1024, 5], [1400, 7]]
 		},
 		"rotating-image":{
 			navigation:false,

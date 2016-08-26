@@ -7,7 +7,9 @@ ACC.address = {
 		"bindCountrySpecificAddressForms",
 		"showAddressFormButtonPanel",
 		"bindViewAddressBook",
-		"bindToColorboxClose"
+		"bindToColorboxClose",
+		"showRemoveAddressFromBookConfirmation",
+		"backToListAddresses"
 	],
 
 	spinner: $("<img src='" + ACC.config.commonResourcePath + "/images/spinner.gif' />"),
@@ -216,7 +218,6 @@ ACC.address = {
 	},
 
 	bindCountrySpecificAddressForms: function (){
-		$('#countrySelector select').val('');
 		$(document).on("change",'#countrySelector select', function (){
 			var options = {
 				'addressCode': '',
@@ -279,7 +280,7 @@ ACC.address = {
 			ACC.colorbox.open("Saved Addresses",{
 				href: "#addressbook",
 				inline: true,
-				width:"320px",
+				width:"380px"
 			});
 			
 		})
@@ -292,6 +293,33 @@ ACC.address = {
 			$('#summaryDeliveryAddressBook').show();
 			ACC.colorbox.resize();
 		});
+	},
+	
+	showRemoveAddressFromBookConfirmation: function ()
+	{
+		$(document).on("click", ".removeAddressFromBookButton", function ()
+		{
+			var addressId = $(this).data("addressId");
+			var popupTitle = $(this).data("popupTitle");
+
+			ACC.colorbox.open(popupTitle,{
+				inline: true,
+				height: false,
+				href: "#popup_confirm_address_removal_" + addressId,
+				onComplete: function ()
+				{
+
+					$(this).colorbox.resize();
+				}
+			});
+
+		})
+	},
+
+	backToListAddresses: function(){
+		$(".addressBackBtn").on("click", function(){
+			var sUrl = $(this).data("backToAddresses");
+			window.location = sUrl;
+		});
 	}
 };
-

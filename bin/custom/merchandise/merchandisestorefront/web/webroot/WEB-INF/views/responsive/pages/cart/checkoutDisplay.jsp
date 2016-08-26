@@ -29,12 +29,12 @@
                    </sec:authorize>
 
                 </div>
-                <div class="row">
+                <div class="row cart-actions">
                     <div class="col-sm-6">
                         <button class="btn btn-default btn-block continueShoppingButton" data-continue-shopping-url="${continueShoppingUrl}"><spring:theme text="Continue Shopping" code="cart.page.continue"/></button>
                     </div>
                     <div class="col-sm-6">
-                        <button class="btn btn-primary btn-block checkoutButton"  data-checkout-url="${checkoutUrl}"><spring:theme code="checkout.checkout"/></button>
+                        <button class="btn btn-primary btn-block checkoutButton continueCheckout"  data-checkout-url="${checkoutUrl}"><spring:theme code="checkout.checkout"/></button>
                     </div>
                 </div>
             </div>
@@ -42,11 +42,11 @@
 
     
 <c:if test="${showCheckoutStrategies && not empty cartData.entries}" >
-    <div class="span-24">
-        <div class="right">
+    <div class="row cart-actions">
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
             <input type="hidden" name="flow" id="flow"/>
             <input type="hidden" name="pci" id="pci"/>
-            <select id="selectAltCheckoutFlow" class="doFlowSelectedChange">
+            <select id="selectAltCheckoutFlow" class="doFlowSelectedChange form-control">
                 <option value="multistep"><spring:theme code="checkout.checkout.flow.select"/></option>
                 <option value="multistep"><spring:theme code="checkout.checkout.multi"/></option>
                 <option value="multistep-pci"><spring:theme code="checkout.checkout.multi.pci"/></option>

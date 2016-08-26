@@ -61,7 +61,7 @@ ACC.pickupinstore = {
 				$("#colorbox .js-pickup-store-pager-prev").show()
 			}
 
-			if(curPage*displayCount > totalCount){
+			if(curPage*displayCount >= totalCount){
 				$("#colorbox .js-pickup-store-pager-next").hide()
 			}else{
 				$("#colorbox .js-pickup-store-pager-next").show()
@@ -221,7 +221,7 @@ ACC.pickupinstore = {
 
 			ACC.colorbox.open(titleHeader,{
 				html:boxContent,
-				width:"870px",
+				width:"960px",
 				onComplete: function(){
 
 					$("#colorbox .js-add-to-cart-for-pickup-popup, #colorbox .js-qty-selector-minus, #colorbox .js-qty-selector-input, #colorbox .js-qty-selector-plus").attr("disabled","disabled");
@@ -264,7 +264,6 @@ ACC.pickupinstore = {
 					var variantsOut="";
 
 					$.each(variants,function(key,value){
-						console.log(value)
 
 						variantsOut += "<span>"+value+"</span>";
 
@@ -398,15 +397,15 @@ ACC.pickupinstore = {
 		})
 
 		$(document).on("click",".js-select-store-label",function(e){
-			$("#colorbox .js-pickup-component").addClass("show-store")
-			$("#colorbox #cboxTitle .headline-inner").hide()
-			$("#colorbox #cboxTitle .back-to-storelist").show()
+			$("#colorbox .js-pickup-component").addClass("show-store");
+			$("#colorbox #cboxTitle .headline-inner").addClass('hidden-xs hidden-sm');
+			$("#colorbox #cboxTitle .back-to-storelist").removeClass('hidden-xs hidden-sm');
 		})
 
 		$(document).on("click",".js-back-to-storelist",function(e){
-			$("#colorbox .js-pickup-component").removeClass("show-store")
-			$("#colorbox #cboxTitle .headline-inner").show()
-			$("#colorbox #cboxTitle .back-to-storelist").hide()
+			$("#colorbox .js-pickup-component").removeClass("show-store");
+			$("#colorbox #cboxTitle .headline-inner").removeClass('hidden-xs hidden-sm');
+			$("#colorbox #cboxTitle .back-to-storelist").addClass('hidden-xs hidden-sm');
 		})
 
 	},

@@ -6,7 +6,7 @@
 */
 #colorbox, #cboxOverlay, #cboxWrapper{position:absolute; top:0; left:0; z-index:9999; overflow:hidden;}
 #cboxWrapper {max-width:none;}
-#cboxOverlay{position:fixed; width:100%; height:100%;}
+#cboxOverlay{width:100%; height:100%;}
 #cboxMiddleLeft, #cboxBottomLeft{clear:left;}
 #cboxContent{position:relative;}
 #cboxLoadedContent{overflow:auto; -webkit-overflow-scrolling: touch;}
@@ -61,64 +61,83 @@
 
         // #cboxTitle{position:absolute; bottom:-25px; left:0; text-align:center; width:100%; font-weight:bold; color:#7C7C7C;}
 
+@cboxTitleHeight: 88px;
+@cboxTitleLineHeight: 24px;
 
-    #cboxTitle{
-        background: @grayblue;
-        position: absolute;
-        top:0;
 
-        border-bottom:1px solid @brand-primary;
+#cboxTitle{
+    background: transparent;
+    position: absolute;
+    top:0;
+    padding: 43px 40px 15px;
+    height: @cboxTitleHeight;
+    display: table;
+    width: 100%;
 
-        padding:   (@grid-gutter-width/2);
-        height: @pickup-store-item-height;
-        display: table;
+    .headline{
+		font-size: @cboxTitleLineHeight;
+        line-height: @cboxTitleLineHeight;
+        font-weight: bold;
         width: 100%;
-
-        .headline{
-            line-height: 16px;
-            font-weight: bold;
-            font-size: @font-size-small;
-            display: table-cell;
-            width: 100%;
-            vertical-align: middle;
-            
-        }   
-
+        vertical-align: middle;
     }
+}
 
-    #cboxClose{
-        .btn;
-        .btn-primary;
-        position: absolute;
-        top: (@grid-gutter-width/2);
-        right: (@grid-gutter-width/2);
+#cboxClose{
+    position: absolute;
+    right: 13px;
+    top: 10px;
+    background: transparent;
+    border: 0 none;
+    color: @modal-close-btn-color;
+    padding: 5px;
+    font-size: 25px;
+}
+
+#cboxLoadedContent{
+    margin-top: @cboxTitleHeight;
+    padding:  15px @grid-gutter-width*2 (@grid-gutter-width + 10) @grid-gutter-width*2;
+
+	.add-to-cart-item {
+		margin-bottom: @grid-gutter-width*2;
+	}
+
+  .addressEntry + .addressEntry,
+  .saved-payment-entry + .saved-payment-entry {
+    margin-top: 55px;
+  }
+
+	.addressEntry ul, .saved-payment-entry ul {
+		margin-top: -@grid-gutter-width/2;
+		margin-bottom: @grid-gutter-width;
+	}
+
+  .modal-actions {
+    .row();
+    margin-top: @grid-gutter-width;
+
+    .btn {
+      margin-top: @grid-gutter-width;
     }
+  }
+}
 
+
+@media (max-width: @screen-xs-max) {
     #cboxTitle{
-        height: @pickup-store-item-height;
-    }
-
-     #cboxLoadedContent{
-        margin-top: @pickup-store-item-height;
-        padding: (@grid-gutter-width/2);
-
-    }
-
-
-
-@media (max-width: @screen-sm-max) { 
-    #cboxClose{
-        .btn-lg;
-    }
-
-    #cboxTitle{
-        height: @pickup-store-item-height+10;
-        padding: 0 10px;
-       .clearfix;
-       
+        height: @cboxTitleHeight + @cboxTitleLineHeight;
+		padding-left: @grid-gutter-width;
+		padding-right: @grid-gutter-width;
+        .clearfix;
     }
 
     #cboxLoadedContent{
-        margin-top: @pickup-store-item-height+10;
+        margin-top: @cboxTitleHeight + @cboxTitleLineHeight;
+		padding: 15px @grid-gutter-width (@grid-gutter-width + 10) @grid-gutter-width;
+
+
+		.addressEntry ul {
+			margin-top: -(@grid-gutter-width + 5);
+		}
     }
 }

@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,15 +9,16 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.interceptors.beforecontroller;
 
-import de.hybris.platform.commerceservices.enums.UiExperienceLevel;
 import de.hybris.platform.acceleratorservices.uiexperience.UiExperienceService;
+import de.hybris.platform.acceleratorstorefrontcommons.interceptors.BeforeControllerHandler;
+import de.hybris.platform.commerceservices.enums.UiExperienceLevel;
+import de.hybris.platform.commerceservices.util.ResponsiveUtils;
 import de.hybris.platform.enumeration.EnumerationService;
 import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
-import de.hybris.merchandise.storefront.interceptors.BeforeControllerHandler;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
+
 
 /**
  * Allows to overwrite the UiExperience level in the session via
@@ -45,24 +47,24 @@ public class SetUiExperienceBeforeControllerHandler implements BeforeControllerH
 	private EnumerationService enumerationService;
 
 	@Override
-	public boolean beforeController(final HttpServletRequest request, final HttpServletResponse response, final HandlerMethod handler)
+	public boolean beforeController(final HttpServletRequest request, final HttpServletResponse response,
+			final HandlerMethod handler)
 	{
 		if (isGetMethod(request))
 		{
 			final String uiExperienceLevelParam = request.getParameter(DEFAULT_UI_EXPERIENCE_LEVEL_PARAM);
-			if (StringUtils.isNotBlank(uiExperienceLevelParam))
+			if (StringUtils.isNotBlank(uiExperienceLevelParam) && !ResponsiveUtils.isResponsive())
 			{
 				try
 				{
-					final UiExperienceLevel uiExperienceLevel =
-						enumerationService.getEnumerationValue(UiExperienceLevel.class, uiExperienceLevelParam);
+					final UiExperienceLevel uiExperienceLevel = enumerationService.getEnumerationValue(UiExperienceLevel.class,
+							uiExperienceLevelParam);
 					uiExperienceService.setOverrideUiExperienceLevel(uiExperienceLevel);
 
 				}
 				catch (final UnknownIdentifierException ile)
 				{
-					LOG.warn("Can not change uiExperienceLevel [" + uiExperienceLevelParam + "]. " + ile.getMessage
-						());
+					LOG.warn("Can not change uiExperienceLevel [" + uiExperienceLevelParam + "]. " + ile.getMessage());
 					if (LOG.isDebugEnabled())
 					{
 						LOG.debug("Exception changing UiExperienceLevel", ile);

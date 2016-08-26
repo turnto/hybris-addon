@@ -11,10 +11,10 @@
 		<c:if test="${not empty product.potentialPromotions}">
 			<c:choose>
 				<c:when test="${not empty product.potentialPromotions[0].couldFireMessages}">
-					<p>${product.potentialPromotions[0].couldFireMessages[0]}</p>
+					<p class="promotion">${product.potentialPromotions[0].couldFireMessages[0]}</p>
 				</c:when>
 				<c:otherwise>
-					<p>${product.potentialPromotions[0].description}</p>
+					<p class="promotion">${product.potentialPromotions[0].description}</p>
 				</c:otherwise>
 			</c:choose>
 		</c:if>

@@ -8,7 +8,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <c:url value="${url}" var="addToCartUrl"/>
-<form:form method="post" id="addToCartForm" class="add_to_cart_form" action="${addToCartUrl}">
+<form:form method="post" id="addToCartForm" class="add_to_cart_form span-5" action="${addToCartUrl}">
 	<c:if test="${product.purchasable}">
 		<input type="hidden" maxlength="3" size="1" id="qty" name="qty" class="qty" value="1">
 	</c:if>

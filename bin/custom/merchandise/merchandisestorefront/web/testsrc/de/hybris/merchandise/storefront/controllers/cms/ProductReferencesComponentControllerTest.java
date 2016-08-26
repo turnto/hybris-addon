@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
 
@@ -113,9 +113,10 @@ public class ProductReferencesComponentControllerTest
 		given(
 				productFacade.getProductReferencesForCode(Mockito.anyString(), Mockito.anyList(), Mockito.any(List.class),
 						Mockito.<Integer> any())).willReturn(productReferenceDataList);
+		given(request.getAttribute(COMPONENT)).willReturn(productReferencesComponentModel);
 
-		final String viewName = productReferencesComponentController.handleComponent(request, response, model,
-				productReferencesComponentModel);
+		final String viewName = productReferencesComponentController.handleGet(request, response, model);
+		verify(model, Mockito.times(1)).addAttribute(COMPONENT, productReferencesComponentModel);
 		verify(model, Mockito.times(1)).addAttribute(TITLE, TITLE_VALUE);
 		verify(model, Mockito.times(1)).addAttribute(PRODUCT_REFERENCES, productReferenceDataList);
 		Assert.assertEquals(TEST_TYPE_VIEW, viewName);

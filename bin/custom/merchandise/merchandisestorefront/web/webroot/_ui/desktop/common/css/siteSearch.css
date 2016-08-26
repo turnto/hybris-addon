@@ -83,7 +83,9 @@
 	text-transform:uppercase;
 }
 
-.ui-autocomplete .ui-menu-item .ui-state-hover{
+.ui-autocomplete .ui-menu-item .ui-state-hover,
+ul.ui-autocomplete li.ui-state-focus a,
+ul.ui-autocomplete li.ui-state-hover a{
 	background:#F6F6F6;
 }
 

@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
 
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller("SubCategoryListComponentController")
 @Scope("tenant")
 @RequestMapping(value = ControllerConstants.Actions.Cms.SubCategoryListComponent)
-public class SubCategoryListComponentController extends AbstractCMSComponentController<SubCategoryListComponentModel>
+public class SubCategoryListComponentController extends AbstractAcceleratorCMSComponentController<SubCategoryListComponentModel>
 {
 	@Resource(name = "commerceCategoryService")
 	private CommerceCategoryService commerceCategoryService; //NOPMD
@@ -52,7 +52,7 @@ public class SubCategoryListComponentController extends AbstractCMSComponentCont
 		final SearchPageData searchPageData = getRequestContextData(request).getSearch();
 		if (searchPageData instanceof ProductCategorySearchPageData)
 		{
-			final ProductCategorySearchPageData<?, ?, CategoryData> productCategorySearchPageData = (ProductCategorySearchPageData<?, ?, CategoryData>)searchPageData;
+			final ProductCategorySearchPageData<?, ?, CategoryData> productCategorySearchPageData = (ProductCategorySearchPageData<?, ?, CategoryData>) searchPageData;
 			model.addAttribute("subCategories", productCategorySearchPageData.getSubCategories());
 		}
 		else

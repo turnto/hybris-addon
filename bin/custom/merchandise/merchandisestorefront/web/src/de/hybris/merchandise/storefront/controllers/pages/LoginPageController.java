@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 /**
  * Login Controller. Handles login and register for the account flow.
  */
@@ -59,7 +60,7 @@ public class LoginPageController extends AbstractLoginPageController
 		{
 			return httpSessionRequestCache.getRequest(request, response).getRedirectUrl();
 		}
-		return "/my-account";
+		return "/";
 	}
 
 	@Override
@@ -76,8 +77,8 @@ public class LoginPageController extends AbstractLoginPageController
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String doLogin(@RequestHeader(value = "referer", required = false) final String referer, @RequestParam(
-			value = "error", defaultValue = "false") final boolean loginError, final Model model,
+	public String doLogin(@RequestHeader(value = "referer", required = false) final String referer,
+			@RequestParam(value = "error", defaultValue = "false") final boolean loginError, final Model model,
 			final HttpServletRequest request, final HttpServletResponse response, final HttpSession session)
 			throws CMSItemNotFoundException
 	{
@@ -90,7 +91,8 @@ public class LoginPageController extends AbstractLoginPageController
 
 	protected void storeReferer(final String referer, final HttpServletRequest request, final HttpServletResponse response)
 	{
-		if (StringUtils.isNotBlank(referer) && !StringUtils.endsWith(referer, "/login") && StringUtils.contains(referer, request.getServerName()))
+		if (StringUtils.isNotBlank(referer) && !StringUtils.endsWith(referer, "/login")
+				&& StringUtils.contains(referer, request.getServerName()))
 		{
 			httpSessionRequestCache.saveRequest(request, response);
 		}

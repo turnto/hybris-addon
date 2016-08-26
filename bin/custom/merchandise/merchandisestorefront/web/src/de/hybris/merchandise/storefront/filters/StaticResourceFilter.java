@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.filters;
 
@@ -132,17 +132,7 @@ public class StaticResourceFilter implements Filter
 			headerParams = new ConcurrentHashMap<String, String>();
 			final ConfigIntf config = Registry.getMasterTenant().getConfig();
 
-			for (final String key : config.getAllParameters().keySet())
-			{
-				if (key.startsWith(HEADER_PROPERTIES_PREFIX))
-				{
-					final String headerKey = key.substring(HEADER_PROPERTIES_PREFIX.length(), key.length());
-					if (!headerKey.isEmpty())
-					{
-						headerParams.put(headerKey, config.getParameter(key));
-					}
-				}
-			}
+			addHeaderParamsFromConfig(config);
 
 			// Create the change listener and register it
 			cfgChangeListener = new ConfigChangeListener();
@@ -153,6 +143,21 @@ public class StaticResourceFilter implements Filter
 		for (final Map.Entry<String, String> param : headerParams.entrySet())
 		{
 			httpResponse.setHeader(param.getKey(), param.getValue());
+		}
+	}
+
+	protected void addHeaderParamsFromConfig(final ConfigIntf config)
+	{
+		for (final String key : config.getAllParameters().keySet())
+		{
+			if (key.startsWith(HEADER_PROPERTIES_PREFIX))
+			{
+				final String headerKey = key.substring(HEADER_PROPERTIES_PREFIX.length(), key.length());
+				if (!headerKey.isEmpty())
+				{
+					headerParams.put(headerKey, config.getParameter(key));
+				}
+			}
 		}
 	}
 

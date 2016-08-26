@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.integration;
 
@@ -31,10 +31,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+
 /**
  * Base controller for all integration controllers.
  */
-public class BaseIntegrationController  extends AbstractController
+public class BaseIntegrationController extends AbstractController
 {
 	private static final Logger LOG = Logger.getLogger(BaseIntegrationController.class);
 

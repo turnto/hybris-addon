@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,12 +9,13 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
 
 import de.hybris.platform.acceleratorcms.model.components.CartSuggestionComponentModel;
 import de.hybris.platform.acceleratorcms.model.components.SimpleSuggestionComponentModel;
+import de.hybris.platform.acceleratorstorefrontcommons.controllers.cms.AbstractCMSComponentController;
 import de.hybris.platform.commercefacades.order.CartFacade;
 import de.hybris.merchandise.facades.suggestion.SimpleSuggestionFacade;
 import de.hybris.merchandise.storefront.controllers.ControllerConstants;

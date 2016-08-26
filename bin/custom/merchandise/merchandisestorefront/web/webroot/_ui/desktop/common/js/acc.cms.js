@@ -26,6 +26,30 @@ ACC.cms = {
 				}
 			});
 		});
+	},
+	
+	loadComponent: function(id, type, target, onSuccess, onError) {
+		var self = this;
+		if(id) {
+			$.ajax({
+				url: ACC.config.contextPath +  '/cms/component?componentUid=' + id,
+				cache: false,
+				type: 'GET',
+				success: function (result) {
+					if(target) {
+						$(target).html(result);
+					}
+					if(onSuccess) {
+						onSuccess(result, id, type, target);
+					}
+				},
+				error: function (result) {
+					if(onError) {
+						onError(result, id, type, target);
+					}
+				}
+			});
+		}
 	}
 };
 

@@ -2,7 +2,7 @@
 <!--
  [y] hybris Platform
 
- Copyright (c) 2000-2015 hybris AG
+ Copyright (c) 2000-2016 hybris AG
  All rights reserved.
 
  This software is the confidential and proprietary information of hybris
@@ -99,7 +99,7 @@
 		</bean>
 		<bean class="de.hybris.merchandise.storefront.interceptors.beforeview.UiExperienceMetadataViewHandler"  />
 		<bean class="de.hybris.merchandise.storefront.interceptors.beforeview.AnalyticsPropertiesBeforeViewHandler" />
-		<bean class="de.hybris.merchandise.storefront.interceptors.beforeview.ConfigGranuleBeforeViewHandler" >
+		<bean class="de.hybris.merchandise.storefront.interceptors.beforeview.ConfigWro4jBeforeViewHandler" >
 			<property name="siteConfigService" ref="siteConfigService"/>
 		</bean>
 		<bean class="de.hybris.merchandise.storefront.interceptors.beforeview.DebugInfoBeforeViewHandler" />
@@ -135,8 +135,12 @@
 		</property>
 	</bean>
 
+	<util:list id="csrfAllowedUrlPatternsList" />
+	
 	<!-- CSRF Handler Interceptor -->
-	<bean name="csrfHandlerInterceptor" class="de.hybris.merchandise.storefront.util.CSRFHandlerInterceptor" />
+	<bean name="csrfHandlerInterceptor" class="de.hybris.merchandise.storefront.util.CSRFHandlerInterceptor">
+		<property name="csrfAllowedUrlPatterns" ref="csrfAllowedUrlPatternsList"/>
+	</bean>
 
 	<mvc:interceptors>
 
@@ -176,7 +180,7 @@
 		<property name="validationMessageSource" ref="storefrontMessageSource"/>
 	</bean>
 
-	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource" >
+	<bean id="baseMessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource" >
 		<property name="basenames">
 			<list>
 				<value>/WEB-INF/messages/base</value>
@@ -188,14 +192,16 @@
 		<property name="fallbackToSystemLocale" value="false"/>
 	</bean>
 
+
 	<!-- theme message source - falls back to the messageSource -->
 	<alias name="storefrontMessageSource" alias="themeSource" />
+	<alias name="storefrontMessageSource" alias="messageSource" />
 	<bean id="storefrontMessageSource" class="de.hybris.merchandise.storefront.web.theme.StorefrontResourceBundleSource">
 		<property name="basenamePrefix" value="/WEB-INF/messages/" />
 		<property name="basePrefix" value="base" />
 		<property name="sitePrefix" value="site" />
 		<property name="themePrefix" value="theme" />
-		<property name="parentMessageSource" ref="messageSource" />
+		<property name="parentMessageSource" ref="baseMessageSource" />
 		<property name="requiredAddOnsNameProvider" ref="reqAddOnsNameProvider" />
 		<!-- The number of seconds to cache loaded properties files. Set to -1 (never) for production. -->
 		<property name="cacheSeconds" value="#{configurationService.configuration.getProperty('storefront.resourceBundle.cacheSeconds')}"/>
@@ -205,8 +211,6 @@
 			<bean class="org.springframework.core.io.FileSystemResourceLoader"/>
 		</property>
 	</bean>
-	
-	
 
 	<!-- Theme Resolver Will resolve Theme from current page and then current cms site -->
 	<alias name="uiExperienceSiteThemeResolver" alias="themeResolver"/>
@@ -234,6 +238,7 @@
 		<property name="browseHistory" ref="browseHistory" />
 		<property name="productModelUrlResolver" ref="productModelUrlResolver"/>
 		<property name="categoryModelUrlResolver" ref="categoryModelUrlResolver"/>
+		<property name="productService" ref="productService"/>
 	</bean>
 
 	<bean id="searchBreadcrumbBuilder" class="de.hybris.platform.acceleratorstorefrontcommons.breadcrumb.impl.SearchBreadcrumbBuilder" >
@@ -260,7 +265,7 @@
 	<bean id="accountBreadcrumbBuilder" class="de.hybris.platform.acceleratorstorefrontcommons.breadcrumb.impl.DefaultResourceBreadcrumbBuilder" >
 		<property name="i18nService" ref="i18nService" />
 		<property name="parentBreadcrumbLinkPath" value="/my-account"/>
-		<property name="parentBreadcrumbResourceKey" value="header.link.account"/>
+		<property name="parentBreadcrumbResourceKey" value="#{'responsive' == '${commerceservices.default.desktop.ui.experience}' ? '' : 'header.link.account'}"/>
 	</bean>
 
 	<bean id="multiStepCheckoutBreadcrumbBuilder" class="de.hybris.platform.acceleratorstorefrontcommons.breadcrumb.impl.DefaultResourceBreadcrumbBuilder" >
@@ -354,19 +359,5 @@
 	      class="de.hybris.platform.commerceservices.spring.config.ListMergeDirectiveBeanPostProcessor"/>
 	<bean id="mapMergeBeanPostProcessor"
 	      class="de.hybris.platform.commerceservices.spring.config.MapMergeDirectiveBeanPostProcessor"/>
-
-	<bean id='checkoutStepValidationAspect' class="de.hybris.platform.acceleratorstorefrontcommons.checkout.steps.validation.CheckoutStepValidationAspect" >
-		<property name="checkoutFlowGroupMap" ref="checkoutFlowGroupMap"/>
-		<property name="checkoutFacade" ref="acceleratorCheckoutFacade"/>
-	</bean>
-
-	<!-- AOP -->
-	<aop:config proxy-target-class="true">
-		<aop:pointcut id="entryCheckoutStepPoint"  expression="@annotation(de.hybris.platform.acceleratorstorefrontcommons.annotations.PreValidateCheckoutStep)" />
-		<aop:aspect ref="checkoutStepValidationAspect">
-			<aop:around pointcut-ref="entryCheckoutStepPoint" method="validateCheckoutStep" />
-		</aop:aspect>
-	</aop:config>
-
 
 </beans>

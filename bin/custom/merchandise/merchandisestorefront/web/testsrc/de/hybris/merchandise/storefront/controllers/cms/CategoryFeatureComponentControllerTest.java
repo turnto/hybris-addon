@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,9 +9,12 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.acceleratorcms.model.components.CategoryFeatureComponentModel;
@@ -26,6 +29,8 @@ import de.hybris.merchandise.storefront.controllers.ControllerConstants;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import junit.framework.Assert;
+
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,11 +39,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.Model;
-
-import junit.framework.Assert;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 
 /**
@@ -92,9 +92,10 @@ public class CategoryFeatureComponentControllerTest
 		given(categoryFeatureComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
 		given(categoryUrlConverter.convert(categoryModel)).willReturn(categoryData);
 		given(categoryData.getUrl()).willReturn(TEST_CATEGORY_URL);
+		given(request.getAttribute(COMPONENT)).willReturn(categoryFeatureComponentModel);
 
-		final String viewName = categoryFeatureComponentController.handleComponent(request, response, model,
-				categoryFeatureComponentModel);
+		final String viewName = categoryFeatureComponentController.handleGet(request, response, model);
+		verify(model, Mockito.times(1)).addAttribute(COMPONENT, categoryFeatureComponentModel);
 		verify(model, Mockito.times(1)).addAttribute(URL, TEST_CATEGORY_URL);
 		Assert.assertEquals(TEST_TYPE_VIEW, viewName);
 	}
@@ -104,9 +105,10 @@ public class CategoryFeatureComponentControllerTest
 	{
 		given(categoryFeatureComponentModel.getCategory()).willReturn(null);
 		given(categoryFeatureComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
+		given(request.getAttribute(COMPONENT)).willReturn(categoryFeatureComponentModel);
 
-		final String viewName = categoryFeatureComponentController.handleComponent(request, response, model,
-				categoryFeatureComponentModel);
+		final String viewName = categoryFeatureComponentController.handleGet(request, response, model);
+		verify(model, Mockito.times(1)).addAttribute(COMPONENT, categoryFeatureComponentModel);
 		verify(model, Mockito.times(0)).addAttribute(URL, TEST_CATEGORY_URL);
 		Assert.assertEquals(TEST_TYPE_VIEW, viewName);
 	}

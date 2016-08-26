@@ -1,6 +1,6 @@
 <%@ tag body-content="empty" trimDirectiveWhitespaces="true"%>
 <%@ attribute name="breadcrumbs" required="true" type="java.util.List"%>
-
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
@@ -15,16 +15,16 @@
 		<c:url value="${breadcrumb.url}" var="breadcrumbUrl" />
 		<c:choose>
 			<c:when test="${status.last}">
-				<li class="active">${breadcrumb.name}</li>
+				<li class="active">${fn:escapeXml(breadcrumb.name)}</li>
 			</c:when>
 			<c:when test="${breadcrumb.url eq '#'}">
 				<li>
-					<a href="#">${breadcrumb.name}</a>
+					<a href="#">${fn:escapeXml(breadcrumb.name)}</a>
 				</li>
 			</c:when>
 			<c:otherwise>
 				<li>
-					<a href="${breadcrumbUrl}">${breadcrumb.name}</a>
+					<a href="${breadcrumbUrl}">${fn:escapeXml(breadcrumb.name)}</a>
 				</li>
 			</c:otherwise>
 		</c:choose>

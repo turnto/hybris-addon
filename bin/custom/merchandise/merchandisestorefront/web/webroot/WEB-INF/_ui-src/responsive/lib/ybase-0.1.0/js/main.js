@@ -72,9 +72,8 @@ $(document).ready(function(){
 
 	$(document).on("click",".panel-group .js-next",function(e){
 		e.preventDefault();
-		$(this).parents(".panel").next().find(".panel-title a").click()
-		console.log($(this).parents(".panel").next().find(".panel-title a"))
-	})
+		$(this).parents(".panel").next().find(".panel-title a").click();
+	});
 
 
 
@@ -92,9 +91,9 @@ $(document).ready(function(){
 			}
 			window.location = nhref;
 		}
-    })
+    });
 
-	addressBookPager()
+	addressBookPager();
 
 })
 

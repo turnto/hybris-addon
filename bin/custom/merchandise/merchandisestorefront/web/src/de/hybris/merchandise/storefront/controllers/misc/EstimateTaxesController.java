@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.misc;
 
@@ -19,7 +19,6 @@ import de.hybris.platform.commercefacades.order.data.CartData;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,17 +35,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Scope("tenant")
 public class EstimateTaxesController extends AbstractController
 {
-	protected static final Logger LOG = Logger.getLogger(EstimateTaxesController.class);
 	@Resource(name = "cartFacade")
 	private CartFacade cartFacade;
 
 
 	@RequestMapping(value = "/cart/estimate", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	CartData addToCart(@RequestParam("zipCode") final String zipCode, @RequestParam("isocode") final String countryIsoCode,
+	@ResponseBody
+	public CartData addToCart(@RequestParam("zipCode") final String zipCode, @RequestParam("isocode") final String countryIsoCode,
 			final Model model)
 	{
-		final CartData estimatedCart = cartFacade.estimateExternalTaxes(zipCode, countryIsoCode);
-		return estimatedCart;
+		return cartFacade.estimateExternalTaxes(zipCode, countryIsoCode);
 	}
 }

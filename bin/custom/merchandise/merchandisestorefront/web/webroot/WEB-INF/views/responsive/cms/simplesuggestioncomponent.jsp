@@ -6,18 +6,21 @@
 <%@ taglib prefix="product" tagdir="/WEB-INF/tags/responsive/product" %>
 <%@ taglib prefix="component" tagdir="/WEB-INF/tags/shared/component" %>
 
+<div id="addToCartTitle" style="display:none"><spring:theme code="basket.added.to.basket"/></div>
+<div id="quickViewTitle" class="quickView-header" style="display:none"><spring:theme code="popup.quick.view.select"/></div>
+
 <c:choose>
 	<c:when test="${not empty suggestions and component.maximumNumberProducts > 0}">
 		<div class="carousel-component">
 			<div class="headline">${component.title}</div>
-			<div class="carousel js-owl-carousel js-owl-lazy-reference js-owl-carousel-reference">
+			<div class="carousel js-owl-carousel js-owl-lazy-reference js-owl-carousel-reference">				
 				<c:forEach end="${component.maximumNumberProducts}" items="${suggestions}" var="suggestion">
 					<c:url value="${suggestion.url}/quickView" var="productQuickViewUrl"/>
 					<div class="item">
 						<a href="${productQuickViewUrl}" class="js-reference-item">
-							<div class="thumb">
-								<product:productPrimaryReferenceImage product="${suggestion}" format="product"/>
-							</div>
+                            <div class="thumb">
+                                <product:productPrimaryReferenceImage product="${suggestion}" format="product"/>
+                            </div>
 							<c:if test="${component.displayProductTitles}">
 								<div class="item-name">${suggestion.name}</div>
 							</c:if>

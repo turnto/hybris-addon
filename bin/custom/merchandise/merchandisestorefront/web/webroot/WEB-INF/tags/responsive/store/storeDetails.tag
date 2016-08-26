@@ -13,13 +13,14 @@
 	<div class="detailSectionHeadline">${store.name}</div>
 	<c:if test="${not empty store.address.line1 || not empty store.address.line2 ||
 				  not empty store.address.town || not empty store.address.country.name ||
-				  not empty store.address.postalCode}">
+				  not empty store.address.postalCode || not empty store.address.phone }">
 	<ul>
 		<li>${store.address.line1}</li>
 		<li>${store.address.line2}</li>
 		<li>${store.address.town}</li>
 		<li>${store.address.postalCode}</li>
 		<li>${store.address.country.name}</li>
+		<li>${store.address.phone}</li>
 	</ul>
 	</c:if>
 </div>

@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.web.theme;
 
@@ -203,12 +203,10 @@ public class StorefrontResourceBundleSource implements ThemeSource, ResourceLoad
 		synchronized (this.themeCache)
 		{
 			// Look for the theme in the cache
+			Theme theme = this.themeCache.get(themeName);
+			if (theme != null)
 			{
-				final Theme theme = this.themeCache.get(themeName);
-				if (theme != null)
-				{
-					return theme;
-				}
+				return theme;
 			}
 
 			// Split the theme name into site and theme parts
@@ -242,7 +240,7 @@ public class StorefrontResourceBundleSource implements ThemeSource, ResourceLoad
 			lastMessageSource = addOnSiteUiMessageSource;
 
 			// Create the new theme
-			final Theme theme = new SimpleTheme(themeName, addOnSiteUiMessageSource);
+			theme = new SimpleTheme(themeName, addOnSiteUiMessageSource);
 			this.themeCache.put(themeName, theme);
 
 			if (LOG.isDebugEnabled())
@@ -262,14 +260,7 @@ public class StorefrontResourceBundleSource implements ThemeSource, ResourceLoad
 			return parentMessageSource;
 		}
 
-		final StringBuffer nameBuffer = new StringBuffer();
-		for (final String part : nameParts)
-		{
-			nameBuffer.append(part);
-			nameBuffer.append('-');
-		}
-		String lastBasenamePart = nameBuffer.toString();
-		lastBasenamePart = lastBasenamePart.substring(0, lastBasenamePart.length() - 1);
+		String lastBasenamePart = String.join("-", nameParts);
 
 		MessageSource messageSource = null;
 		MessageSource tmpParentMessageSource = parentMessageSource;

@@ -1,79 +1,101 @@
-<%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags" %>
+	<%@ page trimDirectiveWhitespaces="true" %>
+		<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+		<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+		<%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags" %>
 
-<c:set value="${component.styleClass} ${dropDownLayout}" var="bannerClasses"/>
+		<c:set value="${component.styleClass} ${dropDownLayout}" var="bannerClasses"/>
 
-<li class="${bannerClasses} <c:if test="${not empty component.navigationNode.children}"> has-sub js-enquire-has-sub</c:if>">
-	<cms:component component="${component.link}" evaluateRestriction="true"/>
-	<c:if test="${not empty component.navigationNode.children}">
-		<div class="sub-navigation">
-			<a class="sm-back js-enquire-sub-close" href="#">Back</a>
-			<div class="row">
-				<c:forEach items="${component.navigationNode.children}" var="child">
-					<c:if test="${child.visible}">
+		<li class="${bannerClasses} <c:if test="${not empty component.navigationNode.children}"> has-sub js-enquire-has-sub</c:if>">
 
-					<c:set value="${fn:length(child.links)/component.wrapAfter}" var="columns"/>
+			<cms:component component="${component.link}" evaluateRestriction="true"/>
+			<c:if test="${not empty component.navigationNode.children}">
 
-						<c:choose>
-							<c:when test="${columns > 0 && columns <= 1}">
-								<c:set value="col-md-4" var="sectionClass" />
-							</c:when>
+				<c:set var="totalSubNavigationColumns" value="${0}"/>
 
-							<c:when test="${columns > 1 && columns < 3}">
-								<c:set value="col-md-8" var="sectionClass" />
-								<c:set value="column-2" var="columnClass" />
-							</c:when>
+				<c:forEach items="${component.navigationNode.children}" var="subSection" varStatus="loop">
+					<c:set value="${fn:length(subSection.links)/component.wrapAfter}" var="subSectionColumns"/>
+					<c:choose>
+						<c:when test="${subSectionColumns > 1}">
+							<c:set var="totalSubNavigationColumns" value="${totalSubNavigationColumns + subSectionColumns}" />
+						</c:when>
+	
+						<c:when test="${subSectionColumns < 1}">
+							<c:set var="totalSubNavigationColumns" value="${totalSubNavigationColumns + 1}" />
+						</c:when>
+					</c:choose>
 
-							<c:when test="${columns > 2 && columns < 4}">
-								<c:set value="col-md-12" var="sectionClass" />
-								<c:set value="column-3" var="columnClass" />
-							</c:when>
+					<c:if test="${not empty subSection.title}">
+						<c:set var="hasTitleClass" value="has-title"/>
+					</c:if>
+				</c:forEach>
 
-							<c:when test="${columns > 3 && columns < 5}">
-								<c:set value="col-md-12" var="sectionClass" />
-								<c:set value="column-4" var="columnClass" />
-							</c:when>
-							
-							<c:otherwise>
-								<c:set value="col-md-12" var="sectionClass" />
-								<c:set value="column-5" var="columnClass" />
-							</c:otherwise>
-						</c:choose>
+				<c:choose>
+					<c:when test="${totalSubNavigationColumns > 0 && totalSubNavigationColumns <= 1}">
+						<c:set value="col-md-3 col-lg-2" var="subNavigationClass"/>
+						<c:set value="col-md-12" var="subNavigationItemClass"/>
+					</c:when>
+	
+					<c:when test="${totalSubNavigationColumns == 2}">
+						<c:set value="col-md-6 col-lg-4" var="subNavigationClass"/>
+						<c:set value="col-md-6" var="subNavigationItemClass"/>
+					</c:when>
+	
+					<c:when test="${totalSubNavigationColumns == 3}">
+						<c:set value="col-md-9 col-lg-6" var="subNavigationClass"/>
+						<c:set value="col-md-4" var="subNavigationItemClass"/>
+					</c:when>
+	
+					<c:when test="${totalSubNavigationColumns == 4}">
+						<c:set value="col-md-12 col-lg-8" var="subNavigationClass"/>
+						<c:set value="col-md-3" var="subNavigationItemClass"/>
+					</c:when>
 
-						<div class="sub-navigation-section ${sectionClass}">
-							<c:if test="${not empty child.title}">
-								<div class="title">${child.title}</div>
-							</c:if>
-							
-							<c:if test="${columns > 1}">
-								<div class="row">
-							</c:if>
-							
-								<c:forEach items="${child.links}" step="${component.wrapAfter}" var="childlink" varStatus="i">
-									<c:if test="${columns > 1}">
-										<div class=" sub-navigation-section-column ${columnClass} ">
+					<c:when test="${totalSubNavigationColumns == 5}">
+						<c:set value="col-md-12" var="subNavigationClass"/>
+						<%--custom grid class required because 1/5th columns aren't supported by bootstrap--%>
+						<c:set value="column-20-percent" var="subNavigationItemClass"/>
+					</c:when>
+	
+					<c:when test="${totalSubNavigationColumns > 5}">
+						<c:set value="col-md-12" var="subNavigationClass"/>
+						<c:set value="col-md-2" var="subNavigationItemClass"/>
+					</c:when>
+				</c:choose>
+	
+				<div class="sub-navigation ${subNavigationClass}">
+					<a class="sm-back js-enquire-sub-close" href="#">Back</a>
+					<div class="row">
+					<c:forEach items="${component.navigationNode.children}" var="child">
+						<c:if test="${child.visible}">
+							<c:forEach items="${child.links}" step="${component.wrapAfter}" var="childlink" varStatus="i">
+								<%-- for a large amount of links (depending on what wrapAfter is set to) that would exceed 6 columns, insert a clearfix div to have the next row properly aligned --%>
+								<c:if test="${i.index != 0 && i.index % (6*component.wrapAfter) == 0}">
+									<div class="clearfix hidden-sm-down"></div>
+								</c:if>
+
+								<div class="sub-navigation-section ${subNavigationItemClass}">
+									<%--only add title on first loop for each sub-section--%>
+									<c:if test="${i.index == 0 && not empty child.title}">
+										<div class="title">${child.title}</div>
 									</c:if>
 
-
-									<ul class="sub-navigation-list">
+									<ul class="sub-navigation-list ${hasTitleClass}">
 										<c:forEach items="${child.links}" var="childlink" begin="${i.index}" end="${i.index + component.wrapAfter - 1}">
+											<c:if test="${fn:contains(childlink.uid, 'BrowseAll')}">
+												<span class="text-uppercase">
+											</c:if>
 											<cms:component component="${childlink}" evaluateRestriction="true" element="li" />
+											<c:if test="${fn:contains(childlink.uid, 'BrowseAll')}">
+												</span>
+											</c:if>
 										</c:forEach>
 									</ul>
 
-									<c:if test="${columns > 1}">
-										</div>
-									</c:if>
-								</c:forEach>
-							<c:if test="${columns > 1}">
 								</div>
-							</c:if>
-						</div>
-					</c:if>
-				</c:forEach>
-			</div>
-		</div>
-	</c:if>
-</li>
+							</c:forEach>
+						</c:if>
+					</c:forEach>
+				</div>
+				</div>
+			</c:if>
+		</li>

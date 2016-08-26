@@ -20,6 +20,7 @@
 		<li>${store.address.town}</li>
 		<li>${store.address.postalCode}</li>
 		<li>${store.address.country.name}</li>
+        <li>${store.address.phone}</li>
 	</ul>
 	</c:if>
 </div>

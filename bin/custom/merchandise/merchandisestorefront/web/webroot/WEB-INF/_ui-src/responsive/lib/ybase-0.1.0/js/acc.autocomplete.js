@@ -29,13 +29,13 @@ ACC.autocomplete = {
 				cache:{}, // init cache per instance
 				focus: function (){return false;}, // prevent textfield value replacement on item focus
 				select: function (event, ui){
-					window.location.href = ui.item.url;
-				}
+                    window.location.href = ui.item.url;
+                }
 			},
 			_renderItem : function (ul, item){
 				
 				if (item.type == "autoSuggestion"){
-					var renderHtml = "<a href='?q=" + item.value + "' ><div class='name'>" + item.value + "</div></a>";
+					var renderHtml = "<a href='"+ item.url + "' ><div class='name'>" + item.value + "</div></a>";
 					return $("<li>")
 							.data("item.autocomplete", item)
 							.append(renderHtml)
@@ -43,7 +43,7 @@ ACC.autocomplete = {
 				}
 				else if (item.type == "productResult"){
 
-					var renderHtml = "<a href='" + ACC.config.encodedContextPath + item.url + "' >";
+					var renderHtml = "<a href='" + item.url + "' >";
 
 					if (item.image != null){
 						renderHtml += "<div class='thumb'><img src='" + item.image + "'  /></div>";
@@ -86,7 +86,7 @@ ACC.autocomplete = {
 								code: obj.code,
 								desc: obj.description,
 								manufacturer: obj.manufacturer,
-								url:  obj.url,
+								url:  ACC.config.encodedContextPath + obj.url,
 								price: obj.price.formattedValue,
 								type: "productResult",
 								image: (obj.images!=null && self.options.displayProductImages) ? obj.images[0].url : null // prevent errors if obj.images = null

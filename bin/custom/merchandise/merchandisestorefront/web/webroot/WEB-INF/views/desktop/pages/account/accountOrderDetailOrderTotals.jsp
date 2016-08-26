@@ -5,15 +5,17 @@
 
 <div class="accountOrderDetailOrderTotals clearfix">
 	<div class="span-7">
-		<spring:theme code="text.account.order.orderNumber" arguments="${orderData.code}"/>
-		<spring:theme code="text.account.order.orderPlaced" arguments="${orderData.created}"/>
+		<ul>
+		<li><spring:theme code="text.account.order.orderNumber" arguments="${orderData.code}"/></li>
+		<li><spring:theme code="text.account.order.orderPlaced" arguments="${orderData.created}"/></li>
 		<c:if test="${not empty orderData.statusDisplay}">
-			<spring:theme code="text.account.order.status.display.${orderData.statusDisplay}" var="orderStatus"/>
-			<spring:theme code="text.account.order.orderStatus" arguments="${orderStatus}"/>
+			<li><spring:theme code="text.account.order.status.display.${orderData.statusDisplay}" var="orderStatus"/></li>
+			<li><spring:theme code="text.account.order.orderStatus" arguments="${orderStatus}"/></li>
 		</c:if>
+		</ul>
 	</div>
 	<div class="span-7">
-		<order:receivedPromotions order="${orderData}"/>
+		<order:receivedPromotions order="${orderData}"/><p/>
 	</div>
 	<div class="span-6 last order-totals">
 		<order:orderTotalsItem order="${orderData}"/>

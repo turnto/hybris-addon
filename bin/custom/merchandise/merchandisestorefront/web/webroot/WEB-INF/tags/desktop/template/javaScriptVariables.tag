@@ -28,6 +28,8 @@
 			<c:if test="${request.secure}"><c:url value="/search/autocompleteSecure"  var="autocompleteUrl"/></c:if>
 			<c:if test="${not request.secure}"><c:url value="/search/autocomplete"  var="autocompleteUrl"/></c:if>
 			ACC.autocompleteUrl = '${autocompleteUrl}';
+			ACC.config.googleApiKey="${googleApiKey}";
+			ACC.config.googleApiVersion="${googleApiVersion}";
 			
 			<c:forEach var="jsVar" items="${jsVariables}">
 				<c:if test="${not empty jsVar.qualifier}" >

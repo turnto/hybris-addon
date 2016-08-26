@@ -13,6 +13,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags" %>
 <%@ taglib prefix="action" tagdir="/WEB-INF/tags/desktop/action" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
 <spring:theme code="text.addToCart" var="addToCartText"/>
@@ -31,11 +32,8 @@
 			</div>
 
 			<ycommerce:testId code="searchPage_price_label_${product.code}">
-				<div class="price">
-					<format:price priceData="${product.price}"/>
-				</div>
+				<div class="price"><product:productListerItemPrice product="${product}" /></div>
 			</ycommerce:testId>
-
 
 			<ycommerce:testId code="searchPage_productName_link_${product.code}">
 				<div class="head">${product.name}</div>
@@ -51,11 +49,38 @@
 			<c:set var="product" value="${product}" scope="request"/>
 			<c:set var="addToCartText" value="${addToCartText}" scope="request"/>
 			<c:set var="addToCartUrl" value="${addToCartUrl}" scope="request"/>
-
-			<div id="actions-container-for-${component.uid}" class="listAddPickupContainer clearfix">
-				<action:actions element="div" parentComponent="${component}"/>
-			</div>
-
-	</ycommerce:testId>
+			
+			<c:if test="${not product.multidimensional}">
+				<div id="actions-container-for-${component.uid}" class="listAddPickupContainer clearfix">
+					<action:actions element="div" parentComponent="${component}"/>
+				</div>
+			</c:if>
+		
+            </a>
+            
+                <c:choose>
+                    <%-- Verify if products is a multidimensional product --%>
+                    <c:when test="${product.multidimensional}">
+						<div class="cart clearfix">
+	                        <c:url var="backToProductUrl" value="${productUrl}" />
+	                        <c:url var="productOrderFormUrl" value="${product.url}/orderForm"/>
+	
+	                        <a href="${backToProductUrl}" class="button right" ><spring:theme code="product.view.details" /></a>	                        
+	                        <a href="${productOrderFormUrl}"  class="button right"><spring:theme code="order.form" /></a>	                        
+						</div>
+                    </c:when>
+                    <c:otherwise>
+                        <ycommerce:testId code="searchPage_addToCart_button_${product.code}">
+				            <c:set var="buttonType">submit</c:set>
+				            <c:choose>
+				                <c:when test="${product.stock.stockLevelStatus.code eq 'outOfStock' }">
+				                    <c:set var="buttonType">button</c:set>
+				                    <spring:theme code="text.addToCart.outOfStock" var="addToCartText"/>
+				                </c:when>
+				            </c:choose>
+			            </ycommerce:testId>
+                    </c:otherwise>
+                </c:choose>
+        </ycommerce:testId>
 </div>
 

@@ -26,6 +26,8 @@
 			<a href="${productUrl}">${product.name}</a>
 		</div>
 
+		<product:productReviewSummary product="${product}" showLinks="false" starsClass="quick-view-stars"/>
+
 		<div class="summary">${product.summary}</div>
 
 		<c:if test="${not empty product.potentialPromotions}">
@@ -59,11 +61,11 @@
 
 				<div class="qty-selector input-group js-qty-selector">
 					<span class="input-group-btn">
-						<button class="btn btn-primary js-qty-selector-minus" type="button">-</button>
+						<button class="btn btn-primary js-qty-selector-minus" type="button"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
 					</span>
 					<input type="text" maxlength="3" class="form-control js-qty-selector-input" size="1" value='1' data-max="${product.stock.stockLevel}" data-min="1" id="qty" name="qty"  />
 					<span class="input-group-btn">
-						<button class="btn btn-primary js-qty-selector-plus" type="button">+</button>
+						<button class="btn btn-primary js-qty-selector-plus" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
 					</span>
 				</div>
 				
@@ -93,12 +95,12 @@
 			</c:if>
 			<c:choose>
 				<c:when test="${fn:contains(buttonType, 'button')}">
-					<button type="${buttonType}" class="btn btn-primary btn-block js-add-to-cart outOfStock" disabled="disabled">
+					<button type="${buttonType}" class="btn btn-primary btn-block js-add-to-cart btn-icon glyphicon-shopping-cart outOfStock" disabled="disabled">
 						<spring:theme code="product.variants.out.of.stock"/>
 					</button>
 				</c:when>
 				<c:otherwise>
-					<button id="addToCartButton" type="${buttonType}" class="btn btn-primary btn-block js-add-to-cart" disabled="disabled">
+					<button id="addToCartButton" type="${buttonType}" class="btn btn-primary btn-block js-add-to-cart js-enable-btn btn-icon glyphicon-shopping-cart" disabled="disabled">
 						<spring:theme code="basket.add.to.basket"/>
 					</button>
 				</c:otherwise>
@@ -112,14 +114,6 @@
 			<c:remove var="actionUrl"/>
 		</c:if>
 
-	</div>
-
-	<div id="addToCartTitle" style="display:none">
-		<div class="add-to-cart-header">
-			<div class="headline">
-				<span class="headline-text"><spring:theme code="basket.added.to.basket"/></span>
-			</div>
-		</div>
-	</div>
+	</div>	
 </div>
 	

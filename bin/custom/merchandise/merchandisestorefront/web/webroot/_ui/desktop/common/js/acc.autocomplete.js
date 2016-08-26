@@ -36,7 +36,7 @@ ACC.autocomplete = {
 			_renderItem : function (ul, item){
 
 				if (item.type == "autoSuggestion"){
-					var renderHtml = "<a href='?q=" + item.value + "' class='clearfix'>" + item.value + "</a>";
+					var renderHtml = "<a href='" + item.url + "' class='clearfix'>" + item.value + "</a>";
 					return $("<li class='suggestions'>")
 							.data("item.autocomplete", item)
 							.append(renderHtml)
@@ -44,7 +44,7 @@ ACC.autocomplete = {
 				}
 				else if (item.type == "productResult"){
 
-					var renderHtml = "<a href='" + ACC.config.encodedContextPath + item.url + "' class='product clearfix'>";
+					var renderHtml = "<a href='" + item.url + "' class='product clearfix'>";
 
 					if (item.image != null){
 						renderHtml += "<span class='thumb'><img src='" + item.image + "' /></span>";

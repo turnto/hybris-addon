@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.filters;
 
@@ -42,12 +42,7 @@ public class RequestLoggerFilter extends OncePerRequestFilter
 		if (LOG.isDebugEnabled())
 		{
 			final String requestDetails = buildRequestDetails(request);
-
-			if (LOG.isDebugEnabled())
-			{
-				LOG.debug(requestDetails + "Begin");
-			}
-
+			writeDebugLog(requestDetails, "Begin");
 			logCookies(request);
 
 			final ResponseWrapper wrappedResponse = new ResponseWrapper(response);
@@ -65,11 +60,11 @@ public class RequestLoggerFilter extends OncePerRequestFilter
 
 				if (status != 0)
 				{
-					LOG.debug(requestDetails + stopwatch.toString() + " (" + status + ")");
+					writeDebugLog(requestDetails, stopwatch.toString(), " (", String.valueOf(status), ")");
 				}
 				else
 				{
-					LOG.debug(requestDetails + stopwatch.toString());
+					writeDebugLog(requestDetails, stopwatch.toString());
 				}
 			}
 
@@ -88,13 +83,18 @@ public class RequestLoggerFilter extends OncePerRequestFilter
 			{
 				for (final Cookie cookie : cookies)
 				{
-					if (LOG.isDebugEnabled())
-					{
-						LOG.debug("COOKIE Name: [" + cookie.getName() + "] Path: [" + cookie.getPath() + "] Value: ["
-								+ cookie.getValue() + "]");
-					}
+					writeDebugLog("COOKIE Name: [", cookie.getName(), "] Path: [", cookie.getPath(), "] Value: [", cookie.getValue(),
+							"]");
 				}
 			}
+		}
+	}
+
+	protected void writeDebugLog(final String... messages)
+	{
+		if (LOG.isDebugEnabled())
+		{
+			LOG.debug(String.join(" ", messages));
 		}
 	}
 
@@ -130,6 +130,7 @@ public class RequestLoggerFilter extends OncePerRequestFilter
 			this.status = status;
 		}
 
+		@Override
 		public int getStatus()
 		{
 			return status;

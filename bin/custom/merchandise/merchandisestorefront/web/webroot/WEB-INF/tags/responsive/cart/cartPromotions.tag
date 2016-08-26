@@ -7,10 +7,12 @@
 
 <!--  needs responsive CSS classes; issue created -->
 <c:if test="${not empty cartData.appliedOrderPromotions}">
-    <div class="cartproline"><spring:theme code="basket.received.promotions" /></div>
-    <ycommerce:testId code="cart_recievedPromotions_labels">
-        <c:forEach items="${cartData.appliedOrderPromotions}" var="promotion">
-            <div class="">${promotion.description}</div>
-        </c:forEach>
-    </ycommerce:testId>
+    <div class="cartproline">
+        <spring:theme code="basket.received.promotions" />
+        <ycommerce:testId code="cart_recievedPromotions_labels">
+            <c:forEach items="${cartData.appliedOrderPromotions}" var="promotion">
+                <div class="promotion">${promotion.description}</div>
+            </c:forEach>
+        </ycommerce:testId>
+    </div>
 </c:if>

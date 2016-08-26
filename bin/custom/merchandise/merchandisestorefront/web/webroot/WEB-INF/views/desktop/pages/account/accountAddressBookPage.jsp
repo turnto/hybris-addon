@@ -25,6 +25,7 @@
 								<li>${fn:escapeXml(address.region.name)}</li>
 								<li>${fn:escapeXml(address.postalCode)}</li>
 								<li>${fn:escapeXml(address.country.name)}</li>
+                                <li>${fn:escapeXml(address.phone)}</li>
 							</ul>
 						</ycommerce:testId>
 						<div class="buttons">
@@ -61,6 +62,7 @@
 									<li>${fn:escapeXml(address.region.name)}</li>
 									<li>${fn:escapeXml(address.postalCode)}</li>
 									<li>${fn:escapeXml(address.country.name)}</li>
+                                    <li>${fn:escapeXml(address.phone)}</li>
 								</ul>
 								<spring:theme code="text.adress.remove.confirmation" text="Are you sure you would like to delete this address?"/>
 								<div class="buttons">

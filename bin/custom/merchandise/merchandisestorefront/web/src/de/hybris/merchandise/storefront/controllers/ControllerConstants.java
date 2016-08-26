@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers;
 
@@ -31,36 +31,38 @@ import de.hybris.platform.cms2lib.model.components.ProductCarouselComponentModel
  */
 public interface ControllerConstants
 {
+	// Constant names cannot be changed due to their usage in dependant extensions, thus nosonar
+
 	/**
 	 * Class with action name constants
 	 */
 	interface Actions
 	{
-		interface Cms
+		interface Cms // NOSONAR
 		{
-			String _Prefix = "/view/";
-			String _Suffix = "Controller";
+			String _Prefix = "/view/"; // NOSONAR
+			String _Suffix = "Controller"; // NOSONAR
 
 			/**
 			 * Default CMS component controller
 			 */
-			String DefaultCMSComponent = _Prefix + "DefaultCMSComponentController";
+			String DefaultCMSComponent = _Prefix + "DefaultCMSComponentController"; // NOSONAR
 
 			/**
 			 * CMS components that have specific handlers
 			 */
-			String PurchasedCategorySuggestionComponent = _Prefix + PurchasedCategorySuggestionComponentModel._TYPECODE + _Suffix;
-			String CartSuggestionComponent = _Prefix + CartSuggestionComponentModel._TYPECODE + _Suffix;
-			String ProductReferencesComponent = _Prefix + ProductReferencesComponentModel._TYPECODE + _Suffix;
-			String ProductCarouselComponent = _Prefix + ProductCarouselComponentModel._TYPECODE + _Suffix;
-			String MiniCartComponent = _Prefix + MiniCartComponentModel._TYPECODE + _Suffix;
-			String ProductFeatureComponent = _Prefix + ProductFeatureComponentModel._TYPECODE + _Suffix;
-			String CategoryFeatureComponent = _Prefix + CategoryFeatureComponentModel._TYPECODE + _Suffix;
-			String NavigationBarComponent = _Prefix + NavigationBarComponentModel._TYPECODE + _Suffix;
-			String CMSLinkComponent = _Prefix + CMSLinkComponentModel._TYPECODE + _Suffix;
-			String DynamicBannerComponent = _Prefix + DynamicBannerComponentModel._TYPECODE + _Suffix;
-			String SubCategoryListComponent = _Prefix + SubCategoryListComponentModel._TYPECODE + _Suffix;
-			String SimpleResponsiveBannerComponent = _Prefix + SimpleResponsiveBannerComponentModel._TYPECODE + _Suffix;
+			String PurchasedCategorySuggestionComponent = _Prefix + PurchasedCategorySuggestionComponentModel._TYPECODE + _Suffix; // NOSONAR
+			String CartSuggestionComponent = _Prefix + CartSuggestionComponentModel._TYPECODE + _Suffix; // NOSONAR
+			String ProductReferencesComponent = _Prefix + ProductReferencesComponentModel._TYPECODE + _Suffix; // NOSONAR
+			String ProductCarouselComponent = _Prefix + ProductCarouselComponentModel._TYPECODE + _Suffix; // NOSONAR
+			String MiniCartComponent = _Prefix + MiniCartComponentModel._TYPECODE + _Suffix; // NOSONAR
+			String ProductFeatureComponent = _Prefix + ProductFeatureComponentModel._TYPECODE + _Suffix; // NOSONAR
+			String CategoryFeatureComponent = _Prefix + CategoryFeatureComponentModel._TYPECODE + _Suffix; // NOSONAR
+			String NavigationBarComponent = _Prefix + NavigationBarComponentModel._TYPECODE + _Suffix; // NOSONAR
+			String CMSLinkComponent = _Prefix + CMSLinkComponentModel._TYPECODE + _Suffix; // NOSONAR
+			String DynamicBannerComponent = _Prefix + DynamicBannerComponentModel._TYPECODE + _Suffix; // NOSONAR
+			String SubCategoryListComponent = _Prefix + SubCategoryListComponentModel._TYPECODE + _Suffix; // NOSONAR
+			String SimpleResponsiveBannerComponent = _Prefix + SimpleResponsiveBannerComponentModel._TYPECODE + _Suffix; // NOSONAR
 		}
 	}
 
@@ -69,111 +71,128 @@ public interface ControllerConstants
 	 */
 	interface Views
 	{
-		interface Cms
+		interface Cms // NOSONAR
 		{
-			String ComponentPrefix = "cms/";
+			String ComponentPrefix = "cms/"; // NOSONAR
 		}
 
 		interface Pages
 		{
-			interface Account
+			interface Account // NOSONAR
 			{
-				String AccountLoginPage = "pages/account/accountLoginPage";
-				String AccountHomePage = "pages/account/accountHomePage";
-				String AccountOrderHistoryPage = "pages/account/accountOrderHistoryPage";
-				String AccountOrderPage = "pages/account/accountOrderPage";
-				String AccountProfilePage = "pages/account/accountProfilePage";
-				String AccountProfileEditPage = "pages/account/accountProfileEditPage";
-				String AccountProfileEmailEditPage = "pages/account/accountProfileEmailEditPage";
-				String AccountChangePasswordPage = "pages/account/accountChangePasswordPage";
-				String AccountAddressBookPage = "pages/account/accountAddressBookPage";
-				String AccountEditAddressPage = "pages/account/accountEditAddressPage";
-				String AccountPaymentInfoPage = "pages/account/accountPaymentInfoPage";
-				String AccountRegisterPage = "pages/account/accountRegisterPage";
+				String AccountLoginPage = "pages/account/accountLoginPage"; // NOSONAR
+				String AccountHomePage = "pages/account/accountHomePage"; // NOSONAR
+				String AccountOrderHistoryPage = "pages/account/accountOrderHistoryPage"; // NOSONAR
+				String AccountOrderPage = "pages/account/accountOrderPage"; // NOSONAR
+				String AccountProfilePage = "pages/account/accountProfilePage"; // NOSONAR
+				String AccountProfileEditPage = "pages/account/accountProfileEditPage"; // NOSONAR
+				String AccountProfileEmailEditPage = "pages/account/accountProfileEmailEditPage"; // NOSONAR
+				String AccountChangePasswordPage = "pages/account/accountChangePasswordPage"; // NOSONAR
+				String AccountAddressBookPage = "pages/account/accountAddressBookPage"; // NOSONAR
+				String AccountEditAddressPage = "pages/account/accountEditAddressPage"; // NOSONAR
+				String AccountPaymentInfoPage = "pages/account/accountPaymentInfoPage"; // NOSONAR
+				String AccountRegisterPage = "pages/account/accountRegisterPage"; // NOSONAR
 			}
 
-			interface Checkout
+			interface Checkout // NOSONAR
 			{
-				String CheckoutRegisterPage = "pages/checkout/checkoutRegisterPage";
-				String CheckoutConfirmationPage = "pages/checkout/checkoutConfirmationPage";
-				String CheckoutLoginPage = "pages/checkout/checkoutLoginPage";
+				String CheckoutRegisterPage = "pages/checkout/checkoutRegisterPage"; // NOSONAR
+				String CheckoutConfirmationPage = "pages/checkout/checkoutConfirmationPage"; // NOSONAR
+				String CheckoutLoginPage = "pages/checkout/checkoutLoginPage"; // NOSONAR
 			}
 
-			interface Password
+			interface MultiStepCheckout // NOSONAR
 			{
-				String PasswordResetChangePage = "pages/password/passwordResetChangePage";
-				String PasswordResetRequest = "pages/password/passwordResetRequestPage";
-				String PasswordResetRequestConfirmation = "pages/password/passwordResetRequestConfirmationPage";
+				String AddEditDeliveryAddressPage = "pages/checkout/multi/addEditDeliveryAddressPage"; // NOSONAR
+				String ChooseDeliveryMethodPage = "pages/checkout/multi/chooseDeliveryMethodPage"; // NOSONAR
+				String ChoosePickupLocationPage = "pages/checkout/multi/choosePickupLocationPage"; // NOSONAR
+				String AddPaymentMethodPage = "pages/checkout/multi/addPaymentMethodPage"; // NOSONAR
+				String CheckoutSummaryPage = "pages/checkout/multi/checkoutSummaryPage"; // NOSONAR
+				String HostedOrderPageErrorPage = "pages/checkout/multi/hostedOrderPageErrorPage"; // NOSONAR
+				String HostedOrderPostPage = "pages/checkout/multi/hostedOrderPostPage"; // NOSONAR
+				String SilentOrderPostPage = "pages/checkout/multi/silentOrderPostPage"; // NOSONAR
+				String GiftWrapPage = "pages/checkout/multi/giftWrapPage"; // NOSONAR
 			}
 
-			interface Error
+			interface Password // NOSONAR
 			{
-				String ErrorNotFoundPage = "pages/error/errorNotFoundPage";
+				String PasswordResetChangePage = "pages/password/passwordResetChangePage"; // NOSONAR
+				String PasswordResetRequest = "pages/password/passwordResetRequestPage"; // NOSONAR
+				String PasswordResetRequestConfirmation = "pages/password/passwordResetRequestConfirmationPage"; // NOSONAR
 			}
 
-			interface Cart
+			interface Error // NOSONAR
 			{
-				String CartPage = "pages/cart/cartPage";
+				String ErrorNotFoundPage = "pages/error/errorNotFoundPage"; // NOSONAR
 			}
 
-			interface StoreFinder
+			interface Cart // NOSONAR
 			{
-				String StoreFinderSearchPage = "pages/storeFinder/storeFinderSearchPage";
-				String StoreFinderDetailsPage = "pages/storeFinder/storeFinderDetailsPage";
-				String StoreFinderViewMapPage = "pages/storeFinder/storeFinderViewMapPage";
+				String CartPage = "pages/cart/cartPage"; // NOSONAR
 			}
 
-			interface Misc
+			interface StoreFinder // NOSONAR
 			{
-				String MiscRobotsPage = "pages/misc/miscRobotsPage";
-				String MiscSiteMapPage = "pages/misc/miscSiteMapPage";
+				String StoreFinderSearchPage = "pages/storeFinder/storeFinderSearchPage"; // NOSONAR
+				String StoreFinderDetailsPage = "pages/storeFinder/storeFinderDetailsPage"; // NOSONAR
+				String StoreFinderViewMapPage = "pages/storeFinder/storeFinderViewMapPage"; // NOSONAR
 			}
 
-			interface Guest
+			interface Misc // NOSONAR
 			{
-				String GuestOrderPage = "pages/guest/guestOrderPage";
-				String GuestOrderErrorPage = "pages/guest/guestOrderErrorPage";
+				String MiscRobotsPage = "pages/misc/miscRobotsPage"; // NOSONAR
+				String MiscSiteMapPage = "pages/misc/miscSiteMapPage"; // NOSONAR
 			}
 
-			interface Product
+			interface Guest // NOSONAR
+			{ // NOSONAR
+				String GuestOrderPage = "pages/guest/guestOrderPage"; // NOSONAR
+				String GuestOrderErrorPage = "pages/guest/guestOrderErrorPage"; // NOSONAR
+			}
+
+			interface Product // NOSONAR
 			{
-				String WriteReview = "pages/product/writeReview";
+				String WriteReview = "pages/product/writeReview"; // NOSONAR
+				String OrderForm = "pages/product/productOrderFormPage"; // NOSONAR
 			}
 		}
 
 		interface Fragments
 		{
-			interface Cart
+			interface Cart // NOSONAR
 			{
-				String AddToCartPopup = "fragments/cart/addToCartPopup";
-				String MiniCartPanel = "fragments/cart/miniCartPanel";
-				String MiniCartErrorPanel = "fragments/cart/miniCartErrorPanel";
-				String CartPopup = "fragments/cart/cartPopup";
+				String AddToCartPopup = "fragments/cart/addToCartPopup"; // NOSONAR
+				String MiniCartPanel = "fragments/cart/miniCartPanel"; // NOSONAR
+				String MiniCartErrorPanel = "fragments/cart/miniCartErrorPanel"; // NOSONAR
+				String CartPopup = "fragments/cart/cartPopup"; // NOSONAR
+				String ExpandGridInCart = "fragments/cart/expandGridInCart"; // NOSONAR
 			}
 
-			interface Account
+			interface Account // NOSONAR
 			{
-				String CountryAddressForm = "fragments/address/countryAddressForm";
+				String CountryAddressForm = "fragments/address/countryAddressForm"; // NOSONAR
 			}
 
-			interface Checkout
+			interface Checkout // NOSONAR
 			{
-				String TermsAndConditionsPopup = "acceleratoraddon/web/webroot/WEB-INF/views/mobile/fragments/checkout/termsAndConditionsPopup";
-				String BillingAddressForm = "acceleratoraddon/web/webroot/WEB-INF/views/mobile/fragments/checkout/billingAddressForm";
+				String TermsAndConditionsPopup = "fragments/checkout/termsAndConditionsPopup"; // NOSONAR
+				String BillingAddressForm = "fragments/checkout/billingAddressForm"; // NOSONAR
+				String ReadOnlyExpandedOrderForm = "fragments/checkout/readOnlyExpandedOrderForm"; // NOSONAR
 			}
 
-			interface Password
+			interface Password // NOSONAR
 			{
-				String PasswordResetRequestPopup = "fragments/password/passwordResetRequestPopup";
-				String ForgotPasswordValidationMessage = "fragments/password/forgotPasswordValidationMessage";
+				String PasswordResetRequestPopup = "fragments/password/passwordResetRequestPopup"; // NOSONAR
+				String ForgotPasswordValidationMessage = "fragments/password/forgotPasswordValidationMessage"; // NOSONAR
 			}
 
-			interface Product
+			interface Product // NOSONAR
 			{
-				String QuickViewPopup = "fragments/product/quickViewPopup";
-				String ZoomImagesPopup = "fragments/product/zoomImagesPopup";
-				String ReviewsTab = "fragments/product/reviewsTab";
-				String StorePickupSearchResults = "fragments/product/storePickupSearchResults";
+				String FutureStockPopup = "fragments/product/futureStockPopup"; // NOSONAR
+				String QuickViewPopup = "fragments/product/quickViewPopup"; // NOSONAR
+				String ZoomImagesPopup = "fragments/product/zoomImagesPopup"; // NOSONAR
+				String ReviewsTab = "fragments/product/reviewsTab"; // NOSONAR
+				String StorePickupSearchResults = "fragments/product/storePickupSearchResults"; // NOSONAR
 			}
 		}
 	}

@@ -64,7 +64,19 @@
 				<c:if test="${not empty entry.deliveryPointOfService.name}">
 					<div class="itemPickup"><span class="itemPickupLabel"><spring:theme code="popup.cart.pickup"/></span>${entry.deliveryPointOfService.name}</div>
 				</c:if>
-				<div class="itemPrice"><format:price priceData="${entry.basePrice}"/></div>
+				
+				<c:choose>
+					<c:when test="${not entry.product.multidimensional or (entry.product.priceRange.minPrice.value eq entry.product.priceRange.maxPrice.value)}" >
+						<div class="itemPrice"><format:price priceData="${entry.basePrice}"/></div>
+					</c:when>
+					<c:otherwise>
+						<div class="itemPrice">
+							<format:price priceData="${entry.product.priceRange.minPrice}"/>
+							-
+							<format:price priceData="${entry.product.priceRange.maxPrice}"/>
+						</div>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</li>
 	</c:forEach>

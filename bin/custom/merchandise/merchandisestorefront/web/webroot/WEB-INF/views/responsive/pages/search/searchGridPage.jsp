@@ -7,13 +7,18 @@
 <template:page pageTitle="${pageTitle}">
 
 	<div class="row">
-		<cms:pageSlot position="ProductLeftRefinements" var="feature">
-			<cms:component component="${feature}"/>
-		</cms:pageSlot>
-
-		<cms:pageSlot position="SearchResultsGridSlot" var="feature">
-			<cms:component component="${feature}"/>
-		</cms:pageSlot>
+		<div class="col-xs-3">
+			<cms:pageSlot position="ProductLeftRefinements" var="feature">
+				<cms:component component="${feature}"/>
+			</cms:pageSlot>
+		</div>
+		<div class="col-sm-12 col-md-9">
+            <div class="row">
+                <cms:pageSlot position="SearchResultsGridSlot" var="feature">
+                    <cms:component component="${feature}"/>
+                </cms:pageSlot>
+            </div>
+		</div>
 	</div>
 
 	<storepickup:pickupStorePopup />

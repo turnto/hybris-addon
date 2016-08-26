@@ -21,13 +21,13 @@
 	</c:if>
 	<c:choose>
 		<c:when test="${fn:contains(buttonType, 'button')}">
-			<button type="${buttonType}" class="btn btn-primary btn-block js-add-to-cart outOfStock" disabled="disabled">
+			<button type="${buttonType}" class="btn btn-primary btn-block js-add-to-cart btn-icon glyphicon-shopping-cart outOfStock" disabled="disabled">
 				<spring:theme code="product.variants.out.of.stock"/>
 			</button>
 		</c:when>
 		<c:otherwise>
 			<ycommerce:testId code="addToCartButton">
-				<button id="addToCartButton" type="${buttonType}" class="btn btn-primary btn-block js-add-to-cart" disabled="disabled">
+				<button id="addToCartButton" type="${buttonType}" class="btn btn-primary btn-block js-add-to-cart js-enable-btn btn-icon glyphicon-shopping-cart" disabled="disabled">
 					<spring:theme code="basket.add.to.basket"/>
 				</button>
 			</ycommerce:testId>

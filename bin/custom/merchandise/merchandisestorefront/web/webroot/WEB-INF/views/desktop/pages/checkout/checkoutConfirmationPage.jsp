@@ -23,7 +23,7 @@
 		</div>
 		<div class="orderHead">
 			<ycommerce:testId code="orderConfirmation_yourOrderResults_text">
-				<div><spring:theme code="checkout.orderConfirmation.thankYouForOrder" /></div>
+				<div class="orderConfirmationMsg"><spring:theme code="checkout.orderConfirmation.thankYouForOrder" /></div>
 				<div><spring:theme code="checkout.orderConfirmation.copySentTo" arguments="${email}"/></div>
 			</ycommerce:testId>
 			<div><spring:theme code="text.account.order.orderNumber" text="Order number is {0}" arguments="${orderData.code}"/></div>

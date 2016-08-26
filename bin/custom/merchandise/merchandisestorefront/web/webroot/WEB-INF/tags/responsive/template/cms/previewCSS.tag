@@ -6,7 +6,7 @@
 <c:if test="${cmsPageRequestContextData.liveEdit}">
 
     <c:if test="${empty addOnLiveEditCommonCssPaths and empty addOnLiveEditThemeCssPaths}">
-        <link rel="stylesheet" type="text/css" href="${commonResourcePath}/../theme-blue/css/hybris.cms.live.edit.css" />
+        <link rel="stylesheet" type="text/css" href="${commonResourcePath}/css/hybris.cms.live.edit.css" />
     </c:if>
     <c:if test="${not empty addOnLiveEditCommonCssPaths or not empty addOnLiveEditThemeCssPaths}">
         <c:forEach items="${addOnLiveEditCommonCssPaths}" var="addOnCommonCss">

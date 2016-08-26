@@ -16,7 +16,7 @@
 </c:forEach>
 
 <c:url value="${urlLink}" var="encodedUrl" />
-<div class="simple-responsive-banner-component">
+<div class="simple-responsive-banner-component simple-banner">
 	<c:choose>
 		<c:when test="${empty encodedUrl || encodedUrl eq '#'}">
 				<img class="js-responsive-image"  data-media='{${imagerData}}' alt='${altText}' title='${altText}' style="">

@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.filters.btg.support.impl;
 
@@ -69,33 +69,16 @@ public class DefaultBTGSegmentStrategy implements BTGSegmentStrategy
 
 			if (shouldEvaluateCurrentSession(httpRequest))
 			{
-				final BTGEvaluationService btgEvaluationService = getBtgEvaluationService();
-				final BTGResultService btgResultService = getBtgResultService();
-				final UserService userService = getUserService();
-				final UserModel currentUser = userService.getCurrentUser();
-				final CMSSiteService cmsSiteService = getCmsSiteService();
-				final CMSSiteModel currentSite = cmsSiteService.getCurrentSite();
+				final UserModel currentUser = getUserService().getCurrentUser();
+				final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
 
 				try
 				{
-					final BTGEvaluationContext context;
-					if (isPreviewDataModelValid(httpRequest))
-					{
-						//preview for BTGCockpit
-						//always invoke FULL evaluation method and store results per session
-						context = new BTGEvaluationContext(BTGConditionEvaluationScope.ONLINE, BTGEvaluationMethod.FULL,
-								BTGResultScope.SESSION);
-					}
-					else
-					{
-						//process normal request (i.e. normal browser non-btgcockpit request)
-						//the evaluation method will be taken from segment!
-						context = new BTGEvaluationContext(BTGConditionEvaluationScope.ONLINE, null);
-					}
+					final BTGEvaluationContext context = createBTGEvaluationContext(httpRequest);
 					//right now we basically invalidate all results, because we don't specify  BTGRuleType
 					//i.e. when user would like to invalidate only some type of rules he should specify this parameter
-					btgResultService.invalidateEvaluationResults(currentSite, currentUser, context, null);
-					btgEvaluationService.evaluateAllSegments(currentUser, currentSite, context);
+					getBtgResultService().invalidateEvaluationResults(currentSite, currentUser, context, null);
+					getBtgEvaluationService().evaluateAllSegments(currentUser, currentSite, context);
 
 					getSessionService().setAttribute(SessionBTGEvaluationContextProvider.BTG_CURRENT_EVALUATION_CONTEXT, context);
 				}
@@ -106,6 +89,24 @@ public class DefaultBTGSegmentStrategy implements BTGSegmentStrategy
 				}
 			}
 		}
+	}
+
+	protected BTGEvaluationContext createBTGEvaluationContext(final HttpServletRequest httpRequest)
+	{
+		final BTGEvaluationContext context;
+		if (isPreviewDataModelValid(httpRequest))
+		{
+			//preview for BTGCockpit
+			//always invoke FULL evaluation method and store results per session
+			context = new BTGEvaluationContext(BTGConditionEvaluationScope.ONLINE, BTGEvaluationMethod.FULL, BTGResultScope.SESSION);
+		}
+		else
+		{
+			//process normal request (i.e. normal browser non-btgcockpit request)
+			//the evaluation method will be taken from segment!
+			context = new BTGEvaluationContext(BTGConditionEvaluationScope.ONLINE, null);
+		}
+		return context;
 	}
 
 	protected boolean shouldEvaluateCurrentSession(final HttpServletRequest httpRequest)

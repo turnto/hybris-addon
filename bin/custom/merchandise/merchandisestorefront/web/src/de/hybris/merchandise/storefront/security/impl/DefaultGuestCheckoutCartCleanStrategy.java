@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.security.impl;
 
@@ -21,6 +21,8 @@ import de.hybris.platform.servicelayer.session.SessionService;
 import de.hybris.platform.servicelayer.user.UserService;
 import de.hybris.merchandise.storefront.security.GuestCheckoutCartCleanStrategy;
 
+import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,7 +33,7 @@ public class DefaultGuestCheckoutCartCleanStrategy implements GuestCheckoutCartC
 {
 	public static final String AJAX_REQUEST_HEADER_NAME = "X-Requested-With";
 
-	private String checkoutURLPattern;
+	private Pattern checkoutURLPattern;
 	private CheckoutCustomerStrategy checkoutCustomerStrategy;
 	private CartService cartService;
 	private SessionService sessionService;
@@ -41,8 +43,7 @@ public class DefaultGuestCheckoutCartCleanStrategy implements GuestCheckoutCartC
 	public void cleanGuestCart(final HttpServletRequest request)
 	{
 
-		if (Boolean.TRUE.equals(getSessionService().getAttribute(WebConstants.ANONYMOUS_CHECKOUT))
-				&& getCheckoutCustomerStrategy().isAnonymousCheckout()
+		if (isAnonymousCheckout()
 				&& StringUtils.isBlank(request.getHeader(AJAX_REQUEST_HEADER_NAME)) && isGetMethod(request)
 				&& !checkWhetherURLContainsCheckoutPattern(request))
 		{
@@ -61,7 +62,7 @@ public class DefaultGuestCheckoutCartCleanStrategy implements GuestCheckoutCartC
 	@Override
 	public boolean checkWhetherURLContainsCheckoutPattern(final HttpServletRequest request)
 	{
-		return request.getRequestURL().toString().matches(getCheckoutURLPattern());
+		return getCheckoutURLPattern().matcher(request.getRequestURL().toString()).matches();
 	}
 
 	protected boolean isGetMethod(final HttpServletRequest httpRequest)
@@ -72,6 +73,11 @@ public class DefaultGuestCheckoutCartCleanStrategy implements GuestCheckoutCartC
 	protected CheckoutCustomerStrategy getCheckoutCustomerStrategy()
 	{
 		return checkoutCustomerStrategy;
+	}
+	
+	protected boolean isAnonymousCheckout() {
+		return Boolean.TRUE.equals(getSessionService().getAttribute(WebConstants.ANONYMOUS_CHECKOUT))
+				&& getCheckoutCustomerStrategy().isAnonymousCheckout();
 	}
 
 	@Required
@@ -113,7 +119,7 @@ public class DefaultGuestCheckoutCartCleanStrategy implements GuestCheckoutCartC
 		this.userService = userService;
 	}
 
-	public String getCheckoutURLPattern()
+	public Pattern getCheckoutURLPattern()
 	{
 		return checkoutURLPattern;
 	}
@@ -121,7 +127,7 @@ public class DefaultGuestCheckoutCartCleanStrategy implements GuestCheckoutCartC
 	@Required
 	public void setCheckoutURLPattern(final String checkoutURLPattern)
 	{
-		this.checkoutURLPattern = checkoutURLPattern;
+		this.checkoutURLPattern = Pattern.compile(checkoutURLPattern);
 	}
 
 }

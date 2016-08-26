@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.filters;
 
@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -41,6 +42,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 public class CartRestorationFilter extends OncePerRequestFilter	
 {
+	private static final Logger LOG = Logger.getLogger(CartRestorationFilter.class);
+
 	private CartRestoreCookieGenerator cartRestoreCookieGenerator;
 	private CartService cartService;
 	private CartFacade cartFacade;
@@ -54,72 +57,91 @@ public class CartRestorationFilter extends OncePerRequestFilter
 	{
 		if (getUserService().isAnonymousUser(getUserService().getCurrentUser()))
 		{
-			if (getCartService().hasSessionCart()
-					&& getBaseSiteService().getCurrentBaseSite().equals(
-							getBaseSiteService().getBaseSiteForUID(getCartService().getSessionCart().getSite().getUid())))
-			{
-				final String guid = getCartService().getSessionCart().getGuid();
-
-				if (!StringUtils.isEmpty(guid))
-				{
-					getCartRestoreCookieGenerator().addCookie(response, guid);
-				}
-			}
-			else if (request.getSession().isNew()
-					|| (getCartService().hasSessionCart() && !getBaseSiteService().getCurrentBaseSite().equals(
-							getBaseSiteService().getBaseSiteForUID(getCartService().getSessionCart().getSite().getUid()))))
-			{
-				String cartGuid = null;
-
-				if (request.getCookies() != null)
-				{
-					final String anonymousCartCookieName = getCartRestoreCookieGenerator().getCookieName();
-
-					for (final Cookie cookie : request.getCookies())
-					{
-						if (anonymousCartCookieName.equals(cookie.getName()))
-						{
-							cartGuid = cookie.getValue();
-							break;
-						}
-					}
-				}
-
-				if (!StringUtils.isEmpty(cartGuid))
-				{
-					getSessionService().setAttribute(WebConstants.CART_RESTORATION_SHOW_MESSAGE, Boolean.TRUE);
-					try
-					{
-						getSessionService().setAttribute(WebConstants.CART_RESTORATION, getCartFacade().restoreSavedCart(cartGuid));
-					}
-					catch (final CommerceCartRestorationException e)
-					{
-						getSessionService().setAttribute(WebConstants.CART_RESTORATION_ERROR_STATUS,
-								WebConstants.CART_RESTORATION_ERROR_STATUS);
-					}
-				}
-			}
-
+			processAnonymousUser(request, response);
 		}
 		else
 		{
-			if ((!getCartService().hasSessionCart() && getSessionService().getAttribute(WebConstants.CART_RESTORATION) == null)
-					|| (getCartService().hasSessionCart() && !getBaseSiteService().getCurrentBaseSite().equals(
-							getBaseSiteService().getBaseSiteForUID(getCartService().getSessionCart().getSite().getUid()))))
-			{
-				getSessionService().setAttribute(WebConstants.CART_RESTORATION_SHOW_MESSAGE, Boolean.TRUE);
-				try
-				{
-					getSessionService().setAttribute(WebConstants.CART_RESTORATION, getCartFacade().restoreSavedCart(null));
-				}
-				catch (final CommerceCartRestorationException e)
-				{
-					getSessionService().setAttribute(WebConstants.CART_RESTORATION, WebConstants.CART_RESTORATION_ERROR_STATUS);
-				}
-			}
+			restoreCartWithNoCode();
 		}
 
 		filterChain.doFilter(request, response);
+	}
+
+	protected void restoreCartWithNoCode() {
+		if ((!getCartService().hasSessionCart() && getSessionService().getAttribute(WebConstants.CART_RESTORATION) == null)
+                || (getCartService().hasSessionCart() && !getBaseSiteService().getCurrentBaseSite().equals(
+                        getBaseSiteService().getBaseSiteForUID(getCartService().getSessionCart().getSite().getUid()))))
+        {
+            getSessionService().setAttribute(WebConstants.CART_RESTORATION_SHOW_MESSAGE, Boolean.TRUE);
+            try
+            {
+                getSessionService().setAttribute(WebConstants.CART_RESTORATION, getCartFacade().restoreSavedCart(null));
+            }
+            catch (final CommerceCartRestorationException e)
+            {
+				if (LOG.isDebugEnabled())
+				{
+					LOG.debug(e);
+				}
+                getSessionService().setAttribute(WebConstants.CART_RESTORATION, WebConstants.CART_RESTORATION_ERROR_STATUS);
+            }
+        }
+	}
+
+	protected void processAnonymousUser(final HttpServletRequest request, final HttpServletResponse response) {
+		if (getCartService().hasSessionCart()
+                && getBaseSiteService().getCurrentBaseSite().equals(
+                        getBaseSiteService().getBaseSiteForUID(getCartService().getSessionCart().getSite().getUid())))
+        {
+            final String guid = getCartService().getSessionCart().getGuid();
+
+            if (!StringUtils.isEmpty(guid))
+            {
+                getCartRestoreCookieGenerator().addCookie(response, guid);
+            }
+        }
+        else if (request.getSession().isNew()
+                || (getCartService().hasSessionCart() && !getBaseSiteService().getCurrentBaseSite().equals(
+                        getBaseSiteService().getBaseSiteForUID(getCartService().getSessionCart().getSite().getUid()))))
+        {
+			processRestoration(request);
+        }
+	}
+
+	protected void processRestoration(final HttpServletRequest request) {
+		String cartGuid = null;
+
+		if (request.getCookies() != null)
+        {
+            final String anonymousCartCookieName = getCartRestoreCookieGenerator().getCookieName();
+
+            for (final Cookie cookie : request.getCookies())
+            {
+                if (anonymousCartCookieName.equals(cookie.getName()))
+                {
+                    cartGuid = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+		if (!StringUtils.isEmpty(cartGuid))
+        {
+            getSessionService().setAttribute(WebConstants.CART_RESTORATION_SHOW_MESSAGE, Boolean.TRUE);
+            try
+            {
+                getSessionService().setAttribute(WebConstants.CART_RESTORATION, getCartFacade().restoreSavedCart(cartGuid));
+            }
+            catch (final CommerceCartRestorationException e)
+            {
+				if (LOG.isDebugEnabled())
+				{
+					LOG.debug(e);
+				}
+                getSessionService().setAttribute(WebConstants.CART_RESTORATION_ERROR_STATUS,
+                        WebConstants.CART_RESTORATION_ERROR_STATUS);
+            }
+        }
 	}
 
 	protected SessionService getSessionService()

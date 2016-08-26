@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,9 +9,12 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.acceleratorcms.model.components.ProductFeatureComponentModel;
@@ -29,6 +32,8 @@ import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import junit.framework.Assert;
+
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,11 +42,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
-
-import junit.framework.Assert;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 
 /**
@@ -77,7 +77,7 @@ public class ProductFeatureComponentControllerTest
 	private ProductFacade productFacade;
 
 	@InjectMocks
-	private ProductFeatureComponentController productFeatureComponentController =  new ProductFeatureComponentController();
+	private final ProductFeatureComponentController productFeatureComponentController = new ProductFeatureComponentController();
 
 	@Before
 	public void setUp()
@@ -94,9 +94,10 @@ public class ProductFeatureComponentControllerTest
 				productFacade.getProductForOptions(productModel,
 						Arrays.asList(ProductOption.BASIC, ProductOption.PRICE, ProductOption.SUMMARY))).willReturn(productData);
 		given(productData.getUrl()).willReturn(TEST_PRODUCT_URL);
+		given(request.getAttribute(COMPONENT)).willReturn(productFeatureComponentModel);
 
-		final String viewName = productFeatureComponentController.handleComponent(request, response, model,
-				productFeatureComponentModel);
+		final String viewName = productFeatureComponentController.handleGet(request, response, model);
+		verify(model, Mockito.times(1)).addAttribute(COMPONENT, productFeatureComponentModel);
 		verify(model, Mockito.times(1)).addAttribute("product", productData);
 		Assert.assertEquals(TEST_TYPE_VIEW, viewName);
 	}
@@ -106,9 +107,10 @@ public class ProductFeatureComponentControllerTest
 	{
 		given(productFeatureComponentModel.getProduct()).willReturn(null);
 		given(productFeatureComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
+		given(request.getAttribute(COMPONENT)).willReturn(productFeatureComponentModel);
 
-		final String viewName = productFeatureComponentController.handleComponent(request, response, model,
-				productFeatureComponentModel);
+		final String viewName = productFeatureComponentController.handleGet(request, response, model);
+		verify(model, Mockito.times(1)).addAttribute(COMPONENT, productFeatureComponentModel);
 		verify(model, Mockito.times(0)).addAttribute(URL, TEST_PRODUCT_URL);
 		Assert.assertEquals(TEST_TYPE_VIEW, viewName);
 	}

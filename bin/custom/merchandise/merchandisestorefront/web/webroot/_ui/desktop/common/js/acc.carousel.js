@@ -10,7 +10,7 @@ ACC.carousel = {
 	},
 	bindJCarousel: function ()
 	{
-		jQuery('.yCmsContentSlot.span-4 .jcarousel-skin').jcarousel({
+		jQuery('.span-4 .jcarousel-skin').jcarousel({
 			vertical: true
 		});
 		
@@ -19,7 +19,7 @@ ACC.carousel = {
 	
 	
 
-		jQuery('.yCmsContentSlot.span-24 .scroller .jcarousel-skin').jcarousel({
+		jQuery('.span-24 .scroller .jcarousel-skin').jcarousel({
 
 		});
 

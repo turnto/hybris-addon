@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.controllers.cms;
 
@@ -34,11 +34,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller("DefaultCMSComponentController")
 @Scope("tenant")
 @RequestMapping(value = ControllerConstants.Actions.Cms.DefaultCMSComponent)
-public class DefaultCMSComponentController extends AbstractCMSComponentController<AbstractCMSComponentModel>
+public class DefaultCMSComponentController extends AbstractAcceleratorCMSComponentController<AbstractCMSComponentModel>
 {
 	@Resource(name = "modelService")
 	private ModelService modelService;
-
 
 	@Override
 	protected void fillModel(final HttpServletRequest request, final Model model, final AbstractCMSComponentModel component)
@@ -59,7 +58,6 @@ public class DefaultCMSComponentController extends AbstractCMSComponentControlle
 		}
 	}
 
-
 	/**
 	 * @param modelService
 	 *           the modelService to set
@@ -68,7 +66,5 @@ public class DefaultCMSComponentController extends AbstractCMSComponentControlle
 	{
 		this.modelService = modelService;
 	}
-
-
 
 }

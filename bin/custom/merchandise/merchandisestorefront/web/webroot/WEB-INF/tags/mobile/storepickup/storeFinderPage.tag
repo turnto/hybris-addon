@@ -6,7 +6,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="product" tagdir="/WEB-INF/tags/mobile/product"%>
 <%@ taglib prefix="common" tagdir="/WEB-INF/tags/mobile/common"%>
-
+<%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags"%>
 <%@ attribute name="productData" required="true" type="de.hybris.platform.commercefacades.product.data.ProductData"%>
 <%@ attribute name="cartPage" required="false" type="java.lang.Boolean"%>
 <%@ attribute name="entryNumber" required="false" type="java.lang.Long"%>
@@ -55,8 +55,8 @@
 	<div id="globalMessages"><common:globalMessages/></div>
 
 	<div id="pickUpInStoreSearchForms">
-		<h3><spring:theme code="pickup.product.by.store.location" text="Product by store location" /></h3>
-		<p><spring:theme code="pickup.location.required" text="Please provide your location to see products available in your area." /></p>
+		<h3><spring:theme code="pickup.product.by.store.location"/></h3>
+		<p><spring:theme code="pickup.location.required"/></p>
 		<div class="item_container pickUpInStore">
 			<c:url value="/store-pickup/${productData.code}/pointOfServices" var="pickUpInStoreFormAction" />
 			<div data-role="fieldcontain" class="accmob-storeSearch">

@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,13 +9,14 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.filters.cms;
 
 import de.hybris.platform.acceleratorcms.context.ContextInformationLoader;
 import de.hybris.platform.acceleratorcms.data.CmsPageRequestContextData;
 import de.hybris.platform.acceleratorcms.services.CMSPageContextService;
+import de.hybris.platform.acceleratorservices.site.strategies.SiteChannelValidationStrategy;
 import de.hybris.platform.catalog.CatalogService;
 import de.hybris.platform.cms2.misc.CMSFilter;
 import de.hybris.platform.cms2.misc.UrlUtils;
@@ -25,7 +26,6 @@ import de.hybris.platform.cms2.model.preview.PreviewDataModel;
 import de.hybris.platform.cms2.model.site.CMSSiteModel;
 import de.hybris.platform.cms2.servicelayer.services.CMSPreviewService;
 import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
-import de.hybris.platform.commerceservices.enums.SiteChannel;
 import de.hybris.platform.commerceservices.i18n.CommerceCommonI18NService;
 import de.hybris.platform.commerceservices.url.UrlResolver;
 import de.hybris.platform.core.model.c2l.LanguageModel;
@@ -81,6 +81,7 @@ public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter
 	private UrlResolver<PreviewDataModel> previewDataModelUrlResolver;
 	private ContextInformationLoader contextInformationLoader;
 	private CMSPageContextService cmsPageContextService;
+	private SiteChannelValidationStrategy siteChannelValidationStrategy;
 
 	@Override
 	protected void doFilterInternal(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse,
@@ -137,7 +138,7 @@ public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter
 	 * <li>Current Catalog Versions</li>
 	 * <li>Enabled language fallback</li>
 	 * </ul>
-	 * 
+	 *
 	 * @see ContextInformationLoader#initializeSiteFromRequest(String)
 	 * @see ContextInformationLoader#setCatalogVersions()
 	 * @param httpRequest
@@ -168,7 +169,7 @@ public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter
 			httpResponse.sendError(MISSING_CMS_SITE_ERROR_STATUS, MISSING_CMS_SITE_ERROR_MESSAGE);
 			return false;
 		}
-		else if (!SiteChannel.B2C.equals(cmsSiteModel.getChannel())) // Restrict to B2C channel
+		else if (!getSiteChannelValidationStrategy().validateSiteChannel(cmsSiteModel.getChannel())) // Restrict to configured channel
 		{
 			// CMS site that we looked up was for an unsupported channel
 			httpResponse.sendError(MISSING_CMS_SITE_ERROR_STATUS, INCORRECT_CMS_SITE_CHANNEL_ERROR_MESSAGE);
@@ -204,7 +205,7 @@ public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter
 	 * <li>Load all fake information (like: User, User group, Language, Time ...)
 	 * <li>Generating target URL according to Preview Data
 	 * </ul>
-	 * 
+	 *
 	 * @param httpRequest
 	 *           current request
 	 * @return target URL
@@ -217,7 +218,7 @@ public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter
 		previewDataModel.setLanguage(filterPreviewLanguageForSite(httpRequest, previewDataModel.getLanguage()));
 		previewDataModel.setUiExperience(previewDataModel.getUiExperience());
 
-		//load necessary information 
+		//load necessary information
 		getContextInformationLoader().initializePreviewRequest(previewDataModel);
 		//load fake context information
 		getContextInformationLoader().loadFakeContextInformation(httpRequest, previewDataModel);
@@ -240,7 +241,7 @@ public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter
 	/**
 	 * Filters the preview language to a language supported by the site. If the requested preview language is not
 	 * supported, returns the default site language instead.
-	 * 
+	 *
 	 * @param httpRequest
 	 *           current request
 	 * @param previewLanguage
@@ -249,23 +250,20 @@ public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter
 	 */
 	protected LanguageModel filterPreviewLanguageForSite(final HttpServletRequest httpRequest, final LanguageModel previewLanguage)
 	{
-		final CMSSiteModel currentSite = getCurrentCmsSite();
-		final CommerceCommonI18NService commerceCommonI18NService = getCommerceCommonI18NService();
-
-		getBaseSiteService().setCurrentBaseSite(currentSite, false);
-		final Collection<LanguageModel> siteLanguages = commerceCommonI18NService.getAllLanguages();
+		getBaseSiteService().setCurrentBaseSite(getCurrentCmsSite(), false);
+		final Collection<LanguageModel> siteLanguages = getCommerceCommonI18NService().getAllLanguages();
 		if (siteLanguages.contains(previewLanguage))
 		{
 			// The preview language is supported
 			return previewLanguage;
 		}
-		return commerceCommonI18NService.getDefaultLanguage();
+		return getCommerceCommonI18NService().getDefaultLanguage();
 	}
 
 	/**
 	 * Enables or disables language fall back
 	 * <p/>
-	 * 
+	 *
 	 * @param httpRequest
 	 *           current request
 	 * @param enabled
@@ -273,18 +271,17 @@ public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter
 	 */
 	protected void setFallbackLanguage(final HttpServletRequest httpRequest, final Boolean enabled)
 	{
-		final SessionService sessionService = getSessionService();
-		if (sessionService != null)
+		if (getSessionService() != null)
 		{
-			sessionService.setAttribute(LocalizableItem.LANGUAGE_FALLBACK_ENABLED, enabled);
-			sessionService.setAttribute(AbstractItemModel.LANGUAGE_FALLBACK_ENABLED_SERVICE_LAYER, enabled);
+			getSessionService().setAttribute(LocalizableItem.LANGUAGE_FALLBACK_ENABLED, enabled);
+			getSessionService().setAttribute(AbstractItemModel.LANGUAGE_FALLBACK_ENABLED_SERVICE_LAYER, enabled);
 		}
 	}
 
 	/**
 	 * Generates target URL accordingly to valid Preview Data passed as a parameter
 	 * <p/>
-	 * 
+	 *
 	 * @param httpRequest
 	 *           current request
 	 * @param previewDataModel
@@ -314,10 +311,26 @@ public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter
 		return generatedPreviewUrl;
 	}
 
+	protected CMSSiteModel getCurrentCmsSite()
+	{
+		try
+		{
+			return getCmsSiteService().getCurrentSite();
+		}
+		catch (final JaloObjectNoLongerValidException e)
+		{
+			if (LOG.isDebugEnabled())
+			{
+				LOG.debug(e);
+			}
+			return null;
+		}
+	}
+
 	/**
 	 * Retrieves current mapping handler in order to generate proper target URL for CMS Page
 	 * <p/>
-	 * 
+	 *
 	 * @return current mapping handler
 	 */
 	protected UrlResolver<PreviewDataModel> getPreviewDataModelUrlResolver()
@@ -408,15 +421,14 @@ public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter
 		this.cmsPageContextService = cmsPageContextService;
 	}
 
-	protected CMSSiteModel getCurrentCmsSite()
+	protected SiteChannelValidationStrategy getSiteChannelValidationStrategy()
 	{
-		try
-		{
-			return getCmsSiteService().getCurrentSite();
-		}
-		catch (final JaloObjectNoLongerValidException ignore)
-		{
-			return null;
-		}
+		return siteChannelValidationStrategy;
+	}
+
+	@Required
+	public void setSiteChannelValidationStrategy(final SiteChannelValidationStrategy siteChannelValidationStrategy)
+	{
+		this.siteChannelValidationStrategy = siteChannelValidationStrategy;
 	}
 }

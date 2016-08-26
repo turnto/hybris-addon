@@ -48,6 +48,7 @@
 						<input id="regionIso" name="regionIso" type="hidden" value="${suggestedAddress.region.isocode}"/>
 						<input id="postcode" name="postcode" type="hidden" value="${suggestedAddress.postalCode}"/>
 						<input id="countryIso" name="countryIso" type="hidden" value="${suggestedAddress.country.isocode}"/>
+                        <input id="phone" name="phone" type="hidden" value="${suggestedAddress.phone}"/>
 						<input id="saveInAddressBook" name="saveInAddressBook" type="hidden" value="${saveInAddressBook}"/>
 						<button class="positive use_address" id="use_suggested_address_button">
 							<spring:theme code="checkout.summary.deliveryAddress.useThisAddress"/>
@@ -102,6 +103,7 @@
 						<input id="townCity" name="townCity" type="hidden" value="${inputAddress.town}"/>
 						<input id="regionIso" name="regionIso" type="hidden" value="${inputAddress.region.isocode}"/>
 						<input id="postcode" name="postcode" type="hidden" value="${inputAddress.postalCode}"/>
+                        <input id="phone" name="phone" type="hidden" value="${suggestedAddress.phone}"/>
 						<input id="countryIso" name="countryIso" type="hidden" value="${inputAddress.country.isocode}"/>
 						<input id="saveInAddressBook" name="saveInAddressBook" type="hidden" value="${saveInAddressBook}"/>
 						<button class="form use_address" id="use_suggested_address_button" type="submit">

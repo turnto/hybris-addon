@@ -1,6 +1,13 @@
 @store-finder-item-height:56px;
 @store-finder-item-arrow-size: @store-finder-item-height/2;
 
+#storeFinder {
+	margin-top: @grid-gutter-width;
+
+	#storelocator-query {
+		height: floor((@padding-large-vertical * 2) + (@btn-font-size * @btn-line-height) + (@btn-border-width * 2));
+	}
+}
 
 .store-finder{
 	display: none;
@@ -12,16 +19,20 @@
 	}
 
 	&-search{
-		.row > *{
+		.row > * {
 			margin-bottom: 10px;
 		}
 	}
 
 	&-pagination{
-		line-height: 34px;
+		line-height: floor((@padding-large-vertical * 2) + (@btn-font-size * @btn-line-height) + (@btn-border-width * 2));;
 		.clearfix;
 		padding-top: 20px;
 		padding-bottom: 20px;
+
+		> div {
+			line-height: 1;
+		}
 	}
 
 	&-navigation{
@@ -250,6 +261,9 @@
 			.store-finder-details{
 				display: none;
 			}
+		}
+		.store-finder-pagination{
+			line-height: @line-height-computed;
 		}
 
 		&.show-store{

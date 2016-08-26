@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.tags;
 
@@ -39,7 +39,6 @@ public class TestIdTag extends SimpleTagSupport
 	{
 		return code;
 	}
-
 	public void setCode(final String code)
 	{
 		this.code = code;
@@ -60,14 +59,14 @@ public class TestIdTag extends SimpleTagSupport
 					.append(String.valueOf(nextUniqueId)).append("\" style=\"display:inline\">");
 
 			// Write the body out
-			getJspBody().invoke(jspWriter);
+			getJspBody().invoke(null);
 
 			jspWriter.println("</div>");
 		}
 		else
 		{
 			// Just render the contents
-			getJspBody().invoke(getJspContext().getOut());
+			getJspBody().invoke(null);
 		}
 	}
 
@@ -94,15 +93,27 @@ public class TestIdTag extends SimpleTagSupport
 
 		for (int i = 0; i < text.length(); i++)
 		{
-			final char c = text.charAt(i); 
-
-			if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.'
-					|| c == ':')
-			{
-				result.append(c);
-			}
+			processCharacter(text, result, i);
 		}
 
 		return result.toString();
+	}
+
+	protected void processCharacter(final String text, final StringBuilder result, final int i) {
+		final char c = text.charAt(i);
+		checkAlphanumeric(c, result);
+		checkSpecial(c, result);
+	}
+
+	protected void checkAlphanumeric(final char c, final StringBuilder result) {
+		if (Character.isLetterOrDigit(c)) {
+			result.append(c);
+		}
+	}
+
+	protected void checkSpecial(final char c, final StringBuilder result) {
+		if ( c == '-' || c == '_' || c == '.' || c == ':') {
+			result.append(c);
+		}
 	}
 }

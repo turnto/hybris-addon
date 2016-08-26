@@ -57,8 +57,15 @@ ACC.common = {
 	{
 		var form = submitButton.parents('form:first');
 		form.block({ message: ACC.common.processingMessage });
-	}
+	},
 
+	showSpinnerById: function(id) {
+		$('#'+id).show();
+	},
+
+	hideSpinnerById: function(id) {
+		$('#'+id).hide();
+	}
 };
 
 $(document).ready(function ()

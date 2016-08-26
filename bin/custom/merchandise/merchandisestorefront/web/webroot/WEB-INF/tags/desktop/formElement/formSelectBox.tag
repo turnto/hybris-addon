@@ -12,6 +12,7 @@
 <%@ attribute name="skipBlankMessageKey" required="false" type="java.lang.String" %>
 <%@ attribute name="selectedValue" required="false" type="java.lang.String" %>
 <%@ attribute name="tabindex" required="false" rtexprvalue="true" %>
+<%@ attribute name="disabled" required="false" type="java.lang.Boolean" %>
 
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -37,7 +38,7 @@
 				<span class="skip"><form:errors path="${path}"/></span>
 			</label>
 			<div class="controls">
-				<form:select id="${idKey}" path="${path}" cssClass="${selectCSSClass}" tabindex="${tabindex}">
+				<form:select id="${idKey}" path="${path}" cssClass="${selectCSSClass}" tabindex="${tabindex}" disabled="${disabled}">
 					<c:if test="${skipBlank == null || skipBlank == false}">
 						<option value="" disabled="disabled" ${empty selectedValue ? 'selected="selected"' : ''}><spring:theme code='${skipBlankMessageKey}'/></option>
 					</c:if>

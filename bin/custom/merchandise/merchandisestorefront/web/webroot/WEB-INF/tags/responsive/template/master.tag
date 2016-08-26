@@ -7,6 +7,7 @@
 
 <%@ taglib prefix="template" tagdir="/WEB-INF/tags/responsive/template" %>
 <%@ taglib prefix="analytics" tagdir="/WEB-INF/tags/shared/analytics" %>
+<%@ taglib prefix="addonScripts" tagdir="/WEB-INF/tags/responsive/common/header" %>
 <%@ taglib prefix="generatedVariables" tagdir="/WEB-INF/tags/shared/variables" %>
 <%@ taglib prefix="debug" tagdir="/WEB-INF/tags/shared/debug" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -24,7 +25,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<%-- Additional meta tags --%>
 	<htmlmeta:meta items="${metatags}"/>
@@ -40,7 +41,6 @@
 	<jsp:invoke fragment="pageCss"/>
 	<analytics:analytics/>
 	<generatedVariables:generatedVariables/>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body class="${pageBodyCssClasses} ${cmsPageRequestContextData.liveEdit ? ' yCmsLiveEdit' : ''} language-${currentLanguage.isocode}">
@@ -58,7 +58,10 @@
 	<template:javaScript/>
 	
 	<%-- Inject any additional JavaScript required by the page --%>
-	<jsp:invoke fragment="pageScripts"/>	
+	<jsp:invoke fragment="pageScripts"/>
+
+	<%-- Inject CMS Components from addons using the placeholder slot--%>
+	<addonScripts:addonScripts/>
 
 
 </body>

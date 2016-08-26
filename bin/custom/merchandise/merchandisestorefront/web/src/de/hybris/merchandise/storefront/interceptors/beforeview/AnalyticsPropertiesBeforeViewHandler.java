@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,16 +9,16 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.interceptors.beforeview;
 
 import de.hybris.platform.acceleratorservices.config.HostConfigService;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.ThirdPartyConstants;
+import de.hybris.platform.acceleratorstorefrontcommons.interceptors.BeforeViewHandler;
 import de.hybris.platform.core.Registry;
 import de.hybris.platform.servicelayer.i18n.CommonI18NService;
 import de.hybris.platform.util.config.ConfigIntf;
-import de.hybris.merchandise.storefront.interceptors.BeforeViewHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class AnalyticsPropertiesBeforeViewHandler implements BeforeViewHandler
 	private ConfigIntf.ConfigChangeListener cfgChangeListener;
 	// HashMap used to cache jirafe properties from config.properties. Not Using Cache implementations as it is 
 	// a simple,non growable cache s
-	private static Map jirafeMapCache;
+	private static Map<String,String> jirafeMapCache = new HashMap<>();
 
 	private static final String JIRAFE_API_URL = "jirafeApiUrl";
 	private static final String JIRAFE_API_TOKEN = "jirafeApiToken";
@@ -126,10 +126,6 @@ public class AnalyticsPropertiesBeforeViewHandler implements BeforeViewHandler
 		 * values are read from the properties file & written on to a cache and the next time onwards it is accessed from
 		 * the cache.
 		 */
-		if (jirafeMapCache == null)
-		{
-			jirafeMapCache = new HashMap();
-		}
 		if (jirafeMapCache.get(configKey) == null)
 		{
 			jirafeMapCache.put(configKey, hostConfigService.getProperty(configKey, serverName));

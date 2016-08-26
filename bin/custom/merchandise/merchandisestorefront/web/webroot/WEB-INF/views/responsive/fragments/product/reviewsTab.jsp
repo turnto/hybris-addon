@@ -17,7 +17,7 @@
 		<li class="review-entry">
 			<div class="title">${review.headline}</div>
 			<div class="rating js-ratingCalc"
-				data-rating='{"rating":${review.rating},"total":5}'>
+				data-rating='{"rating":"${review.rating}","total":5}'>
 				<div class="rating-stars">
 					<span class="js-ratingIcon glyphicon glyphicon-star"></span>
 				</div>

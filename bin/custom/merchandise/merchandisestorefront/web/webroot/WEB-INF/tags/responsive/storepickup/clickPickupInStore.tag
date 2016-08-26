@@ -48,7 +48,7 @@
 			</a>
 		</c:when>
 		<c:when test="${searchResultsPage}">
-			<button class="btn btn-default btn-block js-pickup-in-store-button" disabled="disabled" id="product_${product.code}${entryNumber}" type="button submit"
+			<button class="btn btn-default btn-block js-pickup-in-store-button glyphicon glyphicon-map-marker" disabled="disabled" id="product_${product.code}${entryNumber}" type="button submit"
 
 			data-productcart='${product.price.formattedValue}'
 			data-productcart-variants='{
@@ -62,11 +62,11 @@
 			}'
 
 			data-img='<product:productPrimaryImage product="${product}" format="thumbnail"/>' data-productname="${product.name}" data-cartpage="false" data-entryNumber="0" data-actionurl="${pickUpInStoreFormAction}" data-value="1">
-				<spring:theme code="pickup.in.store"/>
+
 			</button>
 		</c:when>
 		<c:otherwise>
-			<button class="btn btn-default btn-block js-pickup-in-store-button" disabled="disabled" id="product_${product.code}${entryNumber}" type="submit" data-productavailable="${product.availableForPickup}"
+			<button class="btn btn-default btn-block js-pickup-in-store-button glyphicon-map-marker btn-icon" disabled="disabled" id="product_${product.code}${entryNumber}" type="submit" data-productavailable="${product.availableForPickup}"
 			data-productcart='${product.price.formattedValue}'
 			data-productcart-variants='{
 					<c:if test="${not empty product.baseOptions[0].selected.variantOptionQualifiers}">

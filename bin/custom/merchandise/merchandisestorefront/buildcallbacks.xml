@@ -2,7 +2,7 @@
 <!--
  [y] hybris Platform
 
- Copyright (c) 2000-2015 hybris AG
+ Copyright (c) 2000-2016 hybris AG
  All rights reserved.
 
  This software is the confidential and proprietary information of hybris
@@ -76,6 +76,9 @@
 	<property location="${ext.merchandisestorefront.path}/web/webroot/WEB-INF/lib/lessc-rhino-1.7.3.js" name="tool.lessc"/>
 	<property location="${ext.merchandisestorefront.path}/web/webroot/WEB-INF/lib/rhino1_7R4.jar" name="tool.rhino"/>
 	<property location="${ext.merchandisestorefront.path}" name="ext.merchandisestorefront.mapperToPath"/>
+	<property name="wro.addons.template.path" value="${ext.merchandisestorefront.path}/wro_addons_template.xml"/>
+	<property name="wro.addons.dest.path" value="${ext.merchandisestorefront.path}/resources/wro_addons.xml"/>
+	<property name="wro.group.node" value="&lt;groups xmlns=&quot;http://www.isdc.ro/wro&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.isdc.ro/wro wro.xsd&quot;&gt;"/>
 
 	<if>
 		<os family="windows"/>
@@ -83,14 +86,14 @@
 	        <propertyregex global="true" input="${ext.merchandisestorefront.path}" override="yes" property="ext.merchandisestorefront.mapperToPath" regexp="\\" replace="/"/>
 	    </then>
 	</if>
-	
-	<macrodef name="lesscss">
+
+	<macrodef name="merchandisestorefront_lesscss">
 		<sequential>
 			<copy todir="${ext.merchandisestorefront.path}/web/webroot/_ui/responsive/">
 					<fileset dir="${ext.merchandisestorefront.path}/web/webroot/WEB-INF/_ui-src/responsive/" includes="themes/*"/>
 					<regexpmapper from="themes/(.*)" handledirsep="yes" to="theme-\1/css"/>
 			</copy>
-			<apply dir="${ext.merchandisestorefront.path}/web/webroot/WEB-INF/_ui-src/responsive/themes/" executable="java" failonerror="true" parallel="false">
+			<apply dir="${ext.merchandisestorefront.path}/web/webroot/WEB-INF/_ui-src/responsive/themes/" executable="java" failonerror="true" force="true" parallel="false">
 				<!-- Give the input bundle of less files-->
 				<fileset dir="${ext.merchandisestorefront.path}/web/webroot/WEB-INF/_ui-src/responsive/themes/">
 					<include name="**/style.less"/>
@@ -108,7 +111,7 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="movelibs">
+	<macrodef name="merchandisestorefront_movelibs">
 		<sequential>
 			<copy todir="${ext.merchandisestorefront.path}/web/webroot/_ui/responsive/common/bootstrap">
 				<fileset dir="${ext.merchandisestorefront.path}/web/webroot/WEB-INF/_ui-src/responsive/lib/bootstrap-3.2.0" includes="**"/>
@@ -123,7 +126,7 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="generatevariables">
+	<macrodef name="merchandisestorefront_generatevariables">
 		<sequential>
 			<uptodate property="updates" targetfile="${ext.merchandisestorefront.path}/resources/generateVariables.properties" value="true">
 				<srcfiles file="${ext.merchandisestorefront.path}/web/webroot/WEB-INF/tags/shared/variables/generatedVariables.tag"/>
@@ -175,10 +178,14 @@
 									</if>
 								</sequential>
 							</for>
+							<generate_wro_addons_xml extname="@{extname}"/>
 						</do>
 					</foreachext>
 				</do>
 			</containsExact>
+			<merchandisestorefront_compileuisrc_executor/>
+			<create_empty_wro_addons_xml/>
+			<fix_root_node_for_wro_addons_xml/>
 		</sequential>
 	</macrodef>
 
@@ -186,7 +193,8 @@
 	<macrodef name="merchandisestorefront_before_build">
 		<sequential>
 			<echo message="merchandisestorefront_before_build"/>
-			<generatevariables/>
+			<merchandisestorefront_generatevariables/>
+			<delete_wro_addons_xml/>
 			<foreachext>
 				<do>
 					<if>
@@ -204,6 +212,236 @@
 	</macrodef>
 
 
+	<macrodef name="delete_wro_addons_xml">
+		<sequential>
+			<if>
+        		<available file="${wro.addons.dest.path}"/>
+				<then>
+					<delete failonerror="false" file="${wro.addons.dest.path}"/>
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
+
+	<macrodef name="create_empty_wro_addons_xml">
+		<sequential>
+			<if>
+				<not>
+	        		<available file="${wro.addons.dest.path}"/>
+				</not>
+	        	<then>
+	        		<echo> *** ${wro.addons.dest.path} not found, creating an empty one from the template... ***</echo>
+	        		<copy file="${wro.addons.template.path}" tofile="${wro.addons.dest.path}"/>
+        		</then>
+			</if>
+		</sequential>
+	</macrodef>
+
+
+	<macrodef name="generate_wro_addons_xml">
+		<attribute name="extname"/>
+		<sequential>
+			<if>
+	        	<available file="${ext.@{extname}.path}/project.properties"/>
+	        	<then>
+	        		<echo>generate_wro_addons_xml for @{extname}</echo>
+	        		<property file="${ext.@{extname}.path}/project.properties"/>
+	        		<if>
+	            		<equals arg1="${merchandisestorefront.wro4jconfigscan.@{extname}}" arg2="true"/>
+	            		<then>
+	            			<echo>merchandisestorefront.wro4jconfigscan.@{extname}: ${merchandisestorefront.wro4jconfigscan.@{extname}}</echo>
+	            			<if>
+	            				<!-- if key doesn't exist in project.properties, the key itself is returned, so we need to escape 'arg2' -->
+			            		<equals arg1="${@{extname}.javascript.paths.desktop}" arg2="$${@{extname}.javascript.paths.desktop}"/>
+			            		<then>
+			            			<var name="jsPathsDesktop" value=""/>
+		            			</then>
+	            				<else>
+	            					<var name="jsPathsDesktop" value="${@{extname}.javascript.paths.desktop}"/>
+	            				</else>
+	            			</if>
+	            			<if>
+			            		<equals arg1="${@{extname}.javascript.paths.mobile}" arg2="$${@{extname}.javascript.paths.mobile}"/>
+			            		<then>
+			            			<var name="jsPathsMobile" value=""/>
+		            			</then>
+	            				<else>
+	            					<var name="jsPathsMobile" value="${@{extname}.javascript.paths.mobile}"/>
+	            				</else>
+	            			</if>
+	            			<if>
+			            		<equals arg1="${@{extname}.javascript.paths.responsive}" arg2="$${@{extname}.javascript.paths.responsive}"/>
+			            		<then>
+			            			<var name="jsPathsResponsive" value=""/>
+		            			</then>
+	            				<else>
+	            					<var name="jsPathsResponsive" value="${@{extname}.javascript.paths.responsive}"/>
+	            				</else>
+	            			</if>
+	            			<if>
+			            		<equals arg1="${@{extname}.css.paths.desktop}" arg2="$${@{extname}.css.paths.desktop}"/>
+			            		<then>
+			            			<var name="cssPathsDesktop" value=""/>
+		            			</then>
+	            				<else>
+	            					<var name="cssPathsDesktop" value="${@{extname}.css.paths.desktop}"/>
+	            				</else>
+	            			</if>
+	            			<if>
+			            		<equals arg1="${@{extname}.css.paths.mobile}" arg2="$${@{extname}.css.paths.mobile}"/>
+			            		<then>
+			            			<var name="cssPathsMobile" value=""/>
+		            			</then>
+	            				<else>
+	            					<var name="cssPathsMobile" value="${@{extname}.css.paths.mobile}"/>
+	            				</else>
+	            			</if>
+	            			<if>
+			            		<equals arg1="${@{extname}.css.paths.responsive}" arg2="$${@{extname}.css.paths.responsive}"/>
+			            		<then>
+			            			<var name="cssPathsResponsive" value=""/>
+		            			</then>
+	            				<else>
+	            					<var name="cssPathsResponsive" value="${@{extname}.css.paths.responsive}"/>
+	            				</else>
+	            			</if>
+	            			<create_wro_addons_xml cssPathsDesktop="${cssPathsDesktop}" cssPathsMobile="${cssPathsMobile}" cssPathsResponsive="${cssPathsResponsive}" extname="@{extname}" jsPathsDesktop="${jsPathsDesktop}" jsPathsMobile="${jsPathsMobile}" jsPathsResponsive="${jsPathsResponsive}"/>
+	            		</then>
+	        		</if>
+	       		</then>
+           	</if>
+		</sequential>
+	</macrodef>
+
+
+	<macrodef name="create_wro_addons_xml">
+		<attribute name="extname"/>
+		<attribute name="jsPathsDesktop"/>
+		<attribute name="jsPathsMobile"/>
+		<attribute name="jsPathsResponsive"/>
+		<attribute name="cssPathsDesktop"/>
+		<attribute name="cssPathsMobile"/>
+		<attribute name="cssPathsResponsive"/>
+		
+		<sequential>
+			<var name="addonPath" value="/_ui/addons/@{extname}"/>
+			<echo>create_wro_addons_xml for @{extname}</echo>
+			<if>
+	        	<available file="${wro.addons.template.path}"/>
+	        	<then>
+	        		<create_empty_wro_addons_xml/>
+	        		<xmltask destbuffer="buffer" omitHeader="true" source="${wro.addons.dest.path}"/>
+	        		<xmltask dest="${wro.addons.dest.path}" omitHeader="true" sourcebuffer="buffer">
+						<call path="/groups/group">
+							<param name="uiexperience" path="@name"/>
+							<actions>
+								<!-- ### responsive ### -->
+								<if>
+									<equals arg1="@{uiexperience}" arg2="addons_responsive"/>
+									<then>
+										<echo> &gt;&gt;&gt; Adding resources for @{uiexperience}</echo>
+										<for delimiter=";" list="@{jsPathsResponsive}" param="jsfile">
+											<sequential>
+												<xmltask destbuffer="buffer" sourcebuffer="buffer">
+													<insert path="/groups/group[@name='addons_responsive']">
+														<![CDATA[
+															<js>${addonPath}@{jsfile}</js>
+														]]>
+													</insert>
+												</xmltask>
+											</sequential>
+										</for>
+										<for delimiter=";" list="@{cssPathsResponsive}" param="cssfile">
+											<sequential>
+												<xmltask destbuffer="buffer" sourcebuffer="buffer">
+													<insert path="/groups/group[@name='addons_responsive']">
+														<![CDATA[
+															<css>${addonPath}@{cssfile}</css>
+														]]>
+													</insert>
+												</xmltask>
+											</sequential>
+										</for>
+									</then>
+								</if>
+								<!-- ### desktop ### -->
+								<if>
+									<equals arg1="@{uiexperience}" arg2="addons_desktop"/>
+									<then>
+										<echo> &gt;&gt;&gt; Adding resources for @{uiexperience}</echo>
+										<for delimiter=";" list="@{jsPathsDesktop}" param="jsfile">
+											<sequential>
+												<xmltask destbuffer="buffer" sourcebuffer="buffer">
+													<insert path="/groups/group[@name='addons_desktop']">
+														<![CDATA[
+															<js>${addonPath}@{jsfile}</js>
+														]]>
+													</insert>
+												</xmltask>
+											</sequential>
+										</for>
+										<for delimiter=";" list="@{cssPathsDesktop}" param="cssfile">
+											<sequential>
+												<xmltask destbuffer="buffer" sourcebuffer="buffer">
+													<insert path="/groups/group[@name='addons_desktop']">
+														<![CDATA[
+															<css>${addonPath}@{cssfile}</css>
+														]]>
+													</insert>
+												</xmltask>
+											</sequential>
+										</for>
+									</then>
+								</if>
+								<!-- ### mobile ### -->
+								<if>
+									<equals arg1="@{uiexperience}" arg2="addons_mobile"/>
+									<then>
+										<echo> &gt;&gt;&gt; Adding resources for @{uiexperience}</echo>
+										<for delimiter=";" list="@{jsPathsMobile}" param="jsfile">
+											<sequential>
+												<xmltask destbuffer="buffer" sourcebuffer="buffer">
+													<insert path="/groups/group[@name='addons_mobile']">
+														<![CDATA[
+															<js>${addonPath}@{jsfile}</js>
+														]]>
+													</insert>
+												</xmltask>
+											</sequential>
+										</for>
+										<for delimiter=";" list="@{cssPathsMobile}" param="cssfile">
+											<sequential>
+												<xmltask destbuffer="buffer" sourcebuffer="buffer">
+													<insert path="/groups/group[@name='addons_mobile']">
+														<![CDATA[
+															<css>${addonPath}@{cssfile}</css>
+														]]>
+													</insert>
+												</xmltask>
+											</sequential>
+										</for>
+									</then>
+								</if>
+							</actions>
+						</call>
+					</xmltask>
+			    	<xmltask dest="${wro.addons.dest.path}" omitHeader="true" outputter="simple:3" sourcebuffer="buffer"/>
+        		</then>
+				<else>
+					<echo message="-----------WARNING----------- : Could not find template wro file = ${wro.addons.template.path}..."/>
+				</else>
+			</if>
+			
+		</sequential>
+    </macrodef>
+
+	<macrodef name="fix_root_node_for_wro_addons_xml">
+		<sequential>
+			<replaceregexp file="${wro.addons.dest.path}" match="&lt;groups&gt;" replace="${wro.group.node}"/>
+		</sequential>
+	</macrodef>
+
 	<!-- 
 		Called whenever 'ant ear' is used. this callback can be used to modify the content of the ear file
 
@@ -214,11 +452,18 @@
 			<!-- Addon folders in storefronts are always cleaned (even if there is no addonsupport on localextension list) -->
 			<addonclean/>
 			<commonwebclean/>
+			<delete_wro_addons_xml/>
 		</sequential>
 	</macrodef>
-	
-	<target description="compile the _ui-src folder in _ui" name="compileuisrc">
-		<lesscss/>
-		<movelibs/>
+
+	<macrodef name="merchandisestorefront_compileuisrc_executor">
+		<sequential>
+			<merchandisestorefront_lesscss/>
+			<merchandisestorefront_movelibs/>
+		</sequential>
+	</macrodef>
+
+	<target description="compile the _ui-src folder in _ui" name="merchandisestorefront_compileuisrc">
+		<merchandisestorefront_compileuisrc_executor/>
 	</target>
 </project>

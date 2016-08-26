@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.util;
 
@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
  * the token value for the current session (and this should be the only way to obtain the token value).
  *
  */
-final public class CSRFTokenManager
+public final class CSRFTokenManager
 {
 
 	/**
@@ -36,8 +36,12 @@ final public class CSRFTokenManager
 	/**
 	 * The location on the session which stores the token
 	 */
-	private final static String CSRF_TOKEN_FOR_SESSION_ATTR_NAME = CSRFTokenManager.class.getName() + ".tokenval";
+	private static final String CSRF_TOKEN_FOR_SESSION_ATTR_NAME = CSRFTokenManager.class.getName() + ".tokenval";
 
+	private CSRFTokenManager()
+	{
+	}
+	
 	public static String getTokenForSession(final HttpSession session)
 	{
 		String token = null;
@@ -64,9 +68,5 @@ final public class CSRFTokenManager
 	public static String getTokenFromRequest(final HttpServletRequest request)
 	{
 		return request.getParameter(CSRF_PARAM_NAME);
-	}
-
-	private CSRFTokenManager()
-	{
 	}
 }

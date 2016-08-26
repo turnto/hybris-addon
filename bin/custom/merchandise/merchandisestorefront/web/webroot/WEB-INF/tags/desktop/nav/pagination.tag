@@ -6,11 +6,13 @@
 <%@ attribute name="supportShowPaged" required="true" type="java.lang.Boolean" %>
 <%@ attribute name="msgKey" required="false" %>
 <%@ attribute name="numberPagesShown" required="false" type="java.lang.Integer" %>
+<%@ attribute name="sortQueryParams" required="false" %>
 
 <%@ taglib prefix="pagination" tagdir="/WEB-INF/tags/desktop/nav/pagination" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <c:set var="themeMsgKey" value="${not empty msgKey ? msgKey : 'search.page'}"/>
 
@@ -31,6 +33,14 @@
 	</ycommerce:testId>
 	<c:if test="${not empty searchPageData.sorts}">
 		<form id="sort_form${top ? '1' : '2'}" name="sort_form${top ? '1' : '2'}" method="get" action="#" class="sortForm">
+			<c:if test="${not empty sortQueryParams}">
+				<c:forEach var="queryParam" items="${fn:split(sortQueryParams, '&')}">
+					<c:set var="keyValue" value="${fn:split(queryParam, '=')}"/>
+					<c:if test="${not empty keyValue[1]}">
+						<input type="hidden" name="${fn:escapeXml(keyValue[0])}" value="${fn:escapeXml(keyValue[1])}"/>
+					</c:if>
+				</c:forEach>
+			</c:if>
 			<label for="sortOptions${top ? '1' : '2'}"><spring:theme code="${themeMsgKey}.sortTitle"/></label>
 			<select id="sortOptions${top ? '1' : '2'}" name="sort" class="sortOptions">
 				<c:forEach items="${searchPageData.sorts}" var="sort">

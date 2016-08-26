@@ -9,16 +9,41 @@
 
 
 <div class="image-gallery js-gallery">
-    <div class="carousel gallery-image js-gallery-image">
-        <c:forEach items="${galleryImages}" var="container" varStatus="varStatus">
-            <div class="item">
-                <div class="thumb">
-                    <img class="lazyOwl" data-src="${container.product.url}"
-                         data-zoom-image="${container.superZoom.url}"
-                         alt="${container.thumbnail.altText}" >
+    <span class="gallery-zoom-icon glyphicon glyphicon-resize-full"></span>
+
+    <c:choose>
+        <c:when test="${galleryImages == null || galleryImages.size() == 0}">
+            <div class="carousel gallery-image js-gallery-image">
+                <div class="item">
+                    <div>
+                        <spring:theme code="img.missingProductImage.responsive.product" text="/" var="imagePath"/>
+                        <c:choose>
+                            <c:when test="${originalContextPath ne null}">
+                                <c:url value="${imagePath}" var="imageUrl" context="${originalContextPath}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:url value="${imagePath}" var="imageUrl" />
+                            </c:otherwise>
+                        </c:choose>
+                        <img class="lazyOwl" data-src="${imageUrl}"/>
+                    </div>
                 </div>
             </div>
-        </c:forEach>
-    </div>
-    <product:productGalleryThumbnail galleryImages="${galleryImages}" />
+        </c:when>
+        <c:otherwise>
+
+            <div class="carousel gallery-image js-gallery-image">
+                <c:forEach items="${galleryImages}" var="container" varStatus="varStatus">
+                    <div class="item">
+                        <div>
+                            <img class="lazyOwl" data-src="${container.product.url}"
+                                 data-zoom-image="${container.superZoom.url}"
+                                 alt="${container.thumbnail.altText}" >
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+            <product:productGalleryThumbnail galleryImages="${galleryImages}" />
+        </c:otherwise>
+    </c:choose>
 </div>

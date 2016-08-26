@@ -69,11 +69,11 @@
 			<div class="qty-selector js-qty-selector"> 
 				<div class="input-group">
 					<span class="input-group-btn">
-						<button class="btn btn-primary js-qty-selector-minus" type="button">-</button>
+						<button class="btn btn-primary js-qty-selector-minus" type="button"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
 					</span>
 					<input type="text" class="form-control js-qty-selector-input" value="1" name="hiddenPickupQty">
 					<span class="input-group-btn">
-						<button class="btn btn-primary js-qty-selector-plus" type="button">+</button>
+						<button class="btn btn-primary js-qty-selector-plus" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
 					</span>
 				</div>
 			</div>

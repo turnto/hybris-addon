@@ -1,7 +1,7 @@
 /*
  * [y] hybris Platform
  *
- * Copyright (c) 2000-2015 hybris AG
+ * Copyright (c) 2000-2016 hybris AG
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of hybris
@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *
+ *  
  */
 package de.hybris.merchandise.storefront.filters;
 
@@ -98,7 +98,7 @@ public class AcceleratorAddOnFilter extends GenericFilterBean
 		private static final int PATH_PAYLOAD = 1;
 		private static final int EXTENSION_NAME = 0;
 
-		protected final Pattern pattern;
+		private final Pattern pattern;
 
 		protected Matcher patternMatcher;
 
@@ -110,11 +110,16 @@ public class AcceleratorAddOnFilter extends GenericFilterBean
 		public boolean supports(final HttpServletRequest request)
 		{
 			final String includeServletPath = (String) request.getAttribute("javax.servlet.include.servlet_path");
-			if (includeServletPath != null && (patternMatcher = pattern.matcher(includeServletPath)).matches())
+			if (includeServletPath != null)
 			{
-				return true;
+				patternMatcher = pattern.matcher(includeServletPath);
+				if (patternMatcher.matches())
+				{
+					return true;
+				}
 			}
-			return (patternMatcher = pattern.matcher(request.getRequestURI())).matches();
+			patternMatcher = pattern.matcher(request.getRequestURI());
+			return patternMatcher.matches();
 		}
 
 		protected abstract String[] getAddOnExtensionInfo();
@@ -210,7 +215,7 @@ public class AcceleratorAddOnFilter extends GenericFilterBean
 
 	protected String getAppContextFullPathNameFromRequest(final HttpServletRequest request)
 	{
-		return request.getSession(false).getServletContext().getRealPath("/");//request.getSession().getServletContext().getContextPath();
+		return request.getSession(false).getServletContext().getRealPath("/");
 	}
 
 	protected String getFullPathNameFromRequest(final HttpServletRequest request)
@@ -286,7 +291,7 @@ public class AcceleratorAddOnFilter extends GenericFilterBean
 	public void setConfigurationService(final ConfigurationService configurationService)
 	{
 		this.configurationService = configurationService;
-		if(isActive())
+		if (isActive())
 		{
 			LOG.warn(" *** WARNING: AcceleratorAddOnFilter is enabled, and will have a significant impact on performance on a production system. ***");
 		}

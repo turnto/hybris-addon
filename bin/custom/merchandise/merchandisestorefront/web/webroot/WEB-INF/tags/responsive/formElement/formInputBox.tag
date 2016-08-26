@@ -16,11 +16,11 @@
 
 <template:errorSpanField path="${path}">
 	<ycommerce:testId code="LoginPage_Item_${idKey}">
-		<label class="control-label ${labelCSS}" for="${idKey}"> <spring:theme
-				code="${labelKey}" />
-				 <c:if test="${mandatory != null && mandatory == false}">
-					<spring:theme code="login.optional" />
-				 </c:if>
+		<label class="control-label ${labelCSS}" for="${idKey}">
+			<spring:theme code="${labelKey}" />
+			<c:if test="${mandatory != null && mandatory == false}">
+				<spring:theme code="login.optional" />
+			</c:if>
 		</label>
 			
 		<spring:theme code="${placeholder}" var="placeHolderMessage" />

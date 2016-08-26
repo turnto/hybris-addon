@@ -8,8 +8,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="storepickup" tagdir="/WEB-INF/tags/responsive/storepickup" %>
 
-
-<c:if test="${empty showAddToCart ? true : showAddToCart and product.availableForPickup}">
+<c:if test="${empty showAddToCart ? ycommerce:checkIfPickupEnabledForStore() : showAddToCart and ycommerce:checkIfPickupEnabledForStore() and product.availableForPickup}">
 	<c:set var="actionUrl" value="${fn:replace(url,'{productCode}', product.code)}" scope="request"/>
 	<storepickup:clickPickupInStore product="${product}" cartPage="false"/>
 	<storepickup:pickupStorePopup/>
