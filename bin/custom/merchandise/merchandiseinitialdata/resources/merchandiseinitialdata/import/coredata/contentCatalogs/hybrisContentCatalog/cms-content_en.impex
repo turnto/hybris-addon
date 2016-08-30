@@ -27,4 +27,5 @@ UPDATE ContentPage;$contentCV[unique=true];uid[unique=true];title[lang=$lang]
 ;;termsAndConditions;"Terms and Conditions"
 ;;update-email;"Update Email"
 ;;update-profile;"Update Profile"
-;;updatePassword;"Update Forgotten Password"
+;;vcPinboard;"Visual Content Pinboard"
+;;ccPinboard;"Checkout Comment Pinboard"

@@ -139,6 +139,12 @@ public interface ControllerConstants
 			{
 				String WriteReview = "pages/product/writeReview";
 			}
+
+			interface Pinboard
+			{
+				String visualContent = "pages/pinboard/vcPinboard";
+				String checkoutComments = "pages/pinboard/ccPinboard";
+			}
 		}
 
 		interface Fragments

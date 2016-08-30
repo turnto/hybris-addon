@@ -2,7 +2,6 @@
 <%@ taglib prefix="product" tagdir="/WEB-INF/tags/responsive/product"%>
 <%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags"%>
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags"%>
-<%@ taglib prefix="product" tagdir="/WEB-INF/tags/responsive/product"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="flags" required="false" type="java.util.Map"%>
 
@@ -58,10 +57,6 @@
 		</div>
 	</div>
 </div>
-
-<c:if test="${flags.get('customerGallery').getFlag() eq 'true'}">
-	<div id="TurnToPinboardContent"></div>
-</c:if>
 
 <c:if test="${flags.get('turntoCheckoutChatter').getFlag() eq 'true'}">
 <span id="TurnToChatterContent"></span>

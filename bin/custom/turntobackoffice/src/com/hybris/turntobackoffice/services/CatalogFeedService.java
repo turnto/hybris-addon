@@ -12,6 +12,8 @@ import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.search.SearchResult;
 import de.hybris.platform.util.Config;
+import de.hybris.platform.variants.model.VariantProductModel;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,6 +90,8 @@ public class CatalogFeedService {
             String itemURL = getItemURL(productModel);
             String categoryPathJson = gson.toJson(categoryPathList);
 
+            populateEANs(productModel);
+
             FeedProduct feedProduct = new FeedProduct(productModel, Config.getParameter("hybris.main.path"));
             feedProduct.setPrice(price);
             feedProduct.setItemURL(itemURL);
@@ -99,14 +103,32 @@ public class CatalogFeedService {
         return feedProducts;
     }
 
+    private void populateEANs(ProductModel productModel) {
+        StringBuilder listEans = new StringBuilder();
+
+        String baseEan = productModel.getEan();
+        if (StringUtils.isNotBlank(baseEan)) {
+            listEans.append(baseEan);
+        }
+
+        for (VariantProductModel variantProductModel : productModel.getVariants()) {
+            String ean = variantProductModel.getEan();
+            if (StringUtils.isNotBlank(ean)) {
+                listEans.append(",");
+                listEans.append(ean);
+            }
+        }
+
+        productModel.setEan(listEans.toString());
+    }
+
     private String getItemURL(ProductModel productModel) {
         CategoryPath categoryPath = categoryPathBuilder.getProductPath(productModel);
         return categoryPath.getUrl();
     }
 
     private List<ProductModel> getProducts() {
-        String query = "SELECT {" + ProductModel.PK + "} " + "FROM {" + ProductModel._TYPECODE + "} WHERE {" + ProductModel.CATALOGVERSION + "} = ?catalogVersion AND" +
-                " {" + ProductModel.VARIANTTYPE + "} IS NULL";
+        String query = "SELECT DISTINCT {p:PK} AS pk  FROM {VariantProduct AS vp JOIN Product AS p ON {vp:" + VariantProductModel.BASEPRODUCT + "}={p:PK} } WHERE {vp:" + VariantProductModel.BASEPRODUCT + "} IS NULL AND {p:" + ProductModel.CATALOGVERSION + "} = ?catalogVersion";
 
         final FlexibleSearchQuery flexibleSearchQuery = new FlexibleSearchQuery(query);
         flexibleSearchQuery.addQueryParameter("catalogVersion", catalogVersionService.getCatalogVersion(Config.getParameter("hybris.catalog.id"), CATALOG_VERSION));

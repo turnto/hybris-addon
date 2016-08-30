@@ -719,6 +719,9 @@ INSERT_UPDATE ContentPage;$contentCV[unique=true];uid[unique=true];name;masterTe
 ;;updatePassword;Update Forgotten Password Page;AccountPageTemplate;updatePassword
 ;;update-profile;Update Profile Page;AccountPageTemplate;update-profile
 ;;update-email;Update Email Page;AccountPageTemplate;update-email
+;;vcPinboard;VC Pinboard;AccountPageTemplate;vcPinboard
+;;ccPinboard;CC Pinboard;AccountPageTemplate;ccPinboard
+
 # Simple Content Pages
 INSERT_UPDATE ContentPage;$contentCV[unique=true];uid[unique=true];name;masterTemplate(uid,$contentCV);label;defaultPage[default='true'];approvalStatus(code)[default='approved'];homepage[default='false']
 ;;faq;Frequently Asked Questions FAQ Page;ContentPage1Template;/faq

@@ -15,28 +15,6 @@
 
     ]]></zscript>
 
-    <script type="text/javascript">
-           function addFeedPurchaseOrder(params){
-              console.log(JSON.parse(params).name);
-        }
-
-<!--        TurnToFeed.addFeedPurchaseOrder({
-            orderId: "${orderData.code}",
-            email: "${email}",
-            firstName: "${user.firstName}",
-            lastName: "${user.lastName}"
-        });
-        $.each($('.product'), function (i, item) {
-            TurnToFeed.addFeedLineItem({
-            title: $(item).data('name'),
-            url: $(item).data('url'),
-            sku: $(item).data('id'),
-            price: $(item).data('price'),
-            itemImageUrl: $(item).data('img')
-        });
-        });-->
-    </script>
-
     <div sclass="main-container">
         <vlayout sclass="content-vlayout">
             <hlayout>

@@ -97,17 +97,6 @@
             s.parentNode.insertBefore(t, s);
         })();
 
-        if (${isOnCustomerGallery and currentVersion eq "4_3"}) {
-            (function () {
-                var tt = document.createElement('script');
-                tt.type = 'text/javascript';
-                tt.async = true;
-                tt.src = document.location.protocol + "//static.www.turnto.com/traServer${currentVersion}/pinboardjs/" + turnToConfig.siteKey + "/turnto-pinboard.js";
-                var s = document.getElementsByTagName('script')[0];
-                s.parentNode.insertBefore(tt, s);
-            })();
-        }
-
         if (${isOnCustomerGalleryRowWidget and currentVersion eq "4_3"}) {
             (function () {
                 var gallery = document.createElement('script');
