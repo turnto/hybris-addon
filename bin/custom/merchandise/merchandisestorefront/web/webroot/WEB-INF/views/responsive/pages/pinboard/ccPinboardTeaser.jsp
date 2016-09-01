@@ -3,7 +3,6 @@
 <%@ taglib prefix="template" tagdir="/WEB-INF/tags/responsive/template" %>
 
 <c:set var="isOnCcPinboardTeaser" value="${flags.get('ccPinboardTeaser').getFlag() eq 'true'}"/>
- Hello
 <c:if test="${isccPinboardTeaser and isSiteKeyInvalid eq 'false'}">
     <div id="isOnCcPinboardTeaser"></div>
 </c:if>

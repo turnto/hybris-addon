@@ -222,7 +222,7 @@ INSERT_UPDATE ContentSlot  ;$contentCV[unique=true]    ; uid[unique=true]; name 
 ;; Section2CSlot-Homepage ; Section2C Slot for Homepage   ; true    ;
 ;; Section3Slot-Homepage  ; Section3 Slot for Homepage    ; true    ; HybrisHomepageProductCarouselComponent
 ;; Section4Slot-Homepage  ; Section4 Slot for Homepage    ; true    ;
-;; Section5Slot-Homepage  ; Section5 Slot for Homepage    ; true    ; NextDayDeliveryBanner
+;; Section5Slot-Homepage  ; Section5 Slot for Homepage    ; true    ;
 
 INSERT_UPDATE ContentSlotForPage ;$contentCV[unique=true];uid[unique=true]; position[unique=true]; page(uid,$contentCV)[unique=true][default='homepage'] ; contentSlot(uid,$contentCV)[unique=true]
 ;; Section1-Homepage ; Section1   ;; Section1Slot-Homepage
@@ -357,7 +357,7 @@ INSERT_UPDATE ContentSlotForPage; $contentCV[unique=true]    ; uid[unique=true] 
 ;; Section2A-TermsAndConditions      ; Section2A  ; ; Section2ASlot-TermsAndConditions ;    ;       ;
 ;; Section2B-TermsAndConditions      ; Section2B  ; ; Section2BSlot-TermsAndConditions ;    ;       ;
 
-########################################
+#
 INSERT_UPDATE JspIncludeComponent;$contentCV[unique=true];uid[unique=true];name;page;actions(uid,$contentCV);&componentRef
 ;;AccountPaymentDetailsComponent;Account Payment Details Component;accountPaymentInfoPage.jsp;;AccountPaymentDetailsComponent
 ;;AccountOrderDetailsHeadlineComponent;Account Order Details Headline Component;accountOrderDetailHeadline.jsp;;AccountOrderDetailsHeadlineComponent
@@ -524,7 +524,7 @@ INSERT_UPDATE ContentSlotForPage;$contentCV[unique=true];uid[unique=true];positi
 
 
 INSERT_UPDATE JspIncludeComponent;$contentCV[unique=true];uid[unique=true];name;page;actions(uid,$contentCV);&componentRef
-;;CCPinboardTeaserComponent;Checkout Comments Pinboard Teaser;ccPinboardTeaser.jsp;;CCPinboardTeaserComponent
+;;CCPinboardTeaserComponent;Checkout Comments Pinboard Teaser;/WEB-INF/views/responsive/pages/pinboard/ccPinboardTeaser.jsp;;CCPinboardTeaserComponent
 
 INSERT_UPDATE ContentSlot;$contentCV[unique=true]; uid[unique=true];name;active;cmsComponents(&componentRef)
 ;;Section4Slot-Homepage; Section4 Slot for Homepage ;true;CCPinboardTeaserComponent

@@ -23,7 +23,6 @@ public class FeedProduct {
     public FeedProduct(ProductModel model, String homeURL) {
         this.setSku(StringUtils.defaultIfEmpty(model.getCode(),""));
         this.setCategory("");
-        this.setCurrency("EUR");
 
         if (model.getPicture() != null) {
             this.setImageURL(homeURL + model.getPicture().getURL());

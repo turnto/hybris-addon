@@ -1,10 +1,141 @@
-# ImpEx for Importing CMS Content
-# Macros / Replacement Parameter definitions
-$contentCatalog=__CONTENT_CATALOG_NAME__
+#
+# ImpEx for Responsive Hybris UK Site CMS Content 
+#
+$contentCatalog=hybrisContentCatalog
+$contentCatalogName=Hybris Content Catalog
 $contentCV=catalogVersion(CatalogVersion.catalog(Catalog.id[default=$contentCatalog]),CatalogVersion.version[default=Staged])[default=$contentCatalog:Staged]
+$productCatalog=hybrisProductCatalog
+$productCatalogName=Hybris Product Catalog
+$productCV=catalogVersion(catalog(id[default=$productCatalog]),version[default='Staged'])[unique=true,default=$productCatalog:Staged]
+$picture=media(code, $contentCV)
+$image=image(code, $contentCV)
+$media=media(code, $contentCV)
+$page=page(uid, $contentCV)
+$contentPage=contentPage(uid, $contentCV)
+$product=product(code, $productCV)
+$category=category(code, $productCV)
+$siteResource=jar:de.hybris.merchandise.initialdata.constants.MerchandiseInitialDataConstants&/merchandiseinitialdata/import/sampledata/contentCatalogs/$contentCatalog
+$productResource=jar:de.hybris.merchandise.initialdata.constants.MerchandiseInitialDataConstants&/merchandiseinitialdata/import/sampledata/productCatalogs/$productCatalog
+$jarResourceCms=jar:de.hybris.merchandise.initialdata.constants.MerchandiseInitialDataConstants&/merchandiseinitialdata/import/sampledata/cockpits/cmscockpit
 
+$lang=en
+$mediaContainer=media(qualifier, $contentCV)[lang=$lang]
+
+# Load the storefront context root config param
+$storefrontContextRoot=$config-storefrontContextRoot
+
+##  Remove the language currency component from the search and place a tag in the footer
+# CMS SearchBox Components
 INSERT_UPDATE SearchBoxComponent;$contentCV[unique=true];uid[unique=true];name;&componentRef
+;;SearchBox;Search Box;SearchBox
 
 INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];cmsComponents(&componentRef)
+;;SearchBoxSlot;SearchBox
 
 INSERT_UPDATE FooterComponent;$contentCV[unique=true];uid[unique=true];wrapAfter;showLanguageCurrency
+;;FooterComponent;2;false
+
+#################    HOME PAGE START     #################  
+
+####  Home page splash Slot 1  #######
+#INSERT_UPDATE SimpleResponsiveBannerComponent;$contentCV[unique=true];uid[unique=true];name;urlLink;&componentRef
+#;;HybrisHompageSplashBannerComponent;Hybrisl UK Homepage Splash Banner Component;/Collections/Snow/c/snow;HybrisHompageSplashBannerComponent
+#
+#INSERT_UPDATE SimpleResponsiveBannerComponent;$contentCV[unique=true];uid[unique=true];name;urlLink;&componentRef
+#;;HybrisUKHompageSaveBannerComponent;Electronics Homepage Discount Banner Component;/Collections/Snow/c/snow;HybrisUKHompageSaveBannerComponent
+#
+#INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];active;cmsComponents(&componentRef)
+#;;Section1Slot-HybrisHomepage;true;HybrisHompageSplashBannerComponent,HybrisUKHompageSaveBannerComponent
+#
+####  Home page slot 2A  ####
+#INSERT_UPDATE SimpleResponsiveBannerComponent;$contentCV[unique=true];uid[unique=true];name;urlLink;&componentRef
+#;;HybrisHompageWomenStreetBannerComponent;Hybris Homepage Women Dress Banner Component;Categories/Streetwear-women/Skirts-and-Dresses-women/c/260700;HybrisHompageWomenStreetBannerComponent
+#
+#INSERT_UPDATE SimpleResponsiveBannerComponent;$contentCV[unique=true];uid[unique=true];name;urlLink;&componentRef
+#;;HybrisHompageMenStreetBannerComponent;Hybris Homepage Men Shirt Banner Component;Categories/Streetwear-men/T-Shirts-men/c/250100;HybrisHompageMenStreetBannerComponent
+#
+#INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];active;cmsComponents(&componentRef)
+#;;Section2ASlot-HybrisHomepage;true;HybrisHompageWomenStreetBannerComponent,HybrisHompageMenStreetBannerComponent
+#
+#INSERT_UPDATE ContentSlotForPage;$contentCV[unique=true];uid[unique=true];position[unique=true];page(uid,$contentCV)[unique=true][default='homepage'];contentSlot(uid,$contentCV)[unique=true];;;
+#;;Section2A-HybrisHomepage;Section2A;;Section2ASlot-HybrisHomepage;;;
+#
+##### Home section 2B #######
+#INSERT_UPDATE SimpleResponsiveBannerComponent;$contentCV[unique=true];uid[unique=true];name;urlLink;&componentRef
+#;;HybrisHompageStreetYouthBannerComponent;Hybris Homepage Youth Shorts Banner Component;Categories/Streetwear-youth/Boardshorts-youth/c/270600;HybrisHompageStreetYouthBannerComponent
+#
+#INSERT_UPDATE SimpleResponsiveBannerComponent;$contentCV[unique=true];uid[unique=true];name;urlLink;&componentRef
+#;;HybrisHompageBrandsBannerComponent;Hybris Homepage Brands Banner Component Child;Brands/c/brands;HybrisHompageBrandsBannerComponent
+#
+#INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];active;cmsComponents(&componentRef)
+#;;Section2BSlot-Homepage;true;HybrisHompageStreetYouthBannerComponent,HybrisHompageBrandsBannerComponent
+#
+#INSERT_UPDATE ContentSlotForPage;$contentCV[unique=true];uid[unique=true];position[unique=true];page(uid,$contentCV)[unique=true][default='homepage'];contentSlot(uid,$contentCV)[unique=true];;;
+#;;Section2B-HybrisHomepage;Section2B;;Section2BSlot-Homepage;;;
+
+## Home section 3
+#INSERT_UPDATE ProductCarouselComponent;$contentCV[unique=true];uid[unique=true];name;products(code,$productCV);scroll(code);popup;&componentRef
+#;;HybrisHomepageProductCarouselComponent;Best Selling Products;0007,0001,0002,0003,0004,0005,0006,0100,0101,0102,0110,0111,0112,0200,0201,0202,0210,0211,0212;allVisible;false;HybrisHomepageProductCarouselComponent
+#
+##INSERT_UPDATE ProductCarouselComponent;$contentCV[unique=true];uid[unique=true];name;products(code,$productCV);scroll(code);popup;&componentRef
+##;;NewHybrisHomepageProductCarouselComponent;What's New Hybris Homepage Product Carousel;29531,300046592,300015407,300040462,M27160_B,M33477_B,300310300,300044599,300005449,300441142;allVisible;false;NewHybrisHomepageProductCarouselComponent
+#
+#INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];cmsComponents(&componentRef)
+#;;Section3Slot-Homepage;HybrisHomepageProductCarouselComponent
+#
+#INSERT_UPDATE ContentSlotForPage;$contentCV[unique=true];uid[unique=true];position[unique=true];page(uid,$contentCV)[unique=true][default='homepage'];contentSlot(uid,$contentCV)[unique=true];;;
+#;;Section3Slot-Homepage;Section3;;Section3Slot-Homepage;;;
+
+##### Section 4
+#INSERT_UPDATE SimpleResponsiveBannerComponent;$contentCV[unique=true];uid[unique=true];name;&componentRef
+#;;HybrisHompageSmDiscountBannerComponent;Hybris Homepage Small Discount Banner Component;HybrisHompageSmDiscountBannerComponent
+#;;HybrisHompageShopBannerComponent;Hybris Homepage Shop Banner Component;HybrisHompageShopBannerComponent
+#;;HybrisHompageShipmentBannerComponent;Hybris Homepage Shipment Banner Component;HybrisHompageShipmentBannerComponent
+#;;HybrisHompageServiceBannerComponent;Hybris Homepage Service Banner Component;HybrisHompageServiceBannerComponent
+#
+#INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];active;cmsComponents(&componentRef)
+#;;Section4Slot-Homepage;true;HybrisHompageSmDiscountBannerComponent,HybrisHompageShopBannerComponent,HybrisHompageShipmentBannerComponent,HybrisHompageServiceBannerComponent
+#
+#INSERT_UPDATE ContentSlotForPage;$contentCV[unique=true];uid[unique=true];position[unique=true];page(uid,$contentCV)[unique=true][default='homepage'];contentSlot(uid,$contentCV)[unique=true];;;
+#;;Section4Slot-Homepage;Section4;;Section4Slot-Homepage;;;
+
+#### Section 5
+## Home section 2C
+#INSERT_UPDATE SimpleResponsiveBannerComponent;$contentCV[unique=true];uid[unique=true];name;&componentRef
+#;;HybrisHompageFreeDelBannerComponent;Hybris Homepage Free Delivery Banner Component;HybrisHompageFreeDelBannerComponent
+#
+#INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];active;cmsComponents(&componentRef)
+#;;Section5Slot-Homepage;true;HybrisHompageFreeDelBannerComponent
+#
+#INSERT_UPDATE ContentSlotForPage;$contentCV[unique=true];uid[unique=true];position[unique=true];page(uid,$contentCV)[unique=true][default='homepage'];contentSlot(uid,$contentCV)[unique=true];;;
+#;;Section5Slot-Homepage;Section5;;Section5Slot-Homepage;;;
+
+#################    HOME PAGE END     #################
+
+INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];name;active;cmsComponents(uid, $contentCV)
+;;TopContentSlot-cartPage;Top Content Slot for Cart Page;true;CartComponent
+
+INSERT_UPDATE CategoryPage;$contentCV[unique=true];uid[unique=true];masterTemplate(uid,$contentCV);
+;;SnowCategoryPage;ProductGridPageTemplate;
+
+INSERT_UPDATE CategoryPage;$contentCV[unique=true];uid[unique=true];masterTemplate(uid,$contentCV);
+;;StreetCategoryPage;ProductGridPageTemplate;
+
+# Site Logo
+INSERT_UPDATE Media;$contentCV[unique=true];code[unique=true];realfilename;@media[translator=de.hybris.platform.impex.jalo.media.MediaDataTranslator];mime[default='image/jpeg'];altText;folder(qualifier)[default='images']
+;;/images/theme/logo-hybris-responsive.png;logo-hybris-responsive.png;$siteResource/images/theme/logo-hybris-responsive.png;image/png;hybris Accelerator;
+
+### Checkout Login
+INSERT_UPDATE JspIncludeComponent;$contentCV[unique=true];uid[unique=true];&componentRef
+;;ReturningCustomerCheckoutLoginComponent;ReturningCustomerCheckoutLoginComponent
+
+INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];cmsComponents(&componentRef);;;
+;;LeftContentSlot-checkout-login;ReturningCustomerCheckoutLoginComponent;;;
+
+INSERT_UPDATE ContentSlotForPage;$contentCV[unique=true];uid[unique=true];position[unique=true];page(uid,$contentCV)[unique=true][default='checkout-login'];contentSlot(uid,$contentCV)[unique=true];;;
+;;LeftContentSlot-checkout-login;LeftContentSlot;;LeftContentSlot-checkout-login;;;
+
+# Remove view store action from store finder component
+INSERT_UPDATE JspIncludeComponent;$contentCV[unique=true];uid[unique=true];actions(uid,$contentCV);
+;;StoreFinderComponent;;
+

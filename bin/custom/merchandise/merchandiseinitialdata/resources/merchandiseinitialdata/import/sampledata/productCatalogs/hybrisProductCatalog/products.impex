@@ -13,12 +13,12 @@ $taxGroup=Europe1PriceFactory_PTG(code)[default=jp-vat-full]
 # Insert Products
 INSERT_UPDATE Product;code[unique=true];$supercategories;manufacturerName;manufacturerAID;unit(code);ean;variantType(code);$catalogVersion;$approved;$taxGroup
 ;0001;100;Mugs & Co;MUG-1;pieces;4905524593235;TurnToColorVariantProduct
-;0002;100;Mugs & Co;PEN-1;pieces;
-;0003;100;Mugs & Co;PAD-A5;pieces;
-;0004;100;Mugs & Co;PAD-A4;pieces;
-;0005;100;Mugs & Co;LANYARD;pieces;
-;0006;100;Mugs & Co;USB-STICK;pieces;
-;0007;100;Mugs & Co;WIESNHERZ;pieces;
+;0002;100;Mugs & Co;PEN-1;pieces;4905524593234
+;0003;100;Mugs & Co;PAD-A5;pieces;4905524593223
+;0004;100;Mugs & Co;PAD-A4;pieces;4905524593222
+;0005;100;Mugs & Co;LANYARD;pieces;4905524593224
+;0006;100;Mugs & Co;USB-STICK;pieces;1905524593223
+;0007;100;Mugs & Co;WIESNHERZ;pieces;1905524593223
 ;0100;210;Clothes & Co;SHIRT-WHITE-M-S;pieces;
 ;0101;210;Clothes & Co;SHIRT-WHITE-M-M;pieces;
 ;0102;210;Clothes & Co;SHIRT-WHITE-M-L;pieces;
@@ -33,6 +33,6 @@ INSERT_UPDATE Product;code[unique=true];$supercategories;manufacturerName;manufa
 ;0212;220;Clothes & Co;SWEAT-WHITE-F-L;pieces;
 
 INSERT_UPDATE TurnToColorVariantProduct;code[unique=true];$baseProduct;ean;unit(code);color;$supercategories;approvalstatus(code)[default='approved'];$catalogVersion
-;0001_red;0001;4905524593235;pieces;Red;100
-;0001_green;0001;4905524593235;pieces;Green;100
-;0001_blue;0001;4905524593235;pieces;Blue;100
+;0001_red;0001;4905524593237;pieces;Red;100
+;0001_green;0001;4905524593238;pieces;Green;100
+;0001_blue;0001;4905524593239;pieces;Blue;100

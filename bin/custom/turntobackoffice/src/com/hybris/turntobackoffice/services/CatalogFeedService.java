@@ -6,11 +6,16 @@ import com.hybris.turntobackoffice.builder.CategoryPathBuilder;
 import com.hybris.turntobackoffice.model.CategoryPath;
 import com.hybris.turntobackoffice.model.FeedProduct;
 import de.hybris.platform.catalog.CatalogVersionService;
+import de.hybris.platform.commerceservices.price.CommercePriceService;
+import de.hybris.platform.core.model.c2l.CurrencyModel;
 import de.hybris.platform.core.model.product.ProductModel;
 import de.hybris.platform.europe1.model.PriceRowModel;
+import de.hybris.platform.servicelayer.i18n.CommonI18NService;
 import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.search.SearchResult;
+import de.hybris.platform.store.BaseStoreModel;
+import de.hybris.platform.store.services.BaseStoreService;
 import de.hybris.platform.util.Config;
 import de.hybris.platform.variants.model.VariantProductModel;
 import org.apache.commons.lang.StringUtils;
@@ -41,6 +46,16 @@ public class CatalogFeedService {
 
     @Resource(name = "categoryPathBuilder")
     private CategoryPathBuilder categoryPathBuilder;
+
+    @Resource(name = "commercePriceService")
+    private CommercePriceService commercePriceService;
+
+    @Resource(name = "commonI18NService")
+    private CommonI18NService commonI18NService;
+
+    @Resource(name = "baseStoreService")
+    private BaseStoreService baseStoreService;
+
 
     public File generateCatalogFeedFile() {
         List<FeedProduct> products = createProductFeed();
@@ -85,7 +100,6 @@ public class CatalogFeedService {
         Gson gson = new Gson();
 
         for (ProductModel productModel : products) {
-            String price = getProductPrice(productModel);
             List<CategoryPath> categoryPathList = categoryPathBuilder.getCategoryPaths(productModel);
             String itemURL = getItemURL(productModel);
             String categoryPathJson = gson.toJson(categoryPathList);
@@ -93,7 +107,7 @@ public class CatalogFeedService {
             populateEANs(productModel);
 
             FeedProduct feedProduct = new FeedProduct(productModel, Config.getParameter("hybris.main.path"));
-            feedProduct.setPrice(price);
+            setProductPrice(feedProduct, productModel);
             feedProduct.setItemURL(itemURL);
             feedProduct.setCategorypathjson(categoryPathJson);
 
@@ -104,22 +118,23 @@ public class CatalogFeedService {
     }
 
     private void populateEANs(ProductModel productModel) {
-        StringBuilder listEans = new StringBuilder();
+        List<String> listEans = new ArrayList<>();
+//        List<String>listCodes = new ArrayList<>();
 
         String baseEan = productModel.getEan();
         if (StringUtils.isNotBlank(baseEan)) {
-            listEans.append(baseEan);
+            listEans.add(baseEan);
         }
 
         for (VariantProductModel variantProductModel : productModel.getVariants()) {
             String ean = variantProductModel.getEan();
             if (StringUtils.isNotBlank(ean)) {
-                listEans.append(",");
-                listEans.append(ean);
+                listEans.add(ean);
             }
         }
 
-        productModel.setEan(listEans.toString());
+        productModel.setEan(StringUtils.join(listEans, ","));
+//        productModel.setCode(StringUtils.join(listCodes,","));
     }
 
     private String getItemURL(ProductModel productModel) {
@@ -128,7 +143,7 @@ public class CatalogFeedService {
     }
 
     private List<ProductModel> getProducts() {
-        String query = "SELECT DISTINCT {p:PK} AS pk  FROM {VariantProduct AS vp JOIN Product AS p ON {vp:" + VariantProductModel.BASEPRODUCT + "}={p:PK} } WHERE {vp:" + VariantProductModel.BASEPRODUCT + "} IS NULL AND {p:" + ProductModel.CATALOGVERSION + "} = ?catalogVersion";
+        String query = "SELECT DISTINCT {p:PK} FROM {Product AS p} WHERE {p:PK} NOT IN ({{SELECT DISTINCT {vp:PK} as pp FROM {VariantProduct AS vp} WHERE {vp:catalogVersion} = ?catalogVersion }}) AND {p:catalogVersion} = ?catalogVersion";
 
         final FlexibleSearchQuery flexibleSearchQuery = new FlexibleSearchQuery(query);
         flexibleSearchQuery.addQueryParameter("catalogVersion", catalogVersionService.getCatalogVersion(Config.getParameter("hybris.catalog.id"), CATALOG_VERSION));
@@ -136,15 +151,25 @@ public class CatalogFeedService {
         return searchResult.getResult();
     }
 
-    private String getProductPrice(ProductModel model) {
-        String price = "";
-        for (PriceRowModel prm : model.getEurope1Prices()) {
-            if ("Euro".equalsIgnoreCase(prm.getCurrency().getName())) {
+    private void setProductPrice(FeedProduct feedProduct, ProductModel productModel) {
+        final BaseStoreModel currentBaseStore = baseStoreService.getBaseStoreForUid(Config.getParameter("hybris.store.uid"));
+
+        CurrencyModel defaultCurrency = currentBaseStore.getDefaultCurrency();
+
+        String price = "Product does not have price";
+        String currency = "Product does not have currency";
+
+        for (PriceRowModel prm : productModel.getEurope1Prices()) {
+            if (defaultCurrency.equals(prm.getCurrency())) {
                 price = String.valueOf(prm.getPrice());
+                currency = prm.getCurrency().getName();
                 break;
             }
         }
-        return price;
+
+        feedProduct.setPrice(price);
+        feedProduct.setCurrency(currency);
+
     }
 /*
     private String getItemURL(ProductModel model) {

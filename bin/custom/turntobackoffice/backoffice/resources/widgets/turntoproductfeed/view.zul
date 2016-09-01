@@ -124,6 +124,14 @@
             </hlayout>
         </vlayout>
 
+         <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label>Enable Checkout Comment Pinboard Teaser</label>
+                <checkbox id="ccPinboardTeaser"/>
+            </hlayout>
+        </vlayout>
+
+
         <vlayout sclass="content-vlayout" id="customer-gallery">
             <hlayout >
                 <label >Customer Gallery(Pinboard)</label>
