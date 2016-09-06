@@ -13,6 +13,7 @@
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
+import com.turntoplugin.facades.TurnToContentFacade;
 import de.hybris.platform.acceleratorfacades.flow.impl.SessionOverrideCheckoutFlowFacade;
 import de.hybris.platform.acceleratorservices.controllers.page.PageType;
 import de.hybris.platform.acceleratorstorefrontcommons.annotations.RequireHardLogIn;
@@ -45,6 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -90,6 +92,9 @@ public class CheckoutController extends AbstractCheckoutController
 	@Resource(name = "autoLoginStrategy")
 	private AutoLoginStrategy autoLoginStrategy;
 
+	@Autowired
+	private TurnToContentFacade turnToContentFacade;
+
 	@ExceptionHandler(ModelNotFoundException.class)
 	public String handleModelNotFoundException(final ModelNotFoundException exception, final HttpServletRequest request)
 	{
@@ -125,6 +130,9 @@ public class CheckoutController extends AbstractCheckoutController
 			final Model model) throws CMSItemNotFoundException
 	{
 		SessionOverrideCheckoutFlowFacade.resetSessionOverrides();
+		turnToContentFacade.populateModelWithTurnToFlags(model);
+		turnToContentFacade.populateModelWithTurnToSiteKey(model);
+		turnToContentFacade.populateModelWithTurnToVersion(model);
 		return processOrderCode(orderCode, model, request);
 	}
 

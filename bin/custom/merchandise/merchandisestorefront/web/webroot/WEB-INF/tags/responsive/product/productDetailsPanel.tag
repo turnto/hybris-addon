@@ -2,7 +2,9 @@
 <%@ taglib prefix="product" tagdir="/WEB-INF/tags/responsive/product"%>
 <%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags"%>
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags"%>
-<%@ taglib prefix="product" tagdir="/WEB-INF/tags/responsive/product"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="teasers" tagdir="/WEB-INF/tags/addons/turntoplugin/responsive/teasers"%>
+<%@ taglib prefix="widget" tagdir="/WEB-INF/tags/addons/turntoplugin/responsive/widget" %>
 
 
 <div class="product-details">
@@ -48,9 +50,13 @@
 							<cms:component component="${component}" element="div" class="yComponentWrapper"/>
 						</cms:pageSlot>
 					</div>
+
+					<teasers:qaInputTeaser/>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<widget:checkoutCommentsPDP/>
 

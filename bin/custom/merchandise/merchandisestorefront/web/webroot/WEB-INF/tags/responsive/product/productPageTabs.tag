@@ -1,7 +1,9 @@
 <%@ tag body-content="empty" trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="product" tagdir="/WEB-INF/tags/responsive/product"%>
+<%@ taglib prefix="turnto" tagdir="/WEB-INF/tags/addons/turntoplugin/responsive/content"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="tabs js-tabs tabs-responsive">
 
@@ -13,20 +15,27 @@
 		<product:productDetailsTab product="${product}" />
 	</div>
 
-	<div class="tabhead">
-		<a href=""><spring:theme code="product.product.spec" /></a> <span
-			class="glyphicon"></span>
-	</div>
+	<c:if test="${flags.get('checkboxQA').getFlag() eq 'true' and flags.get('checkboxQA').getSetupType().getCode() ne 'overlay' and isSiteKeyInvalid eq 'false'}">
+		<div class="tabhead">
+			<a href=""><spring:theme code="product.product.qa" /></a>
+			<span class="glyphicon"></span>
+		</div>
+	</c:if>
+
 	<div class="tabbody">
-		<product:productDetailsClassifications product="${product}" />
+		<turnto:qaContent/>
+		<%--<product:productDetailsClassifications product="${product}" />--%>
 	</div>
-	
-	<div id="tabreview" class="tabhead">
-		<a href=""><spring:theme code="review.reviews" /></a> <span
-			class="glyphicon"></span>
-	</div>	
+
+	<c:if test="${flags.get('checkboxRating').getFlag() eq 'true' and flags.get('checkboxRating').getSetupType().getCode() ne 'overlay' and isSiteKeyInvalid eq 'false'}">
+		<div id="tabreview" class="tabhead">
+			<a href=""><spring:theme code="review.reviews"/></a> <span class="glyphicon"></span>
+		</div>
+	</c:if>
+
 	<div class="tabbody">
-		<product:productPageReviewsTab product="${product}" />
+		<%--<product:productPageReviewsTab product="${product}" />--%>
+			<turnto:reviewContent/>
 	</div>
 
 	<cms:pageSlot position="Tabs" var="tabs">

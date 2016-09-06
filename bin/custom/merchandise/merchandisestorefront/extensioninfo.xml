@@ -16,6 +16,7 @@
 		<requires-extension name="btg"/>
 		<requires-extension name="acceleratorstorefrontcommons"/>
 		<requires-extension name="merchandisefacades"/>
+		<requires-extension name="turntoplugin"/>
 
 		<webmodule jspcompile="false" webroot="/merchandisestorefront"/>
 			

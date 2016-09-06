@@ -5,18 +5,20 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ attribute name="showLinks" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="starsClass" required="false" type="java.lang.String" %>
+<%@ taglib prefix="teasers" tagdir="/WEB-INF/tags/addons/turntoplugin/responsive/teasers"%>
 
 <%@ attribute name="product" required="true"
 	type="de.hybris.platform.commercefacades.product.data.ProductData"%>
 
 
 <div class="rating js-ratingCalc ${starsClass}" data-rating='{"rating":"${product.averageRating}","total":5}'>
-	<div class="rating-stars">
+	<teasers:reviewTeaser/>
+<%--	<div class="rating-stars">
 		<span class="js-ratingIcon glyphicon glyphicon-star"></span>
-	</div>
+	</div>--%>
 
 
-	<c:if test="${not empty product.reviews}">
+<%--	<c:if test="${not empty product.reviews}">
 		<spring:theme code="review.based.on"
 			arguments="${fn:length(product.reviews)}" />
 	</c:if>
@@ -30,6 +32,6 @@
 		<c:otherwise>
 			<spring:theme code="review.reviews" />
 		</c:otherwise>
-	</c:choose>
+	</c:choose>--%>
 	
 </div>

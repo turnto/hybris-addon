@@ -1,5 +1,6 @@
 <%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="template" tagdir="/WEB-INF/tags/responsive/template"%>
+<%@ taglib prefix="widget" tagdir="/WEB-INF/tags/addons/turntoplugin/responsive/widget"%>
 <%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags"%>
 
 <template:page pageTitle="${pageTitle}">
@@ -21,4 +22,5 @@
 			</cms:pageSlot>
 		</div>
 	</div>
+	<widget:commentCaptureWidget/>
 </template:page>
