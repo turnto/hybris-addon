@@ -21,11 +21,7 @@
 		
 	<context:annotation-config/>
 
-	<!-- TurnTo Content-->
-	<bean id="turnToContentFacade" class="de.hybris.merchandise.facades.suggestion.impl.DefaultTurnToContentFacade">
-		<property name="modelService" ref="modelService"/>
-		<property name="turnToContentService" ref="turnToContentService"/>
-	</bean>
+
 
 
 	<alias alias="simpleSuggestionFacade" name="defaultSimpleSuggestionFacade"/>
