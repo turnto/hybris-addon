@@ -437,18 +437,6 @@
 	</bean>
 
 
-	<!-- TurnTo Content-->
-	<bean id="turnToContentService"
-		  class="de.hybris.merchandise.core.suggestion.impl.DefaultTurnToContentService">
-		<property name="turnToContentDao" ref="turnToContentDao"/>
-	</bean>
-
-	<bean id="turnToContentDao"
-		  class="de.hybris.merchandise.core.suggestion.dao.impl.DefaultTurnToContentDao"
-		  parent="abstractItemDao">
-		<property name="flexibleSearchService" ref="flexibleSearchService"/>
-	</bean>
-
 	<bean id="dynamicHybrisCustomerAttributeBean"
 		  class="de.hybris.merchandise.core.model.DynamicHybrisCustomerAttributeBean"/>
 

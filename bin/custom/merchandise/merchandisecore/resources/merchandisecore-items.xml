@@ -137,36 +137,6 @@
 				</attributes>
 			</itemtype>
 
-			<itemtype code="TurnToStaticContents" autocreate="true" generate="true">
-				<deployment table="TurnToStaticContents" typecode="999"/>
-				<attributes>
-					<attribute qualifier="productId" type="java.lang.String">
-						<persistence type="property"/>
-						<modifiers optional="false" unique="true"/>
-					</attribute>
-					<attribute qualifier="timestamp" type="java.lang.Long">
-						<persistence type="property"/>
-						<modifiers optional="false"/>
-					</attribute>
-					<attribute qualifier="qaContent" type="java.lang.String">
-						<persistence type="property">
-							<columntype database="mysql">
-								<value>LONGTEXT</value>
-							</columntype>
-						</persistence>
-						<modifiers optional="false"/>
-					</attribute>
-					<attribute qualifier="reviewsContent" type="java.lang.String">
-						<persistence type="property">
-							<columntype database="mysql">
-								<value>LONGTEXT</value>
-							</columntype>
-						</persistence>
-						<modifiers optional="false"/>
-					</attribute>
-				</attributes>
-			</itemtype>
-
 			<itemtype code="TurnToColorVariantProduct" extends="VariantProduct"
 					  autocreate="true" generate="true"
 					  jaloclass="de.hybris.merchandise.core.jalo.TurnToColorVariantProduct">
