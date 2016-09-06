@@ -26,16 +26,16 @@ INSERT_UPDATE PageTemplate;$contentCV[unique=true];uid[unique=true];name;fronten
 ;;LandingPage5Template;Landing Page 5 Template;layout/landingLayout5Page;CategoryPage,ContentPage
 ;;LandingPage6Template;Landing Page 6 Template;layout/landingLayout6Page;CategoryPage,ContentPage
 ;;ContentPage1Template;Content Page 1 Template;layout/contentLayout1Page;ContentPage
-;;AccountPageTemplate;Account Page Template;account/accountLayoutPage;ContentPage;false;
-;;StoreFinderPageTemplate;Store Finder Page Template;storeFinder/storeFinderSearchPage;ContentPage;false;
+;;AccountPageTemplate;Account Page Template;account/accountLayoutPage;ContentPage
 
 # Templates without a frontendTemplateName
-;;CartPageTemplate;Cart Page Template;;ContentPage;false;
-;;LoginPageTemplate;Login Page Template;;ContentPage;false;
-;;CheckoutLoginPageTemplate;Checkout Login Page Template;;ContentPage;false;
-;;MultiStepCheckoutSummaryPageTemplate;Multi Step Checkout Summary Page Template;;ContentPage;false;
-;;OrderConfirmationPageTemplate;Order Confirmation Page Template;;ContentPage;false;
-;;ErrorPageTemplate;Error Page Template;;ContentPage;false;
+;;CartPageTemplate;Cart Page Template;;ContentPage;false
+;;LoginPageTemplate;Login Page Template;;ContentPage;false
+;;CheckoutLoginPageTemplate;Checkout Login Page Template;;ContentPage;false
+;;MultiStepCheckoutSummaryPageTemplate;Multi Step Checkout Summary Page Template;;ContentPage;false
+;;OrderConfirmationPageTemplate;Order Confirmation Page Template;;ContentPage;false
+;;StoreFinderPageTemplate;Store Finder Page Template;storeFinder/storeFinderSearchPage;ContentPage;false;
+;;ErrorPageTemplate;Error Page Template;;ContentPage;false
 
 # Add Velocity templates that are in the CMS Cockpit. These give a better layout for editing pages
 # The FileLoaderValueTranslator loads a File into a String property. The templates could also be inserted in-line in this file.
@@ -51,37 +51,38 @@ UPDATE PageTemplate;$contentCV[unique=true];uid[unique=true];velocityTemplate[tr
 ;;LandingPage5Template      ;$jarResourceCms/structure-view/structure_landingPage5Template.vm
 ;;LandingPage6Template      ;$jarResourceCms/structure-view/structure_landingPage6Template.vm
 ;;ContentPage1Template      ;$jarResourceCms/structure-view/structure_contentPage1Template.vm
-;;SearchResultsListPageTemplate ;$jarResourceCms/structure-view/structure_searchResultsPageTemplate.vm
-;;SearchResultsGridPageTemplate ;$jarResourceCms/structure-view/structure_searchResultsPageTemplate.vm
+;;SearchResultsListPageTemplate ;$jarResourceCms/structure-view/structure_searchResultsListPageTemplate.vm
+;;SearchResultsGridPageTemplate ;$jarResourceCms/structure-view/structure_searchResultsGridPageTemplate.vm
 ;;CartPageTemplate 		    ;$jarResourceCms/structure-view/structure_cartPageTemplate.vm
 ;;AccountPageTemplate 		;$jarResourceCms/structure-view/structure_accountPageTemplate.vm
 ;;StoreFinderPageTemplate	;$jarResourceCms/structure-view/structure_storefinderSearchTemplate.vm
 ;;ErrorPageTemplate			;$jarResourceCms/structure-view/structure_errorPageTemplate.vm
 ;;SearchResultsEmptyPageTemplate;$jarResourceCms/structure-view/structure_errorPageTemplate.vm
-;;MultiStepCheckoutSummaryPageTemplate   ;$jarResourceCms/structure-view/structure_multiStepCheckoutSummaryPageTemplate.vm
-;;OrderConfirmationPageTemplate;$jarResourceCms/structure-view/structure_orderConfirmationPageTemplate.vm
+;;MultiStepCheckoutSummaryPageTemplate	;$jarResourceCms/structure-view/structure_multiStepCheckoutSummaryPageTemplate.vm
+;;OrderConfirmationPageTemplate	;$jarResourceCms/structure-view/structure_orderConfirmationPageTemplate.vm
 ;;LoginPageTemplate         ;$jarResourceCms/structure-view/structure_loginPageTemplate.vm
 ;;CheckoutLoginPageTemplate ;$jarResourceCms/structure-view/structure_checkoutLoginPageTemplate.vm
 
 # Create ContentSlotNames
 # Each PageTemplate has a number of ContentSlotNames, with a list of valid components for the slot.
 # There are a standard set of slots and a number of specific slots for each template.
-# Standard slots are SiteLogo, HeaderLinks, MiniCart and NavigationBar (that all appear in the Header), and the Footer. 
+# Standard slots are SiteLogo, HeaderLinks, MiniCart and NavigationBar (that all appear in the Header), and the Footer.
 
 # Error Page Template
 INSERT_UPDATE ContentSlotName;name[unique=true];template(uid,$contentCV)[unique=true][default='ErrorPageTemplate'];validComponentTypes(code);compTypeGroup(code)
 ;SiteLogo;;;logo
 ;HeaderLinks;;;headerlinks
-;SearchBox;;;searchbox
+;SearchBox;;SearchBoxComponent;searchbox
 ;MiniCart;;;minicart
 ;NavigationBar;;;navigation
-;MiddleContent;;CMSParagraphComponent
+;MiddleContent;;CMSParagraphComponent,SimpleResponsiveBannerComponent
 ;BottomContent;;;wide
 ;SideContent;;;narrow
-;Footer;;;footer
+;Footer;;;footer;
 ;TopHeaderSlot;;;wide
 ;BottomHeaderSlot;;;wide
 ;PlaceholderContentSlot;;;
+
 
 # Product Details Page Template
 # The CrossSelling and UpSelling slots are designed for related products, cross-sells and up-sells.
@@ -98,12 +99,13 @@ INSERT_UPDATE ContentSlotName;name[unique=true];template(uid,$contentCV)[unique=
 ;VariantSelector;;ProductVariantSelectorComponent;narrow
 ;AddToCart;;ProductAddToCartComponent;narrow
 ;CrossSelling;;ProductReferencesComponent;narrow
-;UpSelling;;ProductReferencesComponent;narrow
+;UpSelling;;ProductReferencesComponent;wide
 ;Footer;;;footer
 ;Tabs;;CMSTabParagraphContainer
 ;TopHeaderSlot;;;wide
 ;BottomHeaderSlot;;;wide
 ;PlaceholderContentSlot;;;
+
 
 # Product List / Grid are two layouts for Category Browsing pages
 
@@ -228,12 +230,21 @@ INSERT_UPDATE ContentSlotName;name[unique=true];template(uid,$contentCV)[unique=
 ;MiniCart;;;minicart
 ;NavigationBar;;;navigation
 ;Section1;;;wide
+;Section2;;;wide
 ;Section2A;;;narrow
 ;Section2B;;;narrow
-;Section2C;;;wide
+;Section2C;;;narrow
+;Section2D;;;narrow
+;Section2E;;;narrow
 ;Section3;;;wide
+;Section3A;;;narrow
+;Section3B;;;narrow
+;Section3C;;;narrow
+;Section3D;;;narrow
+;Section3E;;;narrow
 ;Section4;;;narrow
 ;Section5;;;wide
+;Section6;;;wide
 ;Footer;;;footer
 ;TopHeaderSlot;;;wide
 ;BottomHeaderSlot;;;wide
@@ -340,6 +351,7 @@ INSERT_UPDATE ContentSlotName;name[unique=true];template(uid,$contentCV)[unique=
 ;BottomContentSlot;;;wide
 ;PlaceholderContentSlot;;;
 
+
 # Login Page Template
 INSERT_UPDATE ContentSlotName;name[unique=true];template(uid,$contentCV)[unique=true][default='LoginPageTemplate'];validComponentTypes(code);compTypeGroup(code)
 ;SiteLogo;;;logo
@@ -353,6 +365,7 @@ INSERT_UPDATE ContentSlotName;name[unique=true];template(uid,$contentCV)[unique=
 ;LeftContentSlot;;;wide
 ;RightContentSlot;;;wide
 ;PlaceholderContentSlot;;;
+
 
 # Checkout Login Page Template
 INSERT_UPDATE ContentSlotName;name[unique=true];template(uid,$contentCV)[unique=true][default='CheckoutLoginPageTemplate'];validComponentTypes(code);compTypeGroup(code)
@@ -430,7 +443,7 @@ INSERT_UPDATE ContentSlotName;name[unique=true];template(uid,$contentCV)[unique=
 ;BottomHeaderSlot;;;wide
 ;PlaceholderContentSlot;;;
 
-# Create Content Slots
+# Create ContentSlots
 INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];name;active
 ;;SiteLogoSlot;Default Site Logo Slot;true
 ;;HomepageNavLinkSlot;Default Homepage Link;true
@@ -465,6 +478,7 @@ INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];name;active
 ;;PlaceholderContentSlot;Placeholder for Addon tag files;true
 
 # Bind Content Slots to Page Templates
+
 INSERT_UPDATE ContentSlotForTemplate;$contentCV[unique=true];uid[unique=true];position[unique=true];pageTemplate(uid,$contentCV)[unique=true][default='ProductDetailsPageTemplate'];contentSlot(uid,$contentCV)[unique=true];allowOverwrite
 ;;SiteLogo-ProductDetails;SiteLogo;;SiteLogoSlot;true
 ;;HomepageLink-ProductDetails;HomepageNavLink;;HomepageNavLinkSlot;true
@@ -584,7 +598,7 @@ INSERT_UPDATE ContentSlotForTemplate;$contentCV[unique=true];uid[unique=true];po
 
 INSERT_UPDATE ContentSlotForTemplate;$contentCV[unique=true];uid[unique=true];position[unique=true];pageTemplate(uid,$contentCV)[unique=true][default='LandingPage5Template'];contentSlot(uid,$contentCV)[unique=true];allowOverwrite
 ;;SiteLogo-LandingPage5;SiteLogo;;SiteLogoSlot;true
-;;HomepageLink-LandingPage5;HomepageNavLink;;HomepageNavLinkSlot;true 
+;;HomepageLink-LandingPage5;HomepageNavLink;;HomepageNavLinkSlot;true
 ;;NavigationBar-LandingPage5;NavigationBar;;NavigationBarSlot;true
 ;;MiniCart-LandingPage5;MiniCart;;MiniCartSlot;true
 ;;Footer-LandingPage5;Footer;;FooterSlot;true
@@ -662,6 +676,7 @@ INSERT_UPDATE ContentSlotForTemplate;$contentCV[unique=true];uid[unique=true];po
 ;;EmptyCartMiddleContent-CartPage;EmptyCartMiddleContent;;EmptyCartMiddleContent;true
 ;;PlaceholderContentSlot-CartPage;PlaceholderContentSlot;;PlaceholderContentSlot;true
 
+
 INSERT_UPDATE ContentSlotForTemplate;$contentCV[unique=true];uid[unique=true];position[unique=true];pageTemplate(uid,$contentCV)[unique=true][default='LoginPageTemplate'];contentSlot(uid,$contentCV)[unique=true];allowOverwrite
 ;;SiteLogo-LoginPage;SiteLogo;;SiteLogoSlot;true
 ;;HomepageLink-LoginPage;HomepageNavLink;;HomepageNavLinkSlot;true
@@ -675,6 +690,7 @@ INSERT_UPDATE ContentSlotForTemplate;$contentCV[unique=true];uid[unique=true];po
 ;;LeftContentSlot-LoginPage;LeftContentSlot;;LeftContentSlot;true
 ;;RightContentSlot-LoginPage;RightContentSlot;;RightContentSlot;true
 ;;PlaceholderContentSlot-LoginPage;PlaceholderContentSlot;;PlaceholderContentSlot;true
+
 
 INSERT_UPDATE ContentSlotForTemplate;$contentCV[unique=true];uid[unique=true];position[unique=true];pageTemplate(uid,$contentCV)[unique=true][default='CheckoutLoginPageTemplate'];contentSlot(uid,$contentCV)[unique=true];allowOverwrite
 ;;SiteLogo-CheckoutLoginPage;SiteLogo;;SiteLogoSlot;true
@@ -690,6 +706,7 @@ INSERT_UPDATE ContentSlotForTemplate;$contentCV[unique=true];uid[unique=true];po
 ;;RightContentSlot-CheckoutLoginPage;RightContentSlot;;RightContentSlot;true
 ;;CenterContentSlot-CheckoutLoginPage;CenterContentSlot;;CenterContentSlot;true
 ;;PlaceholderContentSlot-CheckoutLoginPage;PlaceholderContentSlot;;PlaceholderContentSlot;true
+
 
 # Bind Content Slots to Multi Step Checkout Summary Page Templates
 INSERT_UPDATE ContentSlotForTemplate;$contentCV[unique=true];uid[unique=true];position[unique=true];pageTemplate(uid,$contentCV)[unique=true][default='MultiStepCheckoutSummaryPageTemplate'];contentSlot(uid,$contentCV)[unique=true];allowOverwrite
@@ -763,7 +780,7 @@ INSERT_UPDATE ContentPage;$contentCV[unique=true];uid[unique=true];name;masterTe
 INSERT_UPDATE Media;$contentCV[unique=true];code[unique=true];mime;realfilename;@media[translator=de.hybris.platform.impex.jalo.media.MediaDataTranslator][forceWrite=true]
 ;;ContentPageModel__function_preview;text/gif;ContentPageModel__function_preview.gif;$jarResourceCms/preview-images/ContentPageModel__function_preview.gif
 
-# Functional Content Pages
+# Content Pages
 INSERT_UPDATE ContentPage;$contentCV[unique=true];uid[unique=true];name;masterTemplate(uid,$contentCV);label;defaultPage[default='true'];approvalStatus(code)[default='approved'];homepage[default='false'];previewImage(code, $contentCV)[default='ContentPageModel__function_preview']
 ;;multiStepCheckoutSummaryPage;Multi Checkout Summary Page;MultiStepCheckoutSummaryPageTemplate;multiStepCheckoutSummary
 ;;orderConfirmationPage;Order Confirmation Page;OrderConfirmationPageTemplate;orderConfirmation
@@ -784,6 +801,7 @@ INSERT_UPDATE ContentPage;$contentCV[unique=true];uid[unique=true];name;masterTe
 ;;updatePassword;Update Forgotten Password Page;AccountPageTemplate;updatePassword
 ;;update-profile;Update Profile Page;AccountPageTemplate;update-profile
 ;;update-email;Update Email Page;AccountPageTemplate;update-email
+
 
 # Simple Content Pages
 INSERT_UPDATE ContentPage;$contentCV[unique=true];uid[unique=true];name;masterTemplate(uid,$contentCV);label;defaultPage[default='true'];approvalStatus(code)[default='approved'];homepage[default='false']
