@@ -7,7 +7,7 @@
         -->
                  
         <path dir="${HYBRIS_BIN_DIR}" />
-                               
+
         <!-- ext-platform -->
         <extension name="admincockpit" />
         <extension name="backoffice" />
@@ -15,18 +15,12 @@
         <extension name="hmc" />
         <extension name="mcc" />
         <extension name="platformhmc" />
-                                         
-        <!-- ext-platform-optional -->
-        <extension name="ldap" />
+        <extension name="platformwebservices" />
         <extension name="lucenesearch" />
-        <extension name="virtualjdbc" />
-                                         
-        <!-- ext-cockpit -->
-        <extension name="reportcockpit" />
-                                         
+
+
         <!-- ext-commerce -->
-        <extension name="btg" />
-        <extension name="btgcockpit" />
+        <extension name="assistedservicefacades" />
         <extension name="commercesearch" />
         <extension name="commercesearchbackoffice" />
         <extension name="commercesearchhmc" />
@@ -35,50 +29,32 @@
         <extension name="payment" />
         <extension name="promotions" />
         <extension name="voucher" />
-        <extension name="customerreview" />
         <extension name="ticketsystem" />
         <extension name="solrfacetsearch" />
         <extension name="solrfacetsearchhmc" />
-        <extension name="oci" />
         <extension name="wishlist" />
         <extension name="commercefacades" />
-        <extension name="commercewebservicescommons" />
-                                    
+
+
         <!-- ext-content -->
         <extension name="productcockpit" />
         <extension name="cms2" />
         <extension name="cms2lib" />
         <extension name="cmscockpit" />
-        <extension name="bmecat" />
-        <extension name="bmecathmc" />
-        <extension name="importcockpit" />
         <extension name="classificationsystems" />
         <extension name="classificationsystemshmc" />
-                                  
+
+
         <!-- ext-channel -->
         <extension name="cscockpit" />
-        <extension name="mobileoptionals" />
-        <extension name="mobileservices" />
-                                 
-        <!-- ext-addon -->
-        <extension name="addonsupport" />
-        <extension name="b2ccheckoutaddon" />
- 
-        <!-- ext-print -->
-        <extension name="print" />
-        <extension name="printcockpit" />
-        <extension name="printhmc" />
- 
-        <!-- ext-template -->
-        <!-- <extension name="ybackoffice"/> -->
-        <extension name="ycommercewebservices" />
-        <extension name="ycommercewebserviceshmc" />
-                                      
+
         <!-- ext-accelerator -->
         <extension name="acceleratorservices" />
         <extension name="acceleratorfacades" />
         <extension name="acceleratorcms" />
         <extension name="acceleratorstorefrontcommons" />
+        <extension name="addonsupport"/>
+
 
         <extension name="merchandisestorefront"/> 
         <extension name="merchandisecockpits"/> 
@@ -91,6 +67,7 @@
         <!-- custom TurnTo widgets -->
         <extension name="faq" />
         <extension name="turntobackoffice"/>
+        <extension name="turntoplugin"/>
         <extension name="merchandisecommerceservices"/>
 
     </extensions>
