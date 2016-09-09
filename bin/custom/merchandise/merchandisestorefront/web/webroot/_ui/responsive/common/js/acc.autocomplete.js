@@ -18,6 +18,7 @@ ACC.autocomplete = {
 					displayProductImages: option.displayProductImages,
 					delay: option.waitTimeBeforeRequest,
 					autocompleteUrl: option.autocompleteUrl,
+					ratingURL: option.ratingURL,
 					source: this.source
 				});
 				
@@ -33,7 +34,9 @@ ACC.autocomplete = {
                 }
 			},
 			_renderItem : function (ul, item){
-				
+				var _this = this;
+
+
 				if (item.type == "autoSuggestion"){
 					var renderHtml = "<a href='"+ item.url + "' ><div class='name'>" + item.value + "</div></a>";
 					return $("<li>")
@@ -47,6 +50,17 @@ ACC.autocomplete = {
 
 					if (item.image != null){
 						renderHtml += "<div class='thumb'><img src='" + item.image + "'  /></div>";
+					}
+
+					var data = $.parseJSON($.ajax({
+							url: _this.options.ratingURL + item.code,
+							dataType: "json",
+							async: false
+						}).responseText),
+						starsCount = Math.round(data);
+
+					if (starsCount != 0) {
+						renderHtml += "<div class='rating'><img src='" + ACC.config.commonResourcePath + "/images/" + starsCount + ".png'" + "/></div>";
 					}
 
 					renderHtml += 	"<div class='name'>" + item.value +"</div>";

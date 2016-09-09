@@ -1,6 +1,6 @@
 <widget xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="http://www.zkoss.org/2005/zul">
-    <style src="${wr}/turntoproductfeed.css"/>
+        xsi:noNamespaceSchemaLocation="http://www.zkoss.org/2005/zul" >
+    <!--<style src="${wr}/turntoproductfeed.css"/>-->
     <zscript>
         <![CDATA[
         String[] modeArray= {"static", "dynamic", "overlay"};
@@ -15,29 +15,10 @@
 
     ]]></zscript>
 
-    <script type="text/javascript">
-           function addFeedPurchaseOrder(params){
-              console.log(JSON.parse(params).name);
-        }
-
-<!--        TurnToFeed.addFeedPurchaseOrder({
-            orderId: "${orderData.code}",
-            email: "${email}",
-            firstName: "${user.firstName}",
-            lastName: "${user.lastName}"
-        });
-        $.each($('.product'), function (i, item) {
-            TurnToFeed.addFeedLineItem({
-            title: $(item).data('name'),
-            url: $(item).data('url'),
-            sku: $(item).data('id'),
-            price: $(item).data('price'),
-            itemImageUrl: $(item).data('img')
-        });
-        });-->
-    </script>
-
     <div sclass="main-container">
+
+        <div sclass="header-2">General Settings</div>
+
         <vlayout sclass="content-vlayout">
             <hlayout>
                 <label value="Site Key:"/>
@@ -53,62 +34,88 @@
         </vlayout>
 
         <vlayout sclass="content-vlayout">
-            <button id="sendFeedBtn" label="Send catalog feed!" sclass="button-custom"/>
-        </vlayout>
-
-        <vlayout sclass="content-vlayout">
-            <hlayout sclass="custom">
-            <datebox id="startDate" cols="12" format="MM/dd/yyyy" onCreate="self.value = new Date()"  constraint="no empty, no future, after 19000101: 'enter date after 1900/01/01'" />
-            <button id="sendTransactionsFeedBtn" label="Send transactions feed!" sclass="button-custom"/>
-            </hlayout>
-        </vlayout>
-
-        <vlayout sclass="content-vlayout">
-            <hlayout sclass="custom">
-                <label>Send TurnTo ongoing feed on a daily basis</label>
-                <timebox id="dailyFeedTime" constraint="no empty: cannot be empty" cols="12" format="a hh:mm"/>
-                <checkbox id="ongoingTransactionsFeed"/>
-            </hlayout>
-        </vlayout>
-
-        <vlayout sclass="content-vlayout">
             <hlayout>
-                <label value="Time for caching content (in minutes):"/>
-                <intbox id="cachingTime" constraint="no empty, no negative" sclass="caching-time"/>
-            </hlayout>
-        </vlayout>
-
-        <vlayout sclass="content-vlayout">
-            <hlayout>
-                <label>Version:</label>
+                <label>TurnTo Version:</label>
                 <selectbox model="${versions}" id="selectboxVersion">
                     <template name="model">
                         ${each}
                     </template>
                 </selectbox>
             </hlayout>
-
         </vlayout>
 
-         <vlayout sclass="content-vlayout">
+        <vlayout sclass="content-vlayout">
             <hlayout>
-                <label>Q&amp;A</label>
-                <checkbox id="checkboxQA"/>
+                <label value="Static content cache time:"/>
+                <intbox id="cachingTime" constraint="no empty, no negative" sclass="caching-time"/> in minutes
+            </hlayout>
+        </vlayout>
 
+
+        <!--END GENERAL SETTING -->
+
+
+        <div sclass="header-2">Checkout Comments</div>
+
+        <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label>Enable Comment Capture on Order Confirmation Page</label>
+                <checkbox id="buyerComments"/>
+            </hlayout>
+        </vlayout>
+
+        <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label>Enable Checkout Comment Display Widget on Product Page</label>
+                <checkbox id="turntoCheckoutChatter"/>
+            </hlayout>
+        </vlayout>
+
+        <vlayout sclass="content-vlayout" >
+            <hlayout>
+                <label>Enable Checkout Comment Pinboard</label>
+                <checkbox id="ccPinboard"/>
+            </hlayout>
+        </vlayout>
+
+        <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label>Enable Checkout Comment Pinboard Teaser</label>
+                <checkbox id="ccPinboardTeaser"/>
+            </hlayout>
+        </vlayout>
+
+        <!--END CHECKOUT COMMENTS  -->
+
+        <div sclass="header-2">Questions &amp; Answers</div>
+
+        <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label>Enable Q&amp;A</label>
+                <checkbox id="checkboxQA"/>
+            </hlayout>
+            <hlayout>
+                <label>Q&amp;A Setup Type</label>
                 <selectbox model="${modesForQA}" id="selectboxQA">
                     <template name="model">
                         ${each}
                     </template>
                 </selectbox>
             </hlayout>
-
         </vlayout>
+
+        <!--END Questions AND Answers  -->
+
+
+        <div sclass="header-2">Ratings &amp; Reviews</div>
 
         <vlayout sclass="content-vlayout">
             <hlayout>
-                <label>Rating &amp; Reviews</label>
+                <label>Enable Rating &amp; Reviews</label>
                 <checkbox id="checkboxRating"/>
-
+            </hlayout>
+            <hlayout>
+                <label>Reviews Setup Type</label>
                 <selectbox model="${modesForRating}" id="selectboxRating">
                     <template name="model">
                         ${each}
@@ -118,42 +125,53 @@
 
         </vlayout>
 
+        <!--END Ratings AND Reviews  -->
+
+        <vlayout sclass="content-vlayout" id="customer-gallery">
+            <div sclass="header-2">Visual Content</div>
+            <hlayout >
+                <label>Enable Gallery Row Widget on Product Page</label>
+                <checkbox id="customerGalleryRowWidget" />
+            </hlayout>
+            <hlayout>
+                <label>Enable Visual Content Pinboard</label>
+                <checkbox id="customerGallery" />
+            </hlayout>
+        </vlayout>
+
+        <!-- END Visual Content  -->
+
+        <div sclass="header-2">Feeds</div>
+
+        <vlayout sclass="content-vlayout">
+            <hlayout >
+                <label>Send Catalog Feed to TurnTo</label>
+                <button id="sendFeedBtn" label="Send Catalog Feed" sclass="button-custom"/>
+            </hlayout>
+        </vlayout>
+
+        <div sclass="header-4">Transaction Feeds</div>
+
         <vlayout sclass="content-vlayout">
             <hlayout>
-                <label>Order Reporting</label>
+                <label>Transmit Order Information via the Order Confirmation Page</label>
                 <checkbox id="turntoOrderReporting"/>
             </hlayout>
         </vlayout>
 
         <vlayout sclass="content-vlayout">
-            <hlayout>
-                <label>Checkout Chatter</label>
-                <checkbox id="turntoCheckoutChatter"/>
+            <hlayout sclass="custom">
+                <label>Schedule Daily Transaction Feed</label>
+                <timebox id="dailyFeedTime" constraint="no empty: cannot be empty" cols="12" format="a hh:mm"/>
+                <checkbox id="ongoingTransactionsFeed"/>
             </hlayout>
         </vlayout>
 
         <vlayout sclass="content-vlayout">
-            <hlayout>
-                <label>Buyer Comments</label>
-                <checkbox id="buyerComments"/>
-            </hlayout>
-        </vlayout>
-
-        <vlayout sclass="content-vlayout" >
-            <hlayout>
-                <label>Checkout Comments (Pinboard)</label>
-                <checkbox id="ccPinboard"/>
-            </hlayout>
-        </vlayout>
-
-        <vlayout sclass="content-vlayout" id="customer-gallery">
-            <hlayout >
-                <label >Customer Gallery(Pinboard)</label>
-                <checkbox id="customerGallery" />
-            </hlayout>
-            <hlayout >
-                <label>Gallery Row Widget</label>
-                <checkbox id="customerGalleryRowWidget" />
+            <hlayout sclass="custom">
+                <label>Send Historical Feed from a Specified Date</label>
+                <datebox id="startDate" cols="12" format="MM/dd/yyyy" onCreate="self.value = new Date()"  constraint="no empty, no future, after 19000101: 'enter date after 1900/01/01'" />
+                <button id="sendTransactionsFeedBtn" label="Send transactions feed!" sclass="button-custom"/>
             </hlayout>
         </vlayout>
 

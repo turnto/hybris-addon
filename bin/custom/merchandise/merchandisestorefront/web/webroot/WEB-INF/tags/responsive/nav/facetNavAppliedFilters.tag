@@ -19,7 +19,15 @@
 				<c:forEach items="${pageData.breadcrumbs}" var="breadcrumb">
 					<li>
 						<c:url value="${breadcrumb.removeQuery.url}" var="removeQueryUrl"/>
-						${breadcrumb.facetValueName}&nbsp;<a href="${removeQueryUrl}" ><span class="glyphicon glyphicon-remove"></span></a>
+						<c:choose>
+							<c:when test="${breadcrumb.facetCode eq 'reviewAvgRatingRange'}">
+								<img src="${commonResourcePath}/images/${breadcrumb.facetValueName}.png">
+							</c:when>
+							<c:otherwise>
+								${breadcrumb.facetValueName}&nbsp;
+							</c:otherwise>
+						</c:choose>
+						<a href="${removeQueryUrl}" ><span class="glyphicon glyphicon-remove"></span></a>
 					</li>
 				</c:forEach>
 			</ul>

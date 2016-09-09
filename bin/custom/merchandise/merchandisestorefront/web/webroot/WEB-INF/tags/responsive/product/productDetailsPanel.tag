@@ -49,9 +49,13 @@
 						<cms:pageSlot position="AddToCart" var="component">
 							<cms:component component="${component}" element="div" class="yComponentWrapper"/>
 						</cms:pageSlot>
+
+						<teasers:qaInputTeaser/>
+						<widget:customerGalleryRow/>
 					</div>
 
-					<teasers:qaInputTeaser/>
+					<%--<teasers:qaInputTeaser/>--%>
+					<%--<widget:customerGalleryRow/>--%>
 				</div>
 			</div>
 		</div>

@@ -38,6 +38,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
     private Checkbox ccPinboard;
     private Checkbox customerGallery;
     private Checkbox customerGalleryRowWidget;
+    private Checkbox ccPinboardTeaser;
 
     private Checkbox ongoingTransactionsFeed;
 
@@ -138,6 +139,12 @@ public class TurntobackofficeController extends DefaultWidgetController {
         updateTurntoModuleStatus(ccPinboard, null, turntoCCPinboardModel);
     }
 
+    @ViewEvent(componentID = "ccPinboardTeaser", eventName = Events.ON_CHECK)
+    public void ccPinboardTeaser() throws InterruptedException {
+        StateTurnFlagModel turntoCCPinboardTeaserModel = getStateTurnFlagModelById(ccPinboardTeaser);
+        updateTurntoModuleStatus(ccPinboardTeaser, null, turntoCCPinboardTeaserModel);
+    }
+
     @ViewEvent(componentID = "customerGallery", eventName = Events.ON_CHECK)
     public void customerGallery() throws InterruptedException {
         StateTurnFlagModel turntoCustomerGalleryModel = getStateTurnFlagModelById(customerGallery);
@@ -223,6 +230,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
         initCheckBox(customerGallery, null);
         initCheckBox(customerGalleryRowWidget, null);
         initCheckBox(ongoingTransactionsFeed, null);
+        initCheckBox(ccPinboardTeaser, null);
     }
 
     private void initDailyFeedTime(Timebox dailyFeedTime) {

@@ -36,7 +36,14 @@ import de.hybris.platform.commercefacades.product.ProductOption;
 import de.hybris.platform.commercefacades.product.data.*;
 import de.hybris.platform.commerceservices.url.UrlResolver;
 import de.hybris.platform.core.model.product.ProductModel;
+import de.hybris.platform.core.model.user.UserModel;
+import de.hybris.platform.customerreview.CustomerReviewService;
+import de.hybris.platform.customerreview.enums.CustomerReviewApprovalType;
+import de.hybris.platform.customerreview.model.CustomerReviewModel;
 import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
+import de.hybris.platform.servicelayer.i18n.CommonI18NService;
+import de.hybris.platform.servicelayer.model.ModelService;
+import de.hybris.platform.servicelayer.user.UserService;
 import de.hybris.platform.util.Config;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -54,6 +61,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
@@ -108,6 +116,18 @@ public class ProductPageController extends AbstractPageController
 	@Autowired
 	private TurnToContentFacade turnToContentFacade;
 
+	@Autowired
+	private ModelService modelService;
+
+	@Autowired
+	private CustomerReviewService customerReviewService;
+
+	@Autowired
+	private CommonI18NService commonI18NService;
+
+	@Autowired
+	private UserService userService;
+
 	@RequestMapping(value = PRODUCT_CODE_PATH_VARIABLE_PATTERN, method = RequestMethod.GET)
 	public String productDetail(@PathVariable("productCode") final String productCode, final Model model,
 			final HttpServletRequest request, final HttpServletResponse response)
@@ -137,6 +157,7 @@ public class ProductPageController extends AbstractPageController
 		final String metaDescription = MetaSanitizerUtil.sanitizeDescription(productData.getDescription());
 		setUpMetaData(model, metaKeywords, metaDescription);
 
+		setAverageRating(productData);
 		turnToContentFacade.populateModelWithTurnToSiteKey(model);
 		turnToContentFacade.populateModelWithTurnToVersion(model);
 		turnToContentFacade.populateModelWithTurnToFlags(model);
@@ -378,6 +399,11 @@ public class ProductPageController extends AbstractPageController
 		return result;
 	}
 
+	@RequestMapping(value = "/rest/{id}", method = RequestMethod.GET)
+	public void getReviewContent(@PathVariable("id") String id, HttpServletResponse response) throws IOException {
+		response.getWriter().print(turnToContentFacade.getAverageRatingForProduct(id));
+	}
+
 	@ExceptionHandler(UnknownIdentifierException.class)
 	public String handleUnknownIdentifierException(final UnknownIdentifierException exception, final HttpServletRequest request)
 	{
@@ -506,5 +532,41 @@ public class ProductPageController extends AbstractPageController
 	}
 
 
+	private void setAverageRating(ProductData productData) {
+		final double averageTTRating = Double.parseDouble(turnToContentFacade.getAverageRatingForProduct(productData.getCode()));
+		final Object rating = productData.getAverageRating();
+		final double averageRatingFromDB = rating != null ? (double) rating : 0;
+
+		if (averageTTRating != averageRatingFromDB)
+			updateReview(productData.getCode(), Math.round(averageTTRating));
+	}
+
+
+	private void updateReview(String productCode, double averageTTRating) {
+		CustomerReviewModel reviewModel = new CustomerReviewModel();
+		reviewModel.setRating(averageTTRating);
+		reviewModel.setApprovalStatus(CustomerReviewApprovalType.APPROVED);
+
+		final ProductModel productModel = productService.getProductForCode(productCode);
+		final UserModel userModel = userService.getCurrentUser();
+
+		final CustomerReviewModel customerReviewModel = customerReviewService.createCustomerReview(
+				averageTTRating,
+				"test",
+				"test",
+				userModel,
+				productModel);
+
+		customerReviewModel.setLanguage(commonI18NService.getCurrentLanguage());
+		customerReviewModel.setAlias("test");
+		customerReviewModel.setApprovalStatus(CustomerReviewApprovalType.APPROVED);
+
+		List<CustomerReviewModel> reviews = customerReviewService.getAllReviews(productModel);
+
+		if (!reviews.isEmpty())
+			modelService.removeAll(reviews);
+
+		modelService.save(customerReviewModel);
+	}
 
 }

@@ -13,11 +13,12 @@
  */
 package de.hybris.merchandise.storefront.controllers.pages;
 
+import com.turntoplugin.facades.TurnToContentFacade;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractPageController;
+import de.hybris.platform.acceleratorstorefrontcommons.controllers.util.GlobalMessages;
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.cms2.model.pages.AbstractPageModel;
-import de.hybris.platform.acceleratorstorefrontcommons.controllers.util.GlobalMessages;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +35,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/")
 public class HomePageController extends AbstractPageController
 {
+	@Autowired
+	private TurnToContentFacade turnToContentFacade;
+
 	@RequestMapping(method = RequestMethod.GET)
 	public String home(@RequestParam(value = "logout", defaultValue = "false") final boolean logout, final Model model,
 			final RedirectAttributes redirectModel) throws CMSItemNotFoundException
@@ -44,6 +48,11 @@ public class HomePageController extends AbstractPageController
 					"account.confirmation.signout.title");
 			return REDIRECT_PREFIX + ROOT;
 		}
+
+		turnToContentFacade.populateModelWithTurnToSiteKey(model);
+		turnToContentFacade.populateModelWithTurnToVersion(model);
+		turnToContentFacade.populateModelWithTurnToFlags(model);
+		turnToContentFacade.populateModelWithSiteKeyValidationFlag(model);
 
 		storeCmsPageInModel(model, getContentPageForLabelOrId(null));
 		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(null));

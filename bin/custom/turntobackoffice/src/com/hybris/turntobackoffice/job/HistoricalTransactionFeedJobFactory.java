@@ -2,7 +2,7 @@ package com.hybris.turntobackoffice.job;
 
 
 import com.hybris.turntobackoffice.model.TurnToGeneralStoreModel;
-import de.hybris.merchandise.facades.suggestion.TurnToContentFacade;
+import com.turntoplugin.facades.TurnToContentFacade;
 import de.hybris.platform.cronjob.model.CronJobModel;
 import de.hybris.platform.cronjob.model.JobModel;
 import de.hybris.platform.cronjob.model.TriggerModel;

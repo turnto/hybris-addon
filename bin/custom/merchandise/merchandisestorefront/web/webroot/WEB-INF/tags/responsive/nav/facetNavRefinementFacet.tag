@@ -58,20 +58,31 @@
 						<c:if test="${facetData.multiSelect}">
 							<ycommerce:testId code="facetNav_selectForm">
 							<form action="#" method="get">
-								<input type="hidden" name="q" value="${facetValue.query.query.value}"/>
-								<input type="hidden" name="text" value="${searchPageData.freeTextSearch}"/>
-								<label>
-									<input type="checkbox" ${facetValue.selected ? 'checked="checked"' : ''}  class="facet-checkbox js-facet-checkbox sr-only" />
+                                <input type="hidden" name="q" value="${facetValue.query.query.value}"/>
+                                <input type="hidden" name="text" value="${searchPageData.freeTextSearch}"/>
+                                <label>
+                                    <input type="checkbox" ${facetValue.selected ? 'checked="checked"' : ''}
+                                           class="facet-checkbox js-facet-checkbox sr-only"/>
 									<span class="facet-label">
 										<span class="facet-mark"></span>
 										<span class="facet-text">
-											${facetValue.name}&nbsp;
+
+                                             <c:choose>
+                                                 <c:when test="${facetData.code eq 'reviewAvgRatingRange'}">
+                                                     <img src="${commonResourcePath}/images/${facetValue.name}.png">
+                                                 </c:when>
+                                                 <c:otherwise>
+                                                     ${facetValue.name}&nbsp;
+                                                 </c:otherwise>
+                                             </c:choose>
 											<ycommerce:testId code="facetNav_count">
-												<span class="facet-value-count"><spring:theme code="search.nav.facetValueCount" arguments="${facetValue.count}"/></span>
-											</ycommerce:testId>
+                                                <span class="facet-value-count"><spring:theme
+                                                        code="search.nav.facetValueCount"
+                                                        arguments="${facetValue.count}"/></span>
+                                            </ycommerce:testId>
 										</span>
 									</span>
-								</label>
+                                </label>
 							</form>
 							</ycommerce:testId>
 						</c:if>

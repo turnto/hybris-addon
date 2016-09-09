@@ -5,8 +5,8 @@
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags"%>
 
 <c:url value="/search/" var="searchUrl" />
-<c:url value="/search/autocomplete/${component.uid}"
-	var="autocompleteUrl" />
+<c:url value="/search/autocomplete/${component.uid}" var="autocompleteUrl" />
+<c:url value="/p/rest/" var="ratingURL" />
 
 <div class="ui-front">
 	<form name="search_form_${component.uid}" method="get"
@@ -18,7 +18,7 @@
 				<input type="text" id="js-site-search-input"
 					class="form-control js-site-search-input" name="text" value=""
 					maxlength="100" placeholder="${searchPlaceholder}"
-					data-options='{"autocompleteUrl" : "${autocompleteUrl}","minCharactersBeforeRequest" : "${component.minCharactersBeforeRequest}","waitTimeBeforeRequest" : "${component.waitTimeBeforeRequest}","displayProductImages" : ${component.displayProductImages}}'>
+					data-options='{"autocompleteUrl" : "${autocompleteUrl}", "ratingURL":"${ratingURL}", "minCharactersBeforeRequest" : "${component.minCharactersBeforeRequest}","waitTimeBeforeRequest" : "${component.waitTimeBeforeRequest}","displayProductImages" : ${component.displayProductImages}}'>
 			</ycommerce:testId>
 
 			<span class="input-group-btn"> <ycommerce:testId

@@ -9,7 +9,7 @@
         <requires-extension name="backoffice"/>
         <requires-extension name="basecommerce"/>
         <requires-extension name="commercefacades"/>
-        <requires-extension name="merchandisefacades"/>
+        <requires-extension name="turntoplugin"/>
 
 		<coremodule generated="true" manager="com.hybris.turntobackoffice.jalo.TurntobackofficeManager" packageroot="com.hybris.turntobackoffice"/>
 

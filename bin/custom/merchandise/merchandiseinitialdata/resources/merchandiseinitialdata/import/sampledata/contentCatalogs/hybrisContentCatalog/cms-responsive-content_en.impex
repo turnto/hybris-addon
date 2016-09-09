@@ -19,7 +19,7 @@ $mediaContainer=media(qualifier, $contentCV)[lang=$lang];
 $storefrontContextRoot=$config-storefrontContextRoot
 
 UPDATE ProductCarouselComponent;$contentCV[unique=true];uid[unique=true];title[lang=$lang]
-;;HybrisHomepageProductCarouselComponent;Best Selling Products;
+;;HybrisHomepageProductCarouselComponent;Hybris Homepage Product Carousel;
 ;;NewHybrisHomepageProductCarouselComponent;What's New;
 
 ###  Home page splash   #######

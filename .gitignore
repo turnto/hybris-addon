@@ -13,7 +13,7 @@ roles/*
 temp/*
 
 
-/config
+#/config
 /data
 /licenses
 /log

@@ -6,8 +6,8 @@ import com.hybris.turntobackoffice.jalo.StateTurnFlag;
 import com.hybris.turntobackoffice.job.HistoricalTransactionFeedJobFactory;
 import com.hybris.turntobackoffice.model.StateTurnFlagModel;
 import com.hybris.turntobackoffice.model.TurnToGeneralStoreModel;
-import de.hybris.merchandise.core.model.TurnToStaticContentsModel;
-import de.hybris.merchandise.facades.suggestion.TurnToContentFacade;
+import com.turntoplugin.facades.TurnToContentFacade;
+import com.turntoplugin.model.TurnToStaticContentsModel;
 import de.hybris.platform.cronjob.model.CronJobModel;
 import de.hybris.platform.servicelayer.internal.model.ServicelayerJobModel;
 import de.hybris.platform.servicelayer.model.ModelService;
@@ -15,15 +15,19 @@ import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.search.SearchResult;
 import de.hybris.platform.util.Config;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
 import javax.annotation.Resource;
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Files;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 public class TurntobackofficeService {
@@ -154,8 +158,23 @@ public class TurntobackofficeService {
     }
 
     private String executeRequest(File file) throws IOException {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        String charset = "UTF-8";
+        HttpEntity entity = MultipartEntityBuilder
+                .create()
+                .addTextBody("siteKey", turnToContentFacade.getSiteKey())
+                .addTextBody("authKey", turnToContentFacade.getAuthKey())
+                .addTextBody("feedStyle", "tab-style.1")
+                .addBinaryBody("file", file)
+                .build();
+
+        HttpPost post = new HttpPost(Config.getParameter("turnto.service.url"));
+        post.setEntity(entity);
+        HttpResponse response = httpclient.execute(post);
+
+
+
+       /* String charset = "UTF-8";
         String boundary = Long.toHexString(System.currentTimeMillis());
         String CRLF = "\r\n";
 
@@ -208,9 +227,13 @@ public class TurntobackofficeService {
             response.append(inputLine);
         }
         in.close();
-
+        */
         //print result
-        System.out.println(response.toString());
+        _logger.info(response.toString());
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return "SUCCESS";
+        }
 
         return response.toString();
     }
