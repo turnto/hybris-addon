@@ -108,7 +108,6 @@ public class TurntobackofficeController extends DefaultWidgetController {
     }
 
 
-
     @ViewEvent(componentID = "checkboxRating", eventName = Events.ON_CHECK)
     public void turnRating() throws InterruptedException {
         StateTurnFlagModel turntoRatingModel = getStateTurnFlagModelById(checkboxRating);
@@ -130,7 +129,15 @@ public class TurntobackofficeController extends DefaultWidgetController {
     @ViewEvent(componentID = "buyerComments", eventName = Events.ON_CHECK)
     public void buyerComments() throws InterruptedException {
         StateTurnFlagModel turntoBuyerCommentsModel = getStateTurnFlagModelById(buyerComments);
+
+        boolean checked = buyerComments.isChecked();
+
+        turnCheckbox(turntoCheckoutChatter, checked);
+        turnCheckbox(ccPinboard, checked);
+        turnCheckbox(ccPinboardTeaser, checked);
+
         updateTurntoModuleStatus(buyerComments, null, turntoBuyerCommentsModel);
+
     }
 
     @ViewEvent(componentID = "ccPinboard", eventName = Events.ON_CHECK)
@@ -221,16 +228,16 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
 
     private void initCheckBoxes() {
-        initCheckBox(checkboxQA, selectboxQA);
-        initCheckBox(checkboxRating, selectboxRating);
-        initCheckBox(turntoOrderReporting, null);
-        initCheckBox(turntoCheckoutChatter, null);
-        initCheckBox(buyerComments, null);
-        initCheckBox(ccPinboard, null);
-        initCheckBox(customerGallery, null);
-        initCheckBox(customerGalleryRowWidget, null);
-        initCheckBox(ongoingTransactionsFeed, null);
-        initCheckBox(ccPinboardTeaser, null);
+        initCheckBox(checkboxQA, selectboxQA, null);
+        initCheckBox(checkboxRating, selectboxRating, null);
+        initCheckBox(turntoOrderReporting, null, null);
+        initCheckBox(buyerComments, null, null);
+        initCheckBox(ccPinboard, null, buyerComments);
+        initCheckBox(turntoCheckoutChatter, null, buyerComments);
+        initCheckBox(ccPinboardTeaser, null, buyerComments);
+        initCheckBox(customerGallery, null, null);
+        initCheckBox(customerGalleryRowWidget, null, null);
+        initCheckBox(ongoingTransactionsFeed, null, null);
     }
 
     private void initDailyFeedTime(Timebox dailyFeedTime) {
@@ -247,13 +254,17 @@ public class TurntobackofficeController extends DefaultWidgetController {
         dailyFeedTime.setValue(new Date(time));
     }
 
-    private void initCheckBox(Checkbox checkbox, Selectbox selectbox) {
+    private void initCheckBox(Checkbox checkbox, Selectbox selectbox, Checkbox parent) {
         StateTurnFlagModel model = getStateTurnFlagModelById(checkbox);
         checkbox.setChecked(model.getFlag());
 
         if (selectbox != null) {
             selectbox.setDisabled(!checkbox.isChecked());
             ((ListModelList) selectbox.getModel()).addSelection(model.getSetupType().getCode().toLowerCase().replace("embed", ""));
+        }
+
+        if (parent != null) {
+            checkbox.setDisabled(!parent.isChecked());
         }
 
     }
@@ -398,6 +409,14 @@ public class TurntobackofficeController extends DefaultWidgetController {
 
         Component customerGallery = getWidgetInstanceManager().getWidgetslot().getFellow("customer-gallery");
         customerGallery.setVisible(!showNewWidgets);
+    }
+
+    private void turnCheckbox(Checkbox checkbox, boolean checked) {
+        checkbox.setDisabled(!checked);
+        checkbox.setChecked(checked);
+        StateTurnFlagModel stateTurnFlagModel = getStateTurnFlagModelById(checkbox);
+        stateTurnFlagModel.setFlag(checked);
+        turntobackofficeService.saveStateTurnFlag(stateTurnFlagModel);
     }
 
 }

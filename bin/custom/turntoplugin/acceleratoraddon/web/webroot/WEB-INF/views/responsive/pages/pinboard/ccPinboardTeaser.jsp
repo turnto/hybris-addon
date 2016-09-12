@@ -4,7 +4,7 @@
 
 <c:set var="isOnCcPinboardTeaser" value="${flags.get('ccPinboardTeaser').getFlag() eq 'true'}"/>
 <c:if test="${isOnCcPinboardTeaser}">
-    <div id="isOnCcPinboardTeaser"></div>
+    <div id="TurnToCommentsPinboardTeaser"></div>
 </c:if>
 
 <c:if test="${isOnCcPinboardTeaser}">
