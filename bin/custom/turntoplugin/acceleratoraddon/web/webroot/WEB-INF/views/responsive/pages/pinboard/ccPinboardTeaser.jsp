@@ -13,7 +13,8 @@
             siteKey: "${siteKey}",
             commentsPinboardTeaser: {
                 maxDaysOld: -1,
-                promoPlacement: 'left-bottom'
+                promoPlacement: 'left-bottom',
+                promoButtonURL:'https://v6-turnto.zaelab.com/store/pinboard/checkout_comments'
             }
         };
 
@@ -21,7 +22,7 @@
             var tt = document.createElement('script');
             tt.type = 'text/javascript';
             tt.async = true;
-            tt.src = document.location.protocol + "//qa.turntodev.com/traServer${currentVersion}/pinboardteaserjs/" + turnToConfig.siteKey + "/turnto-pinboard-teaser.js/en_US";
+            tt.src = document.location.protocol + "//static.www.turnto.com/traServer${currentVersion}/pinboardteaserjs/" + turnToConfig.siteKey + "/turnto-pinboard-teaser.js/en_US";
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(tt, s);
         })();

@@ -33,6 +33,6 @@ INSERT_UPDATE Product;code[unique=true];$supercategories;manufacturerName;manufa
 ;0212;220;Clothes & Co;SWEAT-WHITE-F-L;pieces;
 
 INSERT_UPDATE TurnToColorVariantProduct;code[unique=true];$baseProduct;ean;unit(code);color;$supercategories;approvalstatus(code)[default='approved'];$catalogVersion
-;0001_red;0001;4905524593235;pieces;Red;100
-;0001_green;0001;4905524593235;pieces;Green;100
-;0001_blue;0001;4905524593235;pieces;Blue;100
+;0001_red;0001;4905524593236;pieces;Red;100
+;0001_green;0001;4905524593237;pieces;Green;100
+;0001_blue;0001;4905524593238;pieces;Blue;100

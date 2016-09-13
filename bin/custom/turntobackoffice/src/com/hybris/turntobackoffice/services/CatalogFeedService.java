@@ -61,7 +61,7 @@ public class CatalogFeedService {
             tsv = File.createTempFile(FILE_NAME, FILE_TYPE);
             FileWriter fw = new FileWriter(tsv);
             PrintWriter pw = new PrintWriter(fw);
-            pw.println("CATEGORYPATHJSON\tCATEGORY\tITEMURL\tPRICE\tCURRENCY\tSKU\tIMAGEURL\tTITLE\tBRAND\tMPN\tEAN\t");
+            pw.println("CATEGORYPATHJSON\tCATEGORY\tITEMURL\tPRICE\tCURRENCY\tSKU\tIMAGEURL\tTITLE\tBRAND\tMPN\tUPC\t");
             for (FeedProduct product : products) {
                 pw.print(product.getCategorypathjson() + "\t");
                 pw.print(product.getCategory() + "\t");
