@@ -49,15 +49,17 @@
             firstName: "${user.firstName}",
             lastName: "${user.lastName}"
         });
-        TurnTojQuery.each(TurnTojQuery('.product'), function (i, item) {
+
+        var products = document.getElementsByClassName("product");
+        for (var i = 0; i < products.length; i++) {
             TurnToFeed.addFeedLineItem({
-                title: $(item).data('name'),
-                url: $(item).data('url'),
-                sku: $(item).data('id'),
-                price: $(item).data('price'),
-                itemImageUrl: $(item).data('img')
+                title:  products[i].getAttribute('data-name'),
+                url: products[i].getAttribute('data-url'),
+                sku: products[i].getAttribute('data-id'),
+                price: products[i].getAttribute('data-price'),
+                itemImageUrl: products[i].getAttribute('data-img')
             });
-        });
+        }
 
         if (${isOnTurntoOrderReporting}) {
             TurnToFeed.sendFeed()
