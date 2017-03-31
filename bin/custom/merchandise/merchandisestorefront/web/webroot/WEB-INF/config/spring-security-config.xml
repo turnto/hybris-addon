@@ -55,6 +55,34 @@
 
 	</security:http>
 
+	<!--Security config for checkout - it has its own login page-->
+	<security:http disable-url-rewriting="true" pattern="/turn/**" use-expressions="true">
+		<security:anonymous username="anonymous" granted-authority="ROLE_ANONYMOUS" />
+		<security:access-denied-handler error-page="/login"/>
+
+		<security:session-management session-authentication-strategy-ref="fixation" />
+		<security:intercept-url pattern="/**" requires-channel="https" />
+
+		<security:form-login
+				login-processing-url="/turn/j_spring_security_check"
+				login-page="/login/turn"
+				authentication-failure-handler-ref="loginTurnAuthenticationFailureHandler"
+				authentication-success-handler-ref="loginTurnGuidAuthenticationSuccessHandler" />
+
+		<security:logout logout-url="/logout" success-handler-ref="logoutSuccessHandler" />
+
+		<security:port-mappings>
+			<security:port-mapping http="#{configurationService.configuration.getProperty('tomcat.http.port')}"
+								   https="#{configurationService.configuration.getProperty('tomcat.ssl.port')}" />
+			<security:port-mapping http="80" https="443" />
+			<!--security:port-mapping http="#{configurationService.configuration.getProperty('proxy.http.port')}"
+				https="#{configurationService.configuration.getProperty('proxy.ssl.port')}" /-->
+		</security:port-mappings>
+
+		<security:request-cache ref="httpSessionRequestCache" />
+
+	</security:http>
+
 	<!-- Ignores url(s) that match paths specified in the set -->
 	<bean id="excludeUrlRequestMatcher" class="de.hybris.merchandise.storefront.security.ExcludeUrlRequestMatcher">
 		<property name="excludeUrlSet" ref="excludeUrlSet"/>
@@ -206,6 +234,35 @@
 		</property>
 	</bean>
 
+	<bean id="loginTurnGuidAuthenticationSuccessHandler" class="de.hybris.merchandise.storefront.security.GUIDAuthenticationSuccessHandler" >
+		<property name="authenticationSuccessHandler" ref="loginTurnAuthenticationSuccessHandler" />
+		<property name="guidCookieStrategy" ref="guidCookieStrategy" />
+	</bean>
+
+	<bean id="loginTurnAuthenticationSuccessHandler" class="de.hybris.merchandise.storefront.security.StorefrontAuthenticationSuccessHandler" >
+		<property name="customerFacade" ref="customerFacade" />
+		<property name="defaultTargetUrl" value="/checkout"/>
+		<property name="uiExperienceService" ref="uiExperienceService"/>
+		<property name="sessionService" ref="sessionService"/>
+		<property name="cartFacade" ref="cartFacade"/>
+		<property name="forceDefaultTargetForUiExperienceLevel">
+			<map key-type="de.hybris.platform.commerceservices.enums.UiExperienceLevel" value-type="java.lang.Boolean">
+				<entry key="DESKTOP" value="true"/>
+				<entry key="MOBILE" value="true"/>
+			</map>
+		</property>
+		<property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
+		<property name="redirectStrategy" ref="commerceRedirectStrategy"/>
+		<property name="restrictedPages">
+			<list>
+				<value>/login/turn</value>
+			</list>
+		</property>
+		<property name="listRedirectUrlsForceDefaultTarget">
+			<list></list>
+		</property>
+	</bean>
+
 	<bean id="loginCheckoutGuidAuthenticationSuccessHandler" class="de.hybris.merchandise.storefront.security.GUIDAuthenticationSuccessHandler" >
 		<property name="authenticationSuccessHandler" ref="loginCheckoutAuthenticationSuccessHandler" />
 		<property name="guidCookieStrategy" ref="guidCookieStrategy" />
@@ -233,6 +290,11 @@
 		<property name="listRedirectUrlsForceDefaultTarget">
 			<list></list>
 		</property>
+	</bean>
+
+	<bean id="loginTurnAuthenticationFailureHandler" class="de.hybris.merchandise.storefront.security.LoginAuthenticationFailureHandler" >
+		<property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
+		<property name="defaultFailureUrl" value="/login/turn?error=true"/>
 	</bean>
 
 	<alias name="defaultCommerceRedirectStrategy" alias="commerceRedirectStrategy"/>

@@ -15,9 +15,11 @@ package com.turntoplugin.facades;
 
 import com.hybris.turntobackoffice.model.TurnToGeneralStoreModel;
 import de.hybris.platform.commercefacades.product.data.ProductData;
+import de.hybris.platform.commercefacades.user.data.CustomerData;
 import org.springframework.ui.Model;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TurnToContentFacade {
 
@@ -42,4 +44,8 @@ public interface TurnToContentFacade {
     void populateModelBuyerComments(Model model, List<ProductData> results);
 
     List<TurnToGeneralStoreModel> getItemFromTurnToGeneralStore(String key);
+
+    void populateModelWithUser(Model model, CustomerData customerData);
+
+    Map<String, String> populateDataWithUser(CustomerData customerData);
 }

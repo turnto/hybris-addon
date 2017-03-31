@@ -7,7 +7,11 @@ import com.turntoplugin.facades.TurnToContentFacade;
 import com.turntoplugin.model.TurnToStaticContentsModel;
 import com.turntoplugin.services.TurnToContentService;
 import de.hybris.platform.commercefacades.product.data.ProductData;
+import de.hybris.platform.commercefacades.user.data.CustomerData;
+import de.hybris.platform.core.model.user.UserModel;
 import de.hybris.platform.servicelayer.model.ModelService;
+import de.hybris.platform.servicelayer.user.UserService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -18,11 +22,13 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
+import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +48,9 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
     private static final String PRODUCT_JSON_URL = "http://static.www.turnto.com/sitedata/";
     private static final String PRODUCT_JSON_URL_CHUNCK = "/d/exportjson/";
     private static final String DEFAULT_VERSION = "4_2";
+
+    @Resource(name = "userService")
+    private UserService userService;
 
     @Override
     public void populateModelWithContent(Model model, String productId) {
@@ -165,6 +174,30 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
             comments.put(id, buyerComments);
         }
     }
+
+    @Override
+    public void populateModelWithUser(Model model, CustomerData customerData) {
+        Map<String, String> data = new HashMap<String, String>();
+        UserModel user = userService.getCurrentUser();
+        data.put("user_auth_token",user.getUid());
+        data.put("first_name",customerData.getFirstName());
+        data.put("last_name",customerData.getLastName());
+        data.put("email",user.getUid());
+        data.put("email_confirmed","true");
+        data.put("nickname",customerData.getFirstName());
+        data.put("profile_attributes","");
+        LocalDateTime timePoint = LocalDateTime.now();
+        data.put("issued_at",timePoint.toString());
+        if(!"anonymous".equals(user.getUid()))
+        {
+            String st = "first_name="+customerData.getFirstName()+"&last_name="+customerData.getLastName();
+            String sig = DigestUtils.md5Hex(st);
+            data.put("signature",sig);
+        }
+        model.addAttribute("users",data);
+    }
+
+
 
     private String getCountBuyerCommentsById(String id) {
         String countBuyerComments = "0";
@@ -364,6 +397,28 @@ public class DefaultTurnToContentFacade implements TurnToContentFacade {
 
         in.close();
         return response;
+    }
+
+    @Override
+    public Map<String, String> populateDataWithUser(CustomerData customerData)
+    {
+        Map<String, String> data = new HashMap<>();
+        UserModel user = userService.getCurrentUser();
+        data.put("user_auth_token", user.getUid());
+        data.put("first_name", customerData.getFirstName());
+        data.put("last_name", customerData.getLastName());
+        data.put("email", user.getUid());
+        data.put("email_confirmed", "true");
+        data.put("nickname", customerData.getFirstName());
+        data.put("profile_attributes", "");
+        LocalDateTime timePoint = LocalDateTime.now();
+        data.put("issued_at", timePoint.toString());
+        if (!"anonymous".equals(user.getUid())) {
+            String st = "first_name=" + customerData.getFirstName() + "&last_name=" + customerData.getLastName();
+            String sig = DigestUtils.md5Hex(st);
+            data.put("signature", sig);
+        }
+        return data;
     }
 
 }

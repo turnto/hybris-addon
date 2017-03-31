@@ -41,4 +41,7 @@
 #TurnToPinboardContent .TTpinComments{
     word-wrap: break-word !important;
 }
-
+#TTpartnerRegWindow {
+    width: 760px;
+    height:415px;
+}

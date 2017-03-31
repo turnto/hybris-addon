@@ -23,7 +23,7 @@
            http://www.springframework.org/schema/context/spring-context.xsd">
            
     <context:annotation-config/>
-    <context:component-scan base-package="com.turntoplugin.controllers.pages" scope-resolver="de.hybris.platform.spring.IgnoreTenantScopeMetadataResolver"/>
+    <context:component-scan base-package="com.turntoplugin.controllers" scope-resolver="de.hybris.platform.spring.IgnoreTenantScopeMetadataResolver"/>
 
 
 

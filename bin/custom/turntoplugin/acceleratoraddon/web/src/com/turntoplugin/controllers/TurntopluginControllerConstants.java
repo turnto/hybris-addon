@@ -33,6 +33,7 @@ public interface TurntopluginControllerConstants
             {
                 String visualContent = ADDON_PREFIX + "/pages/pinboard/vcPinboard";
                 String checkoutComments = ADDON_PREFIX + "pages/pinboard/ccPinboard";
+                String Login = ADDON_PREFIX + "pages/pinboard/accountReturningCustomerLogin";
             }
 
             String mobilePage = ADDON_PREFIX + "/pages/mobile/turntomobilepage";

@@ -4,6 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="cms" uri="http://hybris.com/tld/cmstags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="turnsso" tagdir="/WEB-INF/tags/addons/turntoplugin/responsive/widget"%>
 
 <div class="tabs js-tabs tabs-responsive">
 
@@ -41,5 +42,9 @@
 	<cms:pageSlot position="Tabs" var="tabs">
 		<cms:component component="${tabs}" />
 	</cms:pageSlot>
+
+	<turnsso:SSO/>
+
+
 
 </div>

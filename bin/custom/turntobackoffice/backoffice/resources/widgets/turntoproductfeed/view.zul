@@ -127,6 +127,16 @@
 
         <!--END Ratings AND Reviews  -->
 
+        <div sclass="header-2">Single Sign On</div>
+
+        <vlayout sclass="content-vlayout">
+            <hlayout>
+                <label>Enable SSO</label>
+                <checkbox id="SSO"/>
+            </hlayout>
+        </vlayout>
+        <!--END SSO -->
+
         <vlayout sclass="content-vlayout" id="customer-gallery">
             <div sclass="header-2">Visual Content</div>
             <hlayout >

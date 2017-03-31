@@ -39,6 +39,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
     private Checkbox customerGallery;
     private Checkbox customerGalleryRowWidget;
     private Checkbox ccPinboardTeaser;
+    private Checkbox SSO;
 
     private Checkbox ongoingTransactionsFeed;
 
@@ -226,6 +227,12 @@ public class TurntobackofficeController extends DefaultWidgetController {
         updateCurrentVersion(selectboxVersion, curentVersionModel);
     }
 
+    @ViewEvent(componentID = "SSO", eventName = Events.ON_CHECK)
+    public void turnSSO() throws InterruptedException {
+        StateTurnFlagModel SSOModel = getStateTurnFlagModelById(SSO);
+        updateTurntoModuleStatus(SSO, null, SSOModel);
+    }
+
 
     private void initCheckBoxes() {
         initCheckBox(checkboxQA, selectboxQA, null);
@@ -238,6 +245,7 @@ public class TurntobackofficeController extends DefaultWidgetController {
         initCheckBox(customerGallery, null, null);
         initCheckBox(customerGalleryRowWidget, null, null);
         initCheckBox(ongoingTransactionsFeed, null, null);
+        initCheckBox(SSO, null, null);
     }
 
     private void initDailyFeedTime(Timebox dailyFeedTime) {
