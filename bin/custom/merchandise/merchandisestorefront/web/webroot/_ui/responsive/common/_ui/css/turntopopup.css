@@ -1,0 +1,110 @@
+#TurnToChatterContent blockquote.TT4quote {
+    border: 0;
+}
+
+.TurnToReviewsTeaser {
+    font-size: 13px !important;
+    width: 400px;
+}
+
+.TurnToReviewsTeaser a {
+    margin-left: 0 !important;
+}
+
+.TurnToReviewsTeaser .TTratingLinks {
+    padding-left: 10px;
+}
+
+#TT4questionTextWrap #TT2questionText {
+    height: 25px !important;
+    overflow: hidden !important;
+}
+
+.AddToCart-ShareOnSocialNetworkAction {
+    margin-top: 8px;
+}
+
+#sortOptions1 {
+    width: 200px;
+}
+
+.product-listing a.buyer-comments {
+    display: block;
+    color: inherit;
+    text-decoration: underline;
+    margin-bottom: 10px;
+}
+
+#TurnToChatterContent .TT4quote-body {
+    word-wrap: break-word !important;
+}
+
+#TurnToPinboardContent .TTpinComments{
+    word-wrap: break-word !important;
+}
+
+#TTpartnerRegWindow {
+    width: 860px;
+    height:400px;
+}
+
+.chatter
+{
+    padding-top: 30px ;
+}
+
+input[type="text"], input[type="password"] {
+    background: #e1e1e1;
+    border: none;
+    width: 100%;
+    height: 50px;
+    padding-left: 20px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    border-radius: 0;
+    color: #555;
+}
+label {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+input[type="submit"], button[type="submit"] {
+    height: 50px;
+    line-height: 48px;
+    background: #ffe55c;
+    color: #333;
+    width: 100%;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    border-radius: 0 !important;
+    border: solid 1px #ffe55c;
+}
+.alert-danger {
+    border: 1px solid #c64444;
+    color: #c64444;
+}
+
+.description h3 {
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 300;
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 10px 0;
+    margin: 0;
+}
+
+label {
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.login-section {
+    padding: 0 15px;
+}
+.alert.negative {
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 10px;
+    box-sizing: border-box;
+}

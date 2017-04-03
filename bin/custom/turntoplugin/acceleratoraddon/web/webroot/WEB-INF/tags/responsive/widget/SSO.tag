@@ -91,8 +91,8 @@
         }
 
         function localLogoutFunction() {
-            var url = "<c:url value="/logout"/>";
-            window.location.replace(url);
+            <%--var url = "<c:url value="/logout"/>";--%>
+            <%--window.location.replace(url);--%>
         }
 
     </script>
