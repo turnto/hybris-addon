@@ -69,8 +69,7 @@ public class TurntobackofficeService {
 
     public String sendCatalogFeed() throws Exception {
         File feedFile = catalogFeedService.generateCatalogFeedFile();
-//        return executeRequest(feedFile);
-        return "";
+        return executeRequest(feedFile);
     }
 
     public String sendTransactionsFeed(Date startDate) throws Exception {
