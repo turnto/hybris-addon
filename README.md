@@ -2,11 +2,11 @@
 
 <h1>TurnTo Networks - Hybris Extension</h1>
 
-TurnTo is the fastest-growing provider of customer content solutions to top merchants and brands.  With a unique suite of 4 innovative products - Ratings & Reviews, Community Q&A, Visual Reviews, and Checkout Comments - TurnTo produces more content of more different types, delivering greater conversion lift, better SEO, and deeper merchandising insights.
+TurnTo is the fastest-growing provider of customer content solutions to top merchants and brands.  With a unique suite of 4 innovative products - Ratings & Reviews, Community Q&A, Visual Reviews, and Checkout Comments - TurnTo offers the broadest range of applications and truly unique features to address the hardest customer content challenges for every type of eCommerce business and the new expectations of today’s shoppers. Get a platform that delivers 2-4X more content with less work while ensuring authenticity.
 
 <h2>Integration Overview</h2>
 
-The TurnTo Hybris extension supports Hybris 5.5 B2C customers out-of-the box; your development team and / or our trusted Hybris development partner can customize the extension to meet your installation's version, accelerator set, and extensive customizations.</li>
+The TurnTo Hybris extension supports Hybris 5.5 and 6.0 B2C customers out-of-the box; your development team can customize the extension to meet your installation's version, accelerator set, and customizations as needed.</li>
 
 <h2>Installation</h2>
 1. Clone this project to the hybris folder
